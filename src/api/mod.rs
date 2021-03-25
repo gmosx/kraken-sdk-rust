@@ -6,6 +6,9 @@ pub use get_server_time::*;
 pub mod get_asset_info;
 pub use get_asset_info::*;
 
+pub mod get_asset_pairs;
+pub use get_asset_pairs::*;
+
 // endregion: public
 
 // region: private
