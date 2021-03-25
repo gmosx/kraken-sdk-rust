@@ -11,8 +11,7 @@ pub struct GetAssetPairsRequestBuilder {
 }
 
 impl GetAssetPairsRequestBuilder {
-    /// Comma delimited list of asset pairs to get info on
-    /// (Optional, default = all)
+    /// Comma delimited list of asset pairs to get info on.
     pub fn pair(self, pair: &str) -> Self {
         Self {
             pair: Some(String::from(pair)),
