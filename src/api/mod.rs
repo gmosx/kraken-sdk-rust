@@ -3,6 +3,9 @@
 pub mod get_server_time;
 pub use get_server_time::*;
 
+pub mod get_system_status;
+pub use get_system_status::*;
+
 pub mod get_asset_info;
 pub use get_asset_info::*;
 

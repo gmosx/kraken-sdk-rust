@@ -58,4 +58,4 @@ Unless you explicitly state otherwise, any contribution intentionally submitted 
 
 ## Copyright
 
-Copyright (c) 2021 George Moschovitis.
+Copyright (c) 2021 [George Moschovitis](https://gmosx.ninja).
