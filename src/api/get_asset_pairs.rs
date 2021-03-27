@@ -42,7 +42,7 @@ pub struct PairInfo {
     /// alternate pair name
     pub altname: String,
     /// WebSocket pair name (if available)
-    pub wsname: String,
+    pub wsname: Option<String>,
     /// asset class of base component
     pub aclass_base: String,
     /// asset id of base component
@@ -66,7 +66,7 @@ pub struct PairInfo {
     /// fee schedule array
     pub fees: Vec<FeeSchedule>,
     /// maker fee schedule array in [volume, percent fee] tuples (if on maker/taker)
-    pub fees_maker: Vec<FeeSchedule>,
+    pub fees_maker: Option<Vec<FeeSchedule>>,
     /// volume discount currency
     pub fee_volume_currency: String,
     /// margin call level
@@ -74,7 +74,7 @@ pub struct PairInfo {
     /// stop-out/liquidation margin level
     pub margin_stop: f64,
     /// minimum order volume for pair
-    pub ordermin: String,
+    pub ordermin: Option<String>,
 }
 
 pub type GetAssetPairsResponse = HashMap<String, PairInfo>;
