@@ -15,6 +15,9 @@ pub use get_asset_pairs::*;
 pub mod get_ticker_info;
 pub use get_ticker_info::*;
 
+pub mod get_order_book;
+pub use get_order_book::*;
+
 // endregion: public
 
 // region: private

@@ -38,21 +38,21 @@ impl GetTickerInfoRequestBuilder {
 pub struct TickerInfo {
     /// ask array(<price>, <whole lot volume>, <lot volume>),
     pub a: Vec<String>,
-    // bid array(<price>, <whole lot volume>, <lot volume>),
+    /// bid array(<price>, <whole lot volume>, <lot volume>),
     pub b: Vec<String>,
-    // last trade closed array(<price>, <lot volume>),
+    /// last trade closed array(<price>, <lot volume>),
     pub c: Vec<String>,
-    // volume array(<today>, <last 24 hours>),
+    /// volume array(<today>, <last 24 hours>),
     pub v: Vec<String>,
-    // volume weighted average price array(<today>, <last 24 hours>),
+    /// volume weighted average price array(<today>, <last 24 hours>),
     pub p: Vec<String>,
-    // number of trades array(<today>, <last 24 hours>),
+    /// number of trades array(<today>, <last 24 hours>),
     pub t: Vec<i32>,
-    // low array(<today>, <last 24 hours>),
+    /// low array(<today>, <last 24 hours>),
     pub l: Vec<String>,
-    // high array(<today>, <last 24 hours>),
+    /// high array(<today>, <last 24 hours>),
     pub h: Vec<String>,
-    // today's opening price
+    /// today's opening price
     pub o: String,
 }
 
