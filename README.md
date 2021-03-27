@@ -48,7 +48,7 @@ Pull requests, issues and comments are welcome! Make sure to add tests for new f
 
 ## Contact
 
-- Twitter, @gmosx
+For questions, suggestions, etc, you can reach the maintainer on [Twitter](https://twitter.com/gmosx).
 
 ## License
 
