@@ -54,11 +54,11 @@ pub struct PairInfo {
     /// volume lot size
     pub lot: String,
     /// scaling decimal places for pair
-    pub pair_decimals: isize,
+    pub pair_decimals: i32,
     /// scaling decimal places for volume
-    pub lot_decimals: isize,
+    pub lot_decimals: i32,
     /// amount to multiply lot volume by to get currency volume
-    pub lot_multiplier: isize,
+    pub lot_multiplier: i32,
     /// array of leverage amounts available when buying
     pub leverage_buy: Vec<f64>,
     /// array of leverage amounts available when selling

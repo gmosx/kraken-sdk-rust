@@ -26,7 +26,7 @@ impl CancelOrderRequestBuilder {
 
 #[derive(Debug, Deserialize)]
 pub struct CancelOrderResponse {
-    count: isize,
+    count: i32,
     pending: Option<bool>,
 }
 

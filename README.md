@@ -6,7 +6,7 @@ A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/fe
 
 ```
 [dependencies]
-kraken_client = "0.4.1"
+kraken_client = "0.5.0"
 ```
 
 ## Usage
@@ -38,13 +38,21 @@ println!("{}", resp.count);
 
 ## Status
 
-This library is under development and the API is expected to change.
+The software is under active development and the API is expected to change.
 
 **It's not ready for production use**.
 
+## Contributing
+
+Pull requests, issues and comments are welcome! Make sure to add tests for new features and bug fixes.
+
+## Contact
+
+- Twitter, @gmosx
+
 ## License
 
-This library is licensed under either of Apache License, Version 2.0 or MIT license, at your option.
+The software is distributed under the terms of both the MIT license and the Apache License (Version 2.0). See [LICENSE-APACHE](LICENSE-APACHE) and [LICENSE-MIT](LICENSE-MIT) for details.
 
 Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this crate by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
 
