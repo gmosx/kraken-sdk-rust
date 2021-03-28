@@ -5,12 +5,12 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-ticker-info
 /// - https://api.kraken.com/0/public/Ticker
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetTickerInfoRequestBuilder {
+pub struct GetTickersRequestBuilder {
     client: Client,
     pair: Option<String>,
 }
 
-impl GetTickerInfoRequestBuilder {
+impl GetTickersRequestBuilder {
     /// Comma delimited list of asset pairs to get info on.
     pub fn pair(self, pair: &str) -> Self {
         Self {
@@ -29,13 +29,13 @@ impl GetTickerInfoRequestBuilder {
         self.client.send_public(&url).await
     }
 
-    pub async fn send(self) -> Result<GetTickerInfoResponse> {
+    pub async fn send(self) -> Result<GetTickersResponse> {
         self.execute().await
     }
 }
 
 #[derive(Debug, Deserialize)]
-pub struct TickerInfo {
+pub struct Ticker {
     /// ask array(<price>, <whole lot volume>, <lot volume>),
     pub a: Vec<String>,
     /// bid array(<price>, <whole lot volume>, <lot volume>),
@@ -56,11 +56,11 @@ pub struct TickerInfo {
     pub o: String,
 }
 
-pub type GetTickerInfoResponse = HashMap<String, TickerInfo>;
+pub type GetTickersResponse = HashMap<String, Ticker>;
 
 impl Client {
-    pub fn get_ticker_info(&self) -> GetTickerInfoRequestBuilder {
-        GetTickerInfoRequestBuilder {
+    pub fn get_tickers(&self) -> GetTickersRequestBuilder {
+        GetTickersRequestBuilder {
             client: self.clone(),
             pair: None,
         }
@@ -72,13 +72,13 @@ mod tests {
     use crate::Client;
 
     #[test]
-    fn get_ticker_info() {
+    fn get_tickers() {
         let rt = tokio::runtime::Runtime::new().unwrap();
 
         rt.block_on(async {
             let client = Client::default();
 
-            let resp = client.get_ticker_info().pair("XXBTZUSD").send().await;
+            let resp = client.get_tickers().pair("XXBTZUSD").send().await;
 
             match resp {
                 Ok(resp) => println!("{:?}", resp),
