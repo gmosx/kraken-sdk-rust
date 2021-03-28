@@ -5,12 +5,12 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-asset-info
 /// - https://api.kraken.com/0/public/Assets
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetAssetInfoRequestBuilder {
+pub struct GetAssetsRequestBuilder {
     client: Client,
     asset: Option<String>,
 }
 
-impl GetAssetInfoRequestBuilder {
+impl GetAssetsRequestBuilder {
     /// Comma delimited list of assets to get info on.
     /// (default = all for given asset class)
     pub fn asset(self, asset: &str) -> Self {
@@ -30,24 +30,24 @@ impl GetAssetInfoRequestBuilder {
         self.client.send_public(&url).await
     }
 
-    pub async fn send(self) -> Result<GetAssetInfoResponse> {
+    pub async fn send(self) -> Result<GetAssetsResponse> {
         self.execute().await
     }
 }
 
 #[derive(Debug, Deserialize)]
-pub struct AssetInfo {
+pub struct Asset {
     pub altname: String,
     pub aclass: String,
     pub decimals: i32,
     pub display_decimals: i32,
 }
 
-pub type GetAssetInfoResponse = HashMap<String, AssetInfo>;
+pub type GetAssetsResponse = HashMap<String, Asset>;
 
 impl Client {
-    pub fn get_asset_info(&self) -> GetAssetInfoRequestBuilder {
-        GetAssetInfoRequestBuilder {
+    pub fn get_assets(&self) -> GetAssetsRequestBuilder {
+        GetAssetsRequestBuilder {
             client: self.clone(),
             asset: None,
         }
@@ -59,13 +59,13 @@ mod tests {
     use crate::Client;
 
     #[test]
-    fn get_asset_info() {
+    fn get_assets() {
         let rt = tokio::runtime::Runtime::new().unwrap();
 
         rt.block_on(async {
             let client = Client::default();
 
-            let resp = client.get_asset_info().asset("DOT,XXRP,XXMR").send().await;
+            let resp = client.get_assets().asset("DOT,XXRP,XXMR").send().await;
 
             match resp {
                 Ok(resp) => println!("{:?}", resp),

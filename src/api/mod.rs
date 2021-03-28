@@ -6,8 +6,8 @@ pub use get_server_time::*;
 pub mod get_system_status;
 pub use get_system_status::*;
 
-pub mod get_asset_info;
-pub use get_asset_info::*;
+pub mod get_assets;
+pub use get_assets::*;
 
 pub mod get_asset_pairs;
 pub use get_asset_pairs::*;
