@@ -7,12 +7,46 @@ use std::collections::HashMap;
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOpenOrdersRequestBuilder {
     client: Client,
+    trades: Option<bool>,
+    userref: Option<i32>,
 }
 
 impl GetOpenOrdersRequestBuilder {
+    /// Whether or not to include trades in output (default = false)
+    pub fn trades(self, trades: bool) -> Self {
+        Self {
+            trades: Some(trades),
+            ..self
+        }
+    }
+
+    /// Restrict results to given user reference id
+    pub fn userref(self, userref: i32) -> Self {
+        Self {
+            userref: Some(userref),
+            ..self
+        }
+    }
+
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
+        let mut query: Vec<String> = Vec::new();
+
+        if let Some(true) = self.trades {
+            query.push(String::from("trades=true"));
+        }
+
+        if let Some(userref) = self.userref {
+            query.push(format!("userref={}", userref));
+        }
+
+        let query = if query.is_empty() {
+            None
+        } else {
+            Some(query.join("&"))
+        };
+
         self.client
-            .send_private("/0/private/OpenOrders", None)
+            .send_private("/0/private/OpenOrders", query)
             .await
     }
 
@@ -58,6 +92,8 @@ impl Client {
     pub fn get_open_orders(&self) -> GetOpenOrdersRequestBuilder {
         GetOpenOrdersRequestBuilder {
             client: self.clone(),
+            trades: None,
+            userref: None,
         }
     }
 }
