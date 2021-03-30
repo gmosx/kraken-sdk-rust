@@ -63,6 +63,12 @@ impl From<AssetName> for String {
     }
 }
 
+impl From<&AssetName> for String {
+    fn from(asset: &AssetName) -> Self {
+        asset.to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

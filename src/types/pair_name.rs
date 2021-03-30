@@ -21,6 +21,18 @@ impl Display for PairName {
     }
 }
 
+impl From<PairName> for String {
+    fn from(pair: PairName) -> Self {
+        pair.to_string()
+    }
+}
+
+impl From<&PairName> for String {
+    fn from(pair: &PairName) -> Self {
+        pair.to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

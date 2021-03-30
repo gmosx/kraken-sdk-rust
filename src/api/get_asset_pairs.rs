@@ -12,9 +12,9 @@ pub struct GetAssetPairsRequestBuilder {
 
 impl GetAssetPairsRequestBuilder {
     /// Comma delimited list of asset pairs to get info on.
-    pub fn pair(self, pair: &str) -> Self {
+    pub fn pair(self, pair: impl Into<String>) -> Self {
         Self {
-            pair: Some(String::from(pair)),
+            pair: Some(pair.into()),
             ..self
         }
     }
@@ -90,7 +90,7 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::Client;
+    use crate::{Client, JsonValue, PairName, Result};
 
     #[test]
     fn get_asset_pairs() {
@@ -100,6 +100,14 @@ mod tests {
             let client = Client::default();
 
             let resp = client.get_asset_pairs().pair("XXBTZUSD").send().await;
+
+            match resp {
+                Ok(resp) => println!("{:?}", resp),
+                Err(error) => eprintln!("{:?}", error),
+            }
+
+            let pair = PairName::from("BTC", "USD");
+            let resp: Result<JsonValue> = client.get_asset_pairs().pair(&pair).execute().await;
 
             match resp {
                 Ok(resp) => println!("{:?}", resp),

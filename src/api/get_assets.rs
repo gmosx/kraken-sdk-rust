@@ -13,9 +13,9 @@ pub struct GetAssetsRequestBuilder {
 impl GetAssetsRequestBuilder {
     /// Comma delimited list of assets to get info on.
     /// (default = all for given asset class)
-    pub fn asset(self, asset: &str) -> Self {
+    pub fn asset(self, asset: impl Into<String>) -> Self {
         Self {
-            asset: Some(String::from(asset)),
+            asset: Some(asset.into()),
             ..self
         }
     }
@@ -56,7 +56,7 @@ impl Client {
 
 #[cfg(test)]
 mod tests {
-    use crate::Client;
+    use crate::{AssetName, Client};
 
     #[test]
     fn get_assets() {
@@ -66,6 +66,14 @@ mod tests {
             let client = Client::default();
 
             let resp = client.get_assets().asset("DOT,XXRP,XXMR").send().await;
+
+            match resp {
+                Ok(resp) => println!("{:?}", resp),
+                Err(error) => eprintln!("{:?}", error),
+            }
+
+            let asset = AssetName::from("XRP");
+            let resp = client.get_assets().asset(&asset).send().await;
 
             match resp {
                 Ok(resp) => println!("{:?}", resp),
