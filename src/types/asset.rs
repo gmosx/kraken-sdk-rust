@@ -57,6 +57,12 @@ impl Into<Asset> for String {
     }
 }
 
+impl From<Asset> for String {
+    fn from(asset: Asset) -> Self {
+        asset.to_string()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -74,5 +80,8 @@ mod tests {
 
         let asset: Asset = "USD".into();
         assert_eq!(asset.to_string(), "ZUSD");
+
+        let a: String = asset.into();
+        assert_eq!(a, "ZUSD");
     }
 }
