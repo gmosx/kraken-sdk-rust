@@ -22,7 +22,8 @@ pub(crate) fn compute_nonce() -> Result<u64> {
     Ok(since_the_epoch.as_secs() * 1_000_000_000)
 }
 
-pub(crate) fn compute_signature(
+/// Computes the signature of the POST body
+pub fn compute_signature(
     api_secret: &str,
     path: &str,
     nonce: &str,
