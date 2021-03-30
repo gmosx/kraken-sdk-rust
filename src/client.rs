@@ -13,8 +13,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 const DEFAULT_BASE_URL: &str = "https://api.kraken.com";
 
-// The `Safari on iPad` User-Agent string.
-const DEFAULT_USER_AGENT: &str = "Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405";
+const DEFAULT_USER_AGENT: &str = "rust-kraken-client/0.7.1";
 
 #[derive(Default)]
 pub struct ClientBuilder {
