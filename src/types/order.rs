@@ -1,9 +1,6 @@
 use std::fmt;
 
 use serde::{Deserialize, Serialize};
-
-pub type JsonValue = serde_json::Value;
-
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Ord, PartialOrd, Hash)]
 pub enum OrderSide {
     Buy,
