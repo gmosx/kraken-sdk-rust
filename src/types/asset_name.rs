@@ -27,17 +27,17 @@ pub fn asset_name_to_code(name: &str) -> String {
     String::from(code)
 }
 
-pub struct Asset {
+pub struct AssetName {
     pub name: String,
 }
 
-impl Display for Asset {
+impl Display for AssetName {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.name)
     }
 }
 
-impl Asset {
+impl AssetName {
     pub fn from(name: &str) -> Self {
         Self {
             name: asset_name_to_code(name),
@@ -45,20 +45,20 @@ impl Asset {
     }
 }
 
-impl Into<Asset> for &str {
-    fn into(self) -> Asset {
-        Asset::from(self)
+impl Into<AssetName> for &str {
+    fn into(self) -> AssetName {
+        AssetName::from(self)
     }
 }
 
-impl Into<Asset> for String {
-    fn into(self) -> Asset {
-        Asset::from(&self)
+impl Into<AssetName> for String {
+    fn into(self) -> AssetName {
+        AssetName::from(&self)
     }
 }
 
-impl From<Asset> for String {
-    fn from(asset: Asset) -> Self {
+impl From<AssetName> for String {
+    fn from(asset: AssetName) -> Self {
         asset.to_string()
     }
 }
@@ -69,16 +69,16 @@ mod tests {
 
     #[test]
     fn asset_name() {
-        let asset = Asset::from("BTC");
+        let asset = AssetName::from("BTC");
         assert_eq!(asset.to_string(), "XXBT");
 
-        let asset = Asset::from("XBT");
+        let asset = AssetName::from("XBT");
         assert_eq!(asset.to_string(), "XXBT");
 
-        let asset = Asset::from("ETH");
+        let asset = AssetName::from("ETH");
         assert_eq!(asset.to_string(), "XETH");
 
-        let asset: Asset = "USD".into();
+        let asset: AssetName = "USD".into();
         assert_eq!(asset.to_string(), "ZUSD");
 
         let a: String = asset.into();
