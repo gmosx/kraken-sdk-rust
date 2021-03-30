@@ -6,7 +6,7 @@ A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/fe
 
 ```
 [dependencies]
-kraken_client = "0.7.0"
+kraken_client = "0.7.1"
 ```
 
 ## Usage
@@ -41,6 +41,11 @@ println!("{}", resp.count);
 The software is under active development and the API is expected to change.
 
 **It's not ready for production use**.
+
+## Links
+
+- https://support.kraken.com/hc/en-us/articles/360000678446-Cryptocurrencies-available-on-Kraken
+- https://support.kraken.com/hc/en-us/articles/201893658-Currency-pairs-available-for-trading-on-Kraken
 
 ## Contributing
 

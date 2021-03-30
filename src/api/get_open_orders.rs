@@ -58,8 +58,13 @@ impl GetOpenOrdersRequestBuilder {
 #[derive(Debug, Deserialize)]
 pub struct OpenOrderInfo {
     pub status: String,
+    pub cost: String,
     pub descr: OrderInfo,
     pub oflags: String,
+    pub fee: String,
+    pub vol: String,
+    pub vol_executed: Option<String>,
+    pub userref: Option<i32>,
 }
 
 #[derive(Debug, Deserialize)]
