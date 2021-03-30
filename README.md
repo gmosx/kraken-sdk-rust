@@ -42,11 +42,6 @@ The software is under active development and the API is expected to change.
 
 **It's not ready for production use**.
 
-## Links
-
-- https://support.kraken.com/hc/en-us/articles/360000678446-Cryptocurrencies-available-on-Kraken
-- https://support.kraken.com/hc/en-us/articles/201893658-Currency-pairs-available-for-trading-on-Kraken
-
 ## Contributing
 
 Pull requests, issues and comments are welcome! Make sure to add tests for new features and bug fixes.
