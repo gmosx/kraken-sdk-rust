@@ -21,6 +21,15 @@ let resp = client.get_server_time().send().await?;
 
 println!("{}", resp.unixtime);
 
+let pair = PairName::from("XBT", "USD");
+let resp = client
+    .get_ohlc_data(&pair)
+    .interval(Interval::Day1)
+    .send()
+    .await;
+
+println!("{:?}", resp);
+
 let pair = "XXRPZUSD";
 let resp = client
     .add_limit_order(pair, OrderSide::Buy, "20", "0.10")
