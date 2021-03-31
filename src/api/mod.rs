@@ -15,6 +15,9 @@ pub use get_asset_pairs::*;
 pub mod get_tickers;
 pub use get_tickers::*;
 
+pub mod get_ohlc_data;
+pub use get_ohlc_data::*;
+
 pub mod get_order_book;
 pub use get_order_book::*;
 
