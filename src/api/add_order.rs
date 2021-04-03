@@ -34,6 +34,9 @@ pub struct AddOrderRequestBuilder {
     userref: Option<i32>,
     /// Validate inputs only, do not submit order.
     validate: Option<bool>,
+    close_order_type: Option<OrderType>,
+    close_price: Option<String>,
+    close_price2: Option<String>,
 }
 
 impl AddOrderRequestBuilder {
@@ -47,6 +50,28 @@ impl AddOrderRequestBuilder {
     pub fn userref(self, userref: i32) -> Self {
         Self {
             userref: Some(userref),
+            ..self
+        }
+    }
+
+    pub fn close_order(
+        self,
+        close_order_type: OrderType,
+        close_price: Option<String>,
+        close_price2: Option<String>,
+    ) -> Self {
+        Self {
+            close_order_type: Some(close_order_type),
+            close_price: close_price,
+            close_price2: close_price2,
+            ..self
+        }
+    }
+
+    pub fn close_limit_order(self, close_price: &str) -> Self {
+        Self {
+            close_order_type: Some(OrderType::Limit),
+            close_price: Some(close_price.to_string()),
             ..self
         }
     }
@@ -95,12 +120,24 @@ impl AddOrderRequestBuilder {
             query.push_str(&format!("&expiretm={}", expiretm));
         }
 
+        if let Some(close_order_type) = &self.close_order_type {
+            query.push_str(&format!("&close[ordertype]={}", close_order_type));
+
+            if let Some(close_price) = &self.close_price {
+                query.push_str(&format!("&close[price]={}", close_price));
+            }
+
+            if let Some(close_price2) = &self.close_price2 {
+                query.push_str(&format!("&close[price2]={}", close_price2));
+            }
+        }
+
         if let Some(userref) = &self.userref {
             query.push_str(&format!("&userref={}", userref));
         }
 
-        if let Some(validate) = &self.validate {
-            query.push_str(&format!("&validate={}", validate));
+        if let Some(true) = &self.validate {
+            query.push_str("&validate=true");
         }
 
         self.client
@@ -150,6 +187,9 @@ impl Client {
             expiretm: None,
             userref: None,
             validate: None,
+            close_order_type: None,
+            close_price: None,
+            close_price2: None,
         }
     }
 
@@ -173,6 +213,9 @@ impl Client {
             expiretm: None,
             userref: None,
             validate: None,
+            close_order_type: None,
+            close_price: None,
+            close_price2: None,
         }
     }
 
@@ -197,6 +240,9 @@ impl Client {
             expiretm: None,
             userref: None,
             validate: None,
+            close_order_type: None,
+            close_price: None,
+            close_price2: None,
         }
     }
 }
