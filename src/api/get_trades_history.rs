@@ -2,6 +2,8 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
+// TODO: This endpoint is under construction. Don't use yet!
+
 // type = type of trade (optional)
 //     all = all types (default)
 //     any position = any position (open or closed)
@@ -40,11 +42,33 @@ impl GetTradesHistoryRequestBuilder {
         }
     }
 
+    pub fn start(self, start: i32) -> Self {
+        Self {
+            start: Some(start),
+            ..self
+        }
+    }
+
+    pub fn end(self, end: i32) -> Self {
+        Self {
+            end: Some(end),
+            ..self
+        }
+    }
+
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut query: Vec<String> = Vec::new();
 
         if let Some(true) = self.trades {
             query.push(String::from("trades=true"));
+        }
+
+        if let Some(start) = self.start {
+            query.push(format!("start={}", start));
+        }
+
+        if let Some(end) = self.end {
+            query.push(format!("end={}", end));
         }
 
         let query = if query.is_empty() {

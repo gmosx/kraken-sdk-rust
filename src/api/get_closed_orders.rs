@@ -1,6 +1,8 @@
-use crate::{Client, Result};
+use crate::{Client, OrderInfo, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
+
+// TODO: This endpoint is under construction. Don't use yet!
 
 /// - https://www.kraken.com/features/api#get-closed-orders
 /// - https://api.kraken.com/0/private/ClosedOrders
@@ -67,8 +69,8 @@ impl GetClosedOrdersRequestBuilder {
             query.push(format!("start={}", start));
         }
 
-        if let Some(start) = self.start {
-            query.push(format!("start={}", start));
+        if let Some(end) = self.end {
+            query.push(format!("end={}", end));
         }
 
         let query = if query.is_empty() {
@@ -92,29 +94,14 @@ pub struct ClosedOrderInfo {
     pub status: String,
     pub descr: OrderInfo,
     pub oflags: String,
+    pub opentm: f64,
     pub closetm: f64,
+    pub expiretm: f64,
+    pub fee: String,
+    pub misc: String,
+    pub limitprice: String,
+    pub refid: Option<String>,
     pub reason: Option<String>,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct OrderInfo {
-    // pub ordertxid: Option<String>,
-    // pub postxid: Option<String>,
-    pub pair: String,
-    // pub time: f64,
-    #[serde(rename(deserialize = "type"))]
-    pub marketside: String,
-    pub ordertype: String,
-    pub price: String,
-    pub price2: String,
-    pub leverage: String,
-    pub order: String,
-    pub close: String,
-    // pub cost: String,
-    // pub fee: String,
-    // pub vol: String,
-    // pub margin: String,
-    // pub misc: String,
 }
 
 // TODO: not fully implemented yet, use JsonValue instead!

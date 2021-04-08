@@ -44,3 +44,24 @@ impl fmt::Display for OrderType {
         write!(f, "{}", order_type)
     }
 }
+
+#[derive(Debug, Deserialize)]
+pub struct OrderInfo {
+    // pub ordertxid: Option<String>,
+    // pub postxid: Option<String>,
+    pub pair: String,
+    // pub time: f64,
+    #[serde(rename(deserialize = "type"))]
+    pub marketside: String,
+    pub ordertype: String,
+    pub price: String,
+    pub price2: String,
+    pub leverage: String,
+    pub order: String,
+    pub close: String,
+    // pub cost: String,
+    // pub fee: String,
+    // pub vol: String,
+    // pub margin: String,
+    // pub misc: String,
+}
