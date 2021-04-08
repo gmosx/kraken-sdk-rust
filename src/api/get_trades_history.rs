@@ -2,13 +2,23 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-closed-orders
-/// - https://api.kraken.com/0/private/ClosedOrders
+// type = type of trade (optional)
+//     all = all types (default)
+//     any position = any position (open or closed)
+//     closed position = positions that have been closed
+//     closing position = any trade closing all or part of a position
+//     no position = non-positional trades
+// trades = whether or not to include trades related to position in output (optional.  default = false)
+// start = starting unix timestamp or trade tx id of results (optional.  exclusive)
+// end = ending unix timestamp or trade tx id of results (optional.  inclusive)
+// ofs = result offset
+
+/// - https://www.kraken.com/features/api#get-trades-history
+/// - https://api.kraken.com/0/private/TradesHistory
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetClosedOrdersRequestBuilder {
+pub struct GetTradesHistoryRequestBuilder {
     client: Client,
     trades: Option<bool>,
-    userref: Option<i32>,
     start: Option<i32>,
     end: Option<i32>,
     // TODO:
@@ -21,7 +31,7 @@ pub struct GetClosedOrdersRequestBuilder {
     //     both (default)
 }
 
-impl GetClosedOrdersRequestBuilder {
+impl GetTradesHistoryRequestBuilder {
     /// Whether or not to include trades in output (default = false)
     pub fn trades(self, trades: bool) -> Self {
         Self {
@@ -38,20 +48,6 @@ impl GetClosedOrdersRequestBuilder {
         }
     }
 
-    pub fn start(self, start: i32) -> Self {
-        Self {
-            start: Some(start),
-            ..self
-        }
-    }
-
-    pub fn end(self, end: i32) -> Self {
-        Self {
-            end: Some(end),
-            ..self
-        }
-    }
-
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut query: Vec<String> = Vec::new();
 
@@ -63,14 +59,6 @@ impl GetClosedOrdersRequestBuilder {
             query.push(format!("userref={}", userref));
         }
 
-        if let Some(start) = self.start {
-            query.push(format!("start={}", start));
-        }
-
-        if let Some(start) = self.start {
-            query.push(format!("start={}", start));
-        }
-
         let query = if query.is_empty() {
             None
         } else {
@@ -78,11 +66,11 @@ impl GetClosedOrdersRequestBuilder {
         };
 
         self.client
-            .send_private("/0/private/ClosedOrders", query)
+            .send_private("/0/private/TradesHistory", query)
             .await
     }
 
-    pub async fn send(self) -> Result<GetClosedOrdersResponse> {
+    pub async fn send(self) -> Result<GetOpenOrdersResponse> {
         self.execute().await
     }
 }
@@ -119,14 +107,14 @@ pub struct OrderInfo {
 
 // TODO: not fully implemented yet, use JsonValue instead!
 #[derive(Debug, Deserialize)]
-pub struct GetClosedOrdersResponse {
+pub struct GetOpenOrdersResponse {
     pub closed: HashMap<String, ClosedOrderInfo>,
     pub count: i32,
 }
 
 impl Client {
-    pub fn get_closed_orders(&self) -> GetClosedOrdersRequestBuilder {
-        GetClosedOrdersRequestBuilder {
+    pub fn get_trades_history(&self) -> GetTradesHistoryRequestBuilder {
+        GetTradesHistoryRequestBuilder {
             client: self.clone(),
             trades: None,
             userref: None,
