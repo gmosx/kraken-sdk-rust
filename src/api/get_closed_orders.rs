@@ -130,6 +130,8 @@ impl Client {
             client: self.clone(),
             trades: None,
             userref: None,
+            start: None,
+            end: None,
         }
     }
 }

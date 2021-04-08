@@ -40,23 +40,11 @@ impl GetTradesHistoryRequestBuilder {
         }
     }
 
-    /// Restrict results to given user reference id
-    pub fn userref(self, userref: i32) -> Self {
-        Self {
-            userref: Some(userref),
-            ..self
-        }
-    }
-
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut query: Vec<String> = Vec::new();
 
         if let Some(true) = self.trades {
             query.push(String::from("trades=true"));
-        }
-
-        if let Some(userref) = self.userref {
-            query.push(format!("userref={}", userref));
         }
 
         let query = if query.is_empty() {
@@ -117,7 +105,8 @@ impl Client {
         GetTradesHistoryRequestBuilder {
             client: self.clone(),
             trades: None,
-            userref: None,
+            start: None,
+            end: None,
         }
     }
 }
