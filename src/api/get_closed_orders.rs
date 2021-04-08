@@ -9,6 +9,8 @@ pub struct GetClosedOrdersRequestBuilder {
     client: Client,
     trades: Option<bool>,
     userref: Option<i32>,
+    start: Option<i32>,
+    end: Option<i32>,
     // TODO:
     // start = starting unix timestamp or order tx id of results (optional.  exclusive)
     // end = ending unix timestamp or order tx id of results (optional.  inclusive)
@@ -36,6 +38,20 @@ impl GetClosedOrdersRequestBuilder {
         }
     }
 
+    pub fn start(self, start: i32) -> Self {
+        Self {
+            start: Some(start),
+            ..self
+        }
+    }
+
+    pub fn end(self, end: i32) -> Self {
+        Self {
+            end: Some(end),
+            ..self
+        }
+    }
+
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut query: Vec<String> = Vec::new();
 
@@ -45,6 +61,14 @@ impl GetClosedOrdersRequestBuilder {
 
         if let Some(userref) = self.userref {
             query.push(format!("userref={}", userref));
+        }
+
+        if let Some(start) = self.start {
+            query.push(format!("start={}", start));
+        }
+
+        if let Some(start) = self.start {
+            query.push(format!("start={}", start));
         }
 
         let query = if query.is_empty() {
@@ -58,7 +82,7 @@ impl GetClosedOrdersRequestBuilder {
             .await
     }
 
-    pub async fn send(self) -> Result<GetOpenOrdersResponse> {
+    pub async fn send(self) -> Result<GetClosedOrdersResponse> {
         self.execute().await
     }
 }
@@ -95,7 +119,7 @@ pub struct OrderInfo {
 
 // TODO: not fully implemented yet, use JsonValue instead!
 #[derive(Debug, Deserialize)]
-pub struct GetOpenOrdersResponse {
+pub struct GetClosedOrdersResponse {
     pub closed: HashMap<String, ClosedOrderInfo>,
     pub count: i32,
 }
