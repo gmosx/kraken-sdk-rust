@@ -3,6 +3,7 @@ use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
 // TODO: This endpoint is under construction. Don't use yet!
+// TODO: Rename to `get_close_orders_history`.
 
 /// - https://www.kraken.com/features/api#get-closed-orders
 /// - https://api.kraken.com/0/private/ClosedOrders
@@ -11,8 +12,9 @@ pub struct GetClosedOrdersRequestBuilder {
     client: Client,
     trades: Option<bool>,
     userref: Option<i32>,
-    start: Option<i32>,
-    end: Option<i32>,
+    start: Option<i64>,
+    end: Option<i64>,
+    offset: Option<usize>,
     // TODO:
     // start = starting unix timestamp or order tx id of results (optional.  exclusive)
     // end = ending unix timestamp or order tx id of results (optional.  inclusive)
@@ -40,16 +42,23 @@ impl GetClosedOrdersRequestBuilder {
         }
     }
 
-    pub fn start(self, start: i32) -> Self {
+    pub fn start(self, start: i64) -> Self {
         Self {
             start: Some(start),
             ..self
         }
     }
 
-    pub fn end(self, end: i32) -> Self {
+    pub fn end(self, end: i64) -> Self {
         Self {
             end: Some(end),
+            ..self
+        }
+    }
+
+    pub fn offset(self, offset: usize) -> Self {
+        Self {
+            offset: Some(offset),
             ..self
         }
     }
@@ -73,6 +82,10 @@ impl GetClosedOrdersRequestBuilder {
             query.push(format!("end={}", end));
         }
 
+        if let Some(offset) = self.offset {
+            query.push(format!("ofs={}", offset));
+        }
+
         let query = if query.is_empty() {
             None
         } else {
@@ -91,12 +104,15 @@ impl GetClosedOrdersRequestBuilder {
 
 #[derive(Debug, Deserialize)]
 pub struct ClosedOrderInfo {
+    pub userref: i32,
     pub status: String,
     pub descr: OrderInfo,
     pub oflags: String,
     pub opentm: f64,
     pub closetm: f64,
     pub expiretm: f64,
+    pub vol: String,
+    pub vol_exec: String,
     pub fee: String,
     pub misc: String,
     pub limitprice: String,
@@ -108,7 +124,7 @@ pub struct ClosedOrderInfo {
 #[derive(Debug, Deserialize)]
 pub struct GetClosedOrdersResponse {
     pub closed: HashMap<String, ClosedOrderInfo>,
-    pub count: i32,
+    pub count: usize,
 }
 
 impl Client {
@@ -119,6 +135,7 @@ impl Client {
             userref: None,
             start: None,
             end: None,
+            offset: None,
         }
     }
 }

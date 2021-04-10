@@ -21,8 +21,8 @@ use std::collections::HashMap;
 pub struct GetTradesHistoryRequestBuilder {
     client: Client,
     trades: Option<bool>,
-    start: Option<i32>,
-    end: Option<i32>,
+    start: Option<i64>,
+    end: Option<i64>,
     // TODO:
     // start = starting unix timestamp or order tx id of results (optional.  exclusive)
     // end = ending unix timestamp or order tx id of results (optional.  inclusive)
@@ -42,14 +42,14 @@ impl GetTradesHistoryRequestBuilder {
         }
     }
 
-    pub fn start(self, start: i32) -> Self {
+    pub fn start(self, start: i64) -> Self {
         Self {
             start: Some(start),
             ..self
         }
     }
 
-    pub fn end(self, end: i32) -> Self {
+    pub fn end(self, end: i64) -> Self {
         Self {
             end: Some(end),
             ..self
