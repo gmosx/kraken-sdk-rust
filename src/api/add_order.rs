@@ -52,17 +52,13 @@ impl AddOrderRequestBuilder {
     /// <n> = unix timestamp of expiration time
     pub fn starttm(self, starttm: &str) -> Self {
         Self {
-            starttm: Some(starttm.to_string()),
+            starttm: Some(urlencoding::encode(starttm)),
             ..self
         }
     }
 
     pub fn start_after(self, seconds: u32) -> Self {
-        let starttm = format!("+{}", seconds);
-        Self {
-            starttm: Some(starttm),
-            ..self
-        }
+        self.starttm(&format!("+{}", seconds))
     }
 
     // TODO:
@@ -75,17 +71,13 @@ impl AddOrderRequestBuilder {
     /// <n> = unix timestamp of expiration time
     pub fn expiretm(self, expiretm: &str) -> Self {
         Self {
-            expiretm: Some(expiretm.to_string()),
+            expiretm: Some(urlencoding::encode(expiretm)),
             ..self
         }
     }
 
     pub fn expire_after(self, seconds: u32) -> Self {
-        let expiretm = format!("+{}", seconds);
-        Self {
-            expiretm: Some(expiretm),
-            ..self
-        }
+        self.expiretm(&format!("+{}", seconds))
     }
 
     pub fn userref(self, userref: i32) -> Self {
@@ -180,6 +172,8 @@ impl AddOrderRequestBuilder {
         if let Some(true) = &self.validate {
             query.push_str("&validate=true");
         }
+
+        println!("::::: {}", query);
 
         self.client
             .send_private("/0/private/AddOrder", Some(query))
