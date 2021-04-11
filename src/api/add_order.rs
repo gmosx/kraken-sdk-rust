@@ -47,6 +47,47 @@ impl AddOrderRequestBuilder {
         }
     }
 
+    /// Start time
+    /// +<n> = expire <n> seconds from now
+    /// <n> = unix timestamp of expiration time
+    pub fn starttm(self, starttm: &str) -> Self {
+        Self {
+            starttm: Some(starttm.to_string()),
+            ..self
+        }
+    }
+
+    pub fn start_after(self, seconds: u32) -> Self {
+        let starttm = format!("+{}", seconds);
+        Self {
+            starttm: Some(starttm),
+            ..self
+        }
+    }
+
+    // TODO:
+    // Add convenience functions
+    // - `expire_after`
+    // - `expire_timestamp`
+
+    /// Expiration time
+    /// +<n> = expire <n> seconds from now
+    /// <n> = unix timestamp of expiration time
+    pub fn expiretm(self, expiretm: &str) -> Self {
+        Self {
+            expiretm: Some(expiretm.to_string()),
+            ..self
+        }
+    }
+
+    pub fn expire_after(self, seconds: u32) -> Self {
+        let expiretm = format!("+{}", seconds);
+        Self {
+            expiretm: Some(expiretm),
+            ..self
+        }
+    }
+
     pub fn userref(self, userref: i32) -> Self {
         Self {
             userref: Some(userref),
