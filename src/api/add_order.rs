@@ -40,6 +40,13 @@ pub struct AddOrderRequestBuilder {
 }
 
 impl AddOrderRequestBuilder {
+    // TODO: add typed flags builder.
+
+    /// oflags = comma delimited list of order flags:
+    /// fcib = prefer fee in base currency
+    /// fciq = prefer fee in quote currency
+    /// nompp = no market price protection
+    /// post = post only order (available when ordertype = limit)
     pub fn flags(self, flags: &str) -> Self {
         Self {
             oflags: Some(flags.to_string()),
@@ -172,8 +179,6 @@ impl AddOrderRequestBuilder {
         if let Some(true) = &self.validate {
             query.push_str("&validate=true");
         }
-
-        println!("::::: {}", query);
 
         self.client
             .send_private("/0/private/AddOrder", Some(query))
