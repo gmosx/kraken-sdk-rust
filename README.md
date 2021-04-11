@@ -6,7 +6,7 @@ A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/fe
 
 ```
 [dependencies]
-kraken_client = "0.9.0"
+kraken_client = "0.10.0"
 ```
 
 ## Usage
@@ -33,6 +33,7 @@ println!("{:?}", resp);
 let pair = "XXRPZUSD";
 let resp = client
     .add_limit_order(pair, OrderSide::Buy, "20", "0.10")
+    .expire_after(60 * 60)
     .userref(123)
     .validate_only()
     .send()
