@@ -144,7 +144,7 @@ impl Client {
                 let pathname = url;
                 let url = format!("{}{}", self.base_url, url);
 
-                let nonce = sign::compute_nonce()?.to_string();
+                let nonce = sign::compute_nonce().to_string();
 
                 let formdata = if let Some(query) = query {
                     format!("{}&nonce={}", query, nonce)

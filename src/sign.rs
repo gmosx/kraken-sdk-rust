@@ -16,10 +16,10 @@ fn sha512(input: Vec<u8>, secret: &[u8]) -> Result<Vec<u8>> {
     Ok(mac.finalize().into_bytes().to_vec())
 }
 
-pub(crate) fn compute_nonce() -> Result<u64> {
+pub(crate) fn compute_nonce() -> u64 {
     let now = SystemTime::now();
-    let since_the_epoch = now.duration_since(UNIX_EPOCH)?;
-    Ok(since_the_epoch.as_secs() * 1_000_000_000)
+    let since_the_epoch = now.duration_since(UNIX_EPOCH).unwrap();
+    since_the_epoch.as_millis() as u64
 }
 
 /// Computes the signature of the POST body
@@ -45,4 +45,20 @@ pub fn compute_signature(
     let sha512_res = sha512(to_hash, &secret)?;
 
     Ok(base64::encode(&sha512_res))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::compute_nonce;
+
+    #[test]
+    fn test_compute_nonce() {
+        let nonce1 = compute_nonce();
+
+        std::thread::sleep(std::time::Duration::from_millis(2));
+
+        let nonce2 = compute_nonce();
+
+        assert!(nonce1 < nonce2);
+    }
 }
