@@ -60,6 +60,7 @@ pub struct OpenOrderInfo {
     pub status: String,
     pub cost: String,
     pub descr: OrderInfo,
+    pub opentm: f64,
     pub oflags: String,
     pub fee: String,
     pub vol: String,

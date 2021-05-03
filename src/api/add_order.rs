@@ -54,6 +54,17 @@ impl AddOrderRequestBuilder {
         }
     }
 
+    /// A post only order prohibits a limit order to get immediately filled
+    /// 'at market' and incur (potentially increased) market-order fees.
+    pub fn post_only(self) -> Self {
+        // TODO: check that this is a limit order.
+        // TODO: don't override existing flags.
+        Self {
+            oflags: Some("post".to_string()),
+            ..self
+        }
+    }
+
     /// Start time
     /// +<n> = expire <n> seconds from now
     /// <n> = unix timestamp of expiration time
@@ -284,5 +295,24 @@ impl Client {
             close_price: None,
             close_price2: None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{Client, OrderSide};
+
+    #[test]
+    fn test_post_only() {
+        let rt = tokio::runtime::Runtime::new().unwrap();
+
+        rt.block_on(async {
+            let client = Client::default();
+
+            let builder = client
+                .add_market_order("XXBTZUSD", OrderSide::Buy, "0.1")
+                .post_only();
+            assert_eq!(builder.oflags, Some("post".to_string()));
+        });
     }
 }
