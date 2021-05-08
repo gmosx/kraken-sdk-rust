@@ -7,24 +7,13 @@ use std::collections::HashMap;
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetTickersRequestBuilder {
     client: Client,
-    pair: Option<String>,
+    /// Comma delimited list of asset pairs to get info on.
+    pair: String,
 }
 
 impl GetTickersRequestBuilder {
-    /// Comma delimited list of asset pairs to get info on.
-    pub fn pair(self, pair: &str) -> Self {
-        Self {
-            pair: Some(String::from(pair)),
-            ..self
-        }
-    }
-
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
-        let url = if let Some(pair) = &self.pair {
-            format!("/0/public/Ticker?pair={}", pair)
-        } else {
-            String::from("/0/public/Ticker")
-        };
+        let url = format!("/0/public/Ticker?pair={}", self.pair);
 
         self.client.send_public(&url).await
     }
@@ -59,10 +48,10 @@ pub struct Ticker {
 pub type GetTickersResponse = HashMap<String, Ticker>;
 
 impl Client {
-    pub fn get_tickers(&self) -> GetTickersRequestBuilder {
+    pub fn get_tickers(&self, pair: &str) -> GetTickersRequestBuilder {
         GetTickersRequestBuilder {
             client: self.clone(),
-            pair: None,
+            pair: pair.to_string(),
         }
     }
 }
@@ -78,7 +67,7 @@ mod tests {
         rt.block_on(async {
             let client = Client::default();
 
-            let resp = client.get_tickers().pair("XXBTZUSD").send().await;
+            let resp = client.get_tickers("XXBTZUSD,DOTUSD").send().await;
 
             match resp {
                 Ok(resp) => println!("{:?}", resp),
