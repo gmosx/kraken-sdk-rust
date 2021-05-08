@@ -6,7 +6,7 @@ A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/fe
 
 ```
 [dependencies]
-kraken_client = "0.12.0"
+kraken_client = "0.13.0"
 ```
 
 ## Usage
