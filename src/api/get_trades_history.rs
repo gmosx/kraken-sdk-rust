@@ -18,7 +18,7 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-trades-history
 /// - https://api.kraken.com/0/private/TradesHistory
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetTradesHistoryRequestBuilder {
+pub struct GetTradesHistoryRequest {
     client: Client,
     trades: Option<bool>,
     start: Option<i64>,
@@ -33,7 +33,7 @@ pub struct GetTradesHistoryRequestBuilder {
     //     both (default)
 }
 
-impl GetTradesHistoryRequestBuilder {
+impl GetTradesHistoryRequest {
     /// Whether or not to include trades in output (default = false)
     pub fn trades(self, trades: bool) -> Self {
         Self {
@@ -125,8 +125,8 @@ pub struct GetOpenOrdersResponse {
 }
 
 impl Client {
-    pub fn get_trades_history(&self) -> GetTradesHistoryRequestBuilder {
-        GetTradesHistoryRequestBuilder {
+    pub fn get_trades_history(&self) -> GetTradesHistoryRequest {
+        GetTradesHistoryRequest {
             client: self.clone(),
             trades: None,
             start: None,

@@ -8,7 +8,7 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-closed-orders
 /// - https://api.kraken.com/0/private/ClosedOrders
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetClosedOrdersRequestBuilder {
+pub struct GetClosedOrdersRequest {
     client: Client,
     trades: Option<bool>,
     userref: Option<i32>,
@@ -25,7 +25,7 @@ pub struct GetClosedOrdersRequestBuilder {
     //     both (default)
 }
 
-impl GetClosedOrdersRequestBuilder {
+impl GetClosedOrdersRequest {
     /// Whether or not to include trades in output (default = false)
     pub fn trades(self, trades: bool) -> Self {
         Self {
@@ -128,8 +128,8 @@ pub struct GetClosedOrdersResponse {
 }
 
 impl Client {
-    pub fn get_closed_orders(&self) -> GetClosedOrdersRequestBuilder {
-        GetClosedOrdersRequestBuilder {
+    pub fn get_closed_orders(&self) -> GetClosedOrdersRequest {
+        GetClosedOrdersRequest {
             client: self.clone(),
             trades: None,
             userref: None,

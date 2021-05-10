@@ -5,12 +5,12 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-asset-info
 /// - https://api.kraken.com/0/public/Assets
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetAssetsRequestBuilder {
+pub struct GetAssetsRequest {
     client: Client,
     asset: Option<String>,
 }
 
-impl GetAssetsRequestBuilder {
+impl GetAssetsRequest {
     /// Comma delimited list of assets to get info on.
     /// (default = all for given asset class)
     pub fn asset(self, asset: impl Into<String>) -> Self {
@@ -46,8 +46,8 @@ pub struct Asset {
 pub type GetAssetsResponse = HashMap<String, Asset>;
 
 impl Client {
-    pub fn get_assets(&self) -> GetAssetsRequestBuilder {
-        GetAssetsRequestBuilder {
+    pub fn get_assets(&self) -> GetAssetsRequest {
+        GetAssetsRequest {
             client: self.clone(),
             asset: None,
         }

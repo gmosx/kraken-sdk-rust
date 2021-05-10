@@ -5,13 +5,13 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-ticker-info
 /// - https://api.kraken.com/0/public/Ticker
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetTickersRequestBuilder {
+pub struct GetTickersRequest {
     client: Client,
     /// Comma delimited list of asset pairs to get info on.
     pair: String,
 }
 
-impl GetTickersRequestBuilder {
+impl GetTickersRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let url = format!("/0/public/Ticker?pair={}", self.pair);
 
@@ -48,8 +48,8 @@ pub struct Ticker {
 pub type GetTickersResponse = HashMap<String, Ticker>;
 
 impl Client {
-    pub fn get_tickers(&self, pair: &str) -> GetTickersRequestBuilder {
-        GetTickersRequestBuilder {
+    pub fn get_tickers(&self, pair: &str) -> GetTickersRequest {
+        GetTickersRequest {
             client: self.clone(),
             pair: pair.to_string(),
         }

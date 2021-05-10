@@ -5,13 +5,13 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-order-book
 /// - https://api.kraken.com/0/public/Depth
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetOrderBookRequestBuilder {
+pub struct GetOrderBookRequest {
     client: Client,
     pair: String,
     count: Option<i32>,
 }
 
-impl GetOrderBookRequestBuilder {
+impl GetOrderBookRequest {
     /// Maximum number of asks/bids
     pub fn count(self, count: i32) -> Self {
         Self {
@@ -48,8 +48,8 @@ pub struct OrderBook {
 pub type GetOrderBookResponse = HashMap<String, OrderBook>;
 
 impl Client {
-    pub fn get_order_book(&self, pair: &str) -> GetOrderBookRequestBuilder {
-        GetOrderBookRequestBuilder {
+    pub fn get_order_book(&self, pair: &str) -> GetOrderBookRequest {
+        GetOrderBookRequest {
             client: self.clone(),
             pair: String::from(pair),
             count: None,

@@ -4,13 +4,13 @@ use serde::{de::DeserializeOwned, Deserialize};
 /// - https://www.kraken.com/features/api#cancel-open-order
 /// - https://api.kraken.com/0/private/CancelOrder
 #[must_use = "Does nothing until you send or execute it"]
-pub struct CancelOrderRequestBuilder {
+pub struct CancelOrderRequest {
     client: Client,
     /// An order id or a 'userref' id.
     txid: String,
 }
 
-impl CancelOrderRequestBuilder {
+impl CancelOrderRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let query = format!("txid={}", self.txid);
 
@@ -31,8 +31,8 @@ pub struct CancelOrderResponse {
 }
 
 impl Client {
-    pub fn cancel_order(&self, txid: &str) -> CancelOrderRequestBuilder {
-        CancelOrderRequestBuilder {
+    pub fn cancel_order(&self, txid: &str) -> CancelOrderRequest {
+        CancelOrderRequest {
             client: self.clone(),
             txid: txid.to_string(),
         }

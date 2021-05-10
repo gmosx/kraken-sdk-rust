@@ -5,12 +5,12 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-tradable-pairs
 /// - https://api.kraken.com/0/public/AssetPairs
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetAssetPairsRequestBuilder {
+pub struct GetAssetPairsRequest {
     client: Client,
     pair: Option<String>,
 }
 
-impl GetAssetPairsRequestBuilder {
+impl GetAssetPairsRequest {
     /// Comma delimited list of asset pairs to get info on.
     pub fn pair(self, pair: impl Into<String>) -> Self {
         Self {
@@ -80,8 +80,8 @@ pub struct PairInfo {
 pub type GetAssetPairsResponse = HashMap<String, PairInfo>;
 
 impl Client {
-    pub fn get_asset_pairs(&self) -> GetAssetPairsRequestBuilder {
-        GetAssetPairsRequestBuilder {
+    pub fn get_asset_pairs(&self) -> GetAssetPairsRequest {
+        GetAssetPairsRequest {
             client: self.clone(),
             pair: None,
         }

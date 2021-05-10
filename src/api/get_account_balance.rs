@@ -5,11 +5,11 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-account-balance
 /// - https://api.kraken.com/0/private/Balance
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetAccountBalanceRequestBuilder {
+pub struct GetAccountBalanceRequest {
     client: Client,
 }
 
-impl GetAccountBalanceRequestBuilder {
+impl GetAccountBalanceRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         self.client.send_private("/0/private/Balance", None).await
     }
@@ -22,8 +22,8 @@ impl GetAccountBalanceRequestBuilder {
 pub type GetAccountBalanceResponse = HashMap<String, String>;
 
 impl Client {
-    pub fn get_account_balance(&self) -> GetAccountBalanceRequestBuilder {
-        GetAccountBalanceRequestBuilder {
+    pub fn get_account_balance(&self) -> GetAccountBalanceRequest {
+        GetAccountBalanceRequest {
             client: self.clone(),
         }
     }

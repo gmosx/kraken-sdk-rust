@@ -4,11 +4,11 @@ use serde::{de::DeserializeOwned, Deserialize};
 /// - https://www.kraken.com/features/api#get-system-status
 /// - https://api.kraken.com/0/public/SystemStatus
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetSystemStatusRequestBuilder {
+pub struct GetSystemStatusRequest {
     client: Client,
 }
 
-impl GetSystemStatusRequestBuilder {
+impl GetSystemStatusRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         self.client.send_public("/0/public/SystemStatus").await
     }
@@ -32,8 +32,8 @@ pub struct GetSystemStatusResponse {
 }
 
 impl Client {
-    pub fn get_system_status(&self) -> GetSystemStatusRequestBuilder {
-        GetSystemStatusRequestBuilder {
+    pub fn get_system_status(&self) -> GetSystemStatusRequest {
+        GetSystemStatusRequest {
             client: self.clone(),
         }
     }

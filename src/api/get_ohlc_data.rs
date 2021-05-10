@@ -17,13 +17,13 @@ pub enum Interval {
 /// - https://www.kraken.com/features/api#get-ohlc-data
 /// - https://api.kraken.com/0/public/OHLC
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetOhlcDataRequestBuilder {
+pub struct GetOhlcDataRequest {
     client: Client,
     pair: String,
     interval: Option<Interval>,
 }
 
-impl GetOhlcDataRequestBuilder {
+impl GetOhlcDataRequest {
     pub fn interval(self, interval: Interval) -> Self {
         Self {
             interval: Some(interval),
@@ -50,8 +50,8 @@ impl GetOhlcDataRequestBuilder {
 pub type GetOhlcDataResponse = JsonValue;
 
 impl Client {
-    pub fn get_ohlc_data(&self, pair: impl Into<String>) -> GetOhlcDataRequestBuilder {
-        GetOhlcDataRequestBuilder {
+    pub fn get_ohlc_data(&self, pair: impl Into<String>) -> GetOhlcDataRequest {
+        GetOhlcDataRequest {
             client: self.clone(),
             pair: pair.into(),
             interval: None,

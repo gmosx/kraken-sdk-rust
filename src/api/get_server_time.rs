@@ -4,11 +4,11 @@ use serde::{de::DeserializeOwned, Deserialize};
 /// - https://www.kraken.com/features/api#get-server-time
 /// - https://api.kraken.com/0/public/Time
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetServerTimeRequestBuilder {
+pub struct GetServerTimeRequest {
     client: Client,
 }
 
-impl GetServerTimeRequestBuilder {
+impl GetServerTimeRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         self.client.send_public("/0/public/Time").await
     }
@@ -25,8 +25,8 @@ pub struct GetServerTimeResponse {
 }
 
 impl Client {
-    pub fn get_server_time(&self) -> GetServerTimeRequestBuilder {
-        GetServerTimeRequestBuilder {
+    pub fn get_server_time(&self) -> GetServerTimeRequest {
+        GetServerTimeRequest {
             client: self.clone(),
         }
     }

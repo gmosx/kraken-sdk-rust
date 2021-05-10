@@ -8,7 +8,7 @@ use serde::{de::DeserializeOwned, Deserialize};
 /// - https://api.kraken.com/0/private/AddOrder
 /// - https://support.kraken.com/hc/en-us/articles/205893708-Minimum-order-size-volume-for-trading
 #[must_use = "Does nothing until you send or execute it"]
-pub struct AddOrderRequestBuilder {
+pub struct AddOrderRequest {
     client: Client,
     pair: String,
     order_side: OrderSide,
@@ -39,7 +39,7 @@ pub struct AddOrderRequestBuilder {
     close_price2: Option<String>,
 }
 
-impl AddOrderRequestBuilder {
+impl AddOrderRequest {
     // TODO: add typed flags builder.
 
     /// oflags = comma delimited list of order flags:
@@ -223,8 +223,8 @@ impl Client {
         order_side: OrderSide,
         order_type: OrderType,
         volume: &str,
-    ) -> AddOrderRequestBuilder {
-        AddOrderRequestBuilder {
+    ) -> AddOrderRequest {
+        AddOrderRequest {
             client: self.clone(),
             pair: pair.to_string(),
             order_side,
@@ -249,8 +249,8 @@ impl Client {
         pair: &str,
         order_side: OrderSide,
         volume: &str,
-    ) -> AddOrderRequestBuilder {
-        AddOrderRequestBuilder {
+    ) -> AddOrderRequest {
+        AddOrderRequest {
             client: self.clone(),
             pair: pair.to_string(),
             order_side,
@@ -276,8 +276,8 @@ impl Client {
         order_side: OrderSide,
         volume: &str,
         price: &str,
-    ) -> AddOrderRequestBuilder {
-        AddOrderRequestBuilder {
+    ) -> AddOrderRequest {
+        AddOrderRequest {
             client: self.clone(),
             pair: pair.to_string(),
             order_side,

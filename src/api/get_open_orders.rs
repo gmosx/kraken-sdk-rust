@@ -5,13 +5,13 @@ use std::collections::HashMap;
 /// - https://www.kraken.com/features/api#get-open-orders
 /// - https://api.kraken.com/0/private/OpenOrders
 #[must_use = "Does nothing until you send or execute it"]
-pub struct GetOpenOrdersRequestBuilder {
+pub struct GetOpenOrdersRequest {
     client: Client,
     trades: Option<bool>,
     userref: Option<i32>,
 }
 
-impl GetOpenOrdersRequestBuilder {
+impl GetOpenOrdersRequest {
     /// Whether or not to include trades in output (default = false)
     pub fn trades(self, trades: bool) -> Self {
         Self {
@@ -74,8 +74,8 @@ pub struct GetOpenOrdersResponse {
 }
 
 impl Client {
-    pub fn get_open_orders(&self) -> GetOpenOrdersRequestBuilder {
-        GetOpenOrdersRequestBuilder {
+    pub fn get_open_orders(&self) -> GetOpenOrdersRequest {
+        GetOpenOrdersRequest {
             client: self.clone(),
             trades: None,
             userref: None,

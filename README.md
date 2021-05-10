@@ -6,7 +6,7 @@ A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/fe
 
 ```
 [dependencies]
-kraken_client = "0.13.0"
+kraken_client = "0.13.1"
 ```
 
 ## Usage
@@ -21,12 +21,9 @@ let resp = client.get_server_time().send().await?;
 
 println!("{}", resp.unixtime);
 
-let pair = PairName::from("XBT", "USD");
-let resp = client
-    .get_ohlc_data(&pair)
-    .interval(Interval::Day1)
-    .send()
-    .await;
+let pair = PairName::from("BTC", "USD");
+let req = client.get_ohlc_data(&pair).interval(Interval::Day1);
+let resp = req.send().await;
 
 println!("{:?}", resp);
 
