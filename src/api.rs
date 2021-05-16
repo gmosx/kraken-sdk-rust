@@ -28,6 +28,9 @@ pub use get_order_book::*;
 pub mod get_account_balance;
 pub use get_account_balance::*;
 
+pub mod get_trade_balance;
+pub use get_trade_balance::*;
+
 pub mod get_open_orders;
 pub use get_open_orders::*;
 
