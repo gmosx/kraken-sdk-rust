@@ -1,5 +1,29 @@
 use std::fmt::Display;
 
+pub fn has_custom_code(name: &str) -> bool {
+    matches!(
+        name,
+        "BTC"
+            | "XBT"
+            | "XRP"
+            | "XLM"
+            | "LTC"
+            | "XDG"
+            | "ETH"
+            | "ETC"
+            | "REP"
+            | "ZEC"
+            | "XMR"
+            | "MLN"
+            | "USD"
+            | "EUR"
+            | "GBP"
+            | "CAD"
+            | "AUD"
+            | "JPY"
+    )
+}
+
 pub fn asset_name_to_code(name: &str) -> String {
     let code = match name {
         "BTC" | "XBT" => "XXBT",
@@ -83,6 +107,9 @@ mod tests {
 
         let asset = AssetName::from("ETH");
         assert_eq!(asset.to_string(), "XETH");
+
+        let asset: AssetName = "USD".into();
+        assert_eq!(asset.to_string(), "ZUSD");
 
         let asset: AssetName = "USD".into();
         assert_eq!(asset.to_string(), "ZUSD");
