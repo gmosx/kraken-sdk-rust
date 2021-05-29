@@ -2,6 +2,8 @@
 
 A Rust SDK for working with [Kraken](https://kraken.com) APIs.
 
+This project is an *unofficial*, community-driven effort.
+
 ## Components
 
 The SDK contains the following components:
@@ -22,9 +24,9 @@ For questions, suggestions, etc, you can reach the maintainer on [Twitter](https
 
 ## License
 
-The software is distributed under the terms of both the MIT license and the Apache License (Version 2.0). See [LICENSE-APACHE](LICENSE-APACHE) and [LICENSE-MIT](LICENSE-MIT) for details.
+Each component of the Kraken SDK is individually licensed. Please check the corresponding directories for more details.
 
-Unless you explicitly state otherwise, any contribution intentionally submitted for inclusion in this crate by you, as defined in the Apache-2.0 license, shall be dual licensed as above, without any additional terms or conditions.
+- kraken_client: [LICENSE-MIT](kraken_client/LICENSE-MIT), [LICENSE-APACHE](kraken_client/LICENSE-APACHE)
 
 ## Disclaimer
 
