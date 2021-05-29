@@ -1,12 +1,47 @@
-# Kraken SDK
+# Kraken REST API Client
 
-A Rust SDK for working with [Kraken](https://kraken.com) APIs.
+A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/features/api).
 
-## Components
+## Installation
 
-The SDK contains the following components:
+```
+[dependencies]
+kraken_client = "0.14"
+```
 
-- [kraken_client](kraken_client/README.md)
+## Usage
+
+```rust
+let client = Client::new(
+    "YOUR-API-KEY",
+    "YOUR_API-SECRET",
+);
+
+let resp = client.get_server_time().send().await?;
+
+println!("{}", resp.unixtime);
+
+let pair = PairName::from("BTC", "USD");
+let req = client.get_ohlc_data(&pair).interval(Interval::Day1);
+let resp = req.send().await;
+
+println!("{:?}", resp);
+
+let pair = "XXRPZUSD";
+let resp = client
+    .add_limit_order(pair, OrderSide::Buy, "20", "0.10")
+    .expire_after(60 * 60)
+    .userref(123)
+    .validate_only()
+    .send()
+    .await?;
+
+println!("{:?}", resp);
+
+let resp = client.cancel_order("O6CIT1-NABRS-TMVZ1X").send().await?;
+
+println!("{}", resp.count);
+```
 
 ## Status
 

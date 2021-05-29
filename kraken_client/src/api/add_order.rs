@@ -65,6 +65,15 @@ impl AddOrderRequest {
         }
     }
 
+    /// Conditionally set `post_only`
+    pub fn post(self, post: bool) -> Self {
+        if post {
+            self.post_only()
+        } else {
+            self
+        }
+    }
+
     /// Start time
     /// +<n> = expire <n> seconds from now
     /// <n> = unix timestamp of expiration time
