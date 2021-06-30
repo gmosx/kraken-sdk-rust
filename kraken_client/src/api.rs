@@ -56,4 +56,7 @@ pub use stake_asset::*;
 pub mod unstake_asset;
 pub use unstake_asset::*;
 
+pub mod get_stakeable_assets;
+pub use get_stakeable_assets::*;
+
 // endregion: private
