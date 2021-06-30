@@ -40,10 +40,20 @@ pub use get_closed_orders::*;
 pub mod get_trades_history;
 pub use get_trades_history::*;
 
+// User Trading
+
 pub mod add_order;
 pub use add_order::*;
 
 pub mod cancel_order;
 pub use cancel_order::*;
+
+// User Staking
+
+pub mod stake_asset;
+pub use stake_asset::*;
+
+pub mod unstake_asset;
+pub use unstake_asset::*;
 
 // endregion: private
