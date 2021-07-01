@@ -11,7 +11,7 @@ pub struct StakeAssetRequest {
     /// Amount of the asset to stake.
     amount: String,
     /// Name of the staking option to use (refer to the Staking Assets endpoint for the correct method names for each asset)
-    method: String,
+    method: String, // TODO: make method optional and try to autofill it!
 }
 
 impl StakeAssetRequest {
@@ -33,8 +33,7 @@ impl StakeAssetRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct StakeAssetResponse {
-    count: i32,
-    pending: Option<bool>,
+    refid: String,
 }
 
 impl Client {

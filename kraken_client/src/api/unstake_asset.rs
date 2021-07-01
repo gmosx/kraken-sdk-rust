@@ -28,8 +28,7 @@ impl UnstakeAssetRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct UnstakeAssetResponse {
-    count: i32,
-    pending: Option<bool>,
+    refid: String,
 }
 
 impl Client {
