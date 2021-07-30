@@ -32,10 +32,10 @@ pub struct UnstakeAssetResponse {
 }
 
 impl Client {
-    pub fn unstake_asset(&self, asset: &str, amount: &str) -> UnstakeAssetRequest {
+    pub fn unstake_asset(&self, asset: impl Into<String>, amount: &str) -> UnstakeAssetRequest {
         UnstakeAssetRequest {
             client: self.clone(),
-            asset: asset.to_string(),
+            asset: asset.into(),
             amount: amount.to_string(),
         }
     }

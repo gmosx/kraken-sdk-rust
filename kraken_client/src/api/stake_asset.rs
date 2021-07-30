@@ -37,10 +37,15 @@ pub struct StakeAssetResponse {
 }
 
 impl Client {
-    pub fn stake_asset(&self, asset: &str, amount: &str, method: &str) -> StakeAssetRequest {
+    pub fn stake_asset(
+        &self,
+        asset: impl Into<String>,
+        amount: &str,
+        method: &str,
+    ) -> StakeAssetRequest {
         StakeAssetRequest {
             client: self.clone(),
-            asset: asset.to_string(),
+            asset: asset.into(),
             amount: amount.to_string(),
             method: method.to_string(),
         }
