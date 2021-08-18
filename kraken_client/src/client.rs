@@ -13,7 +13,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 const DEFAULT_BASE_URL: &str = "https://api.kraken.com";
 
-const DEFAULT_USER_AGENT: &str = "rust-kraken-client/0.7.1";
+const DEFAULT_USER_AGENT: &str = "rust-kraken-client/0.15";
 
 #[derive(Default)]
 pub struct ClientBuilder {
@@ -71,7 +71,7 @@ impl ClientBuilder {
     }
 }
 
-#[derive(Clone)]
+#[derive(Debug, Clone)]
 pub struct Client {
     base_url: String,
     /// You must supply a user agent string while creating a request header else you
