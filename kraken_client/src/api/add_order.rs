@@ -40,6 +40,13 @@ pub struct AddOrderRequest {
 }
 
 impl AddOrderRequest {
+    pub fn price(self, price: &str) -> Self {
+        Self {
+            price: Some(price.into()),
+            ..self
+        }
+    }
+
     // TODO: add typed flags builder.
 
     /// oflags = comma delimited list of order flags:
