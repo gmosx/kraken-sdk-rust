@@ -110,7 +110,7 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --all-targets --target=${{ matrix.target }} --features static_ssl
+          args: --release --all-targets --target=${{ matrix.target }}
 
   release-please:
     needs: [lints, test, security_audit, doc, cargo-deny]
