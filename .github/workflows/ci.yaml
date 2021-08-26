@@ -1,0 +1,122 @@
+name: CI
+
+on: [push]
+
+jobs:
+  lints:
+    runs-on: ubuntu-latest
+    name: Lints
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install nightly toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+            profile: minimal
+            toolchain: nightly
+            components: rustfmt, clippy
+            override: true
+      
+      - name: Run cargo fmt
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
+
+      - name: Run cargo clippy
+        uses: actions-rs/clippy-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --all-targets --all-features -- -D warnings
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          override: true
+      - uses: Swatinem/rust-cache@v1.3.0
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --release
+      - uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --release --all-features
+
+  security_audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/audit-check@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  doc:
+    name: Build docs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+
+      - name: Install toolchain
+        id: tc
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          override: true
+
+      - uses: Swatinem/rust-cache@v1.3.0
+
+      - name: Build docs
+        env:
+          RUSTDOCFLAGS: -D broken_intra_doc_links
+        run: cargo doc --no-deps
+
+  cargo-deny:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: EmbarkStudios/cargo-deny-action@v1
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - armv7-unknown-linux-gnueabihf
+          - aarch64-unknown-linux-gnu
+          - x86_64-unknown-linux-gnu
+          - x86_64-pc-windows-gnu
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v2
+      - name: Install toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          override: true
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: true
+          command: build
+          args: --release --all-targets --target=${{ matrix.target }} --features static_ssl
+
+  release-please:
+    needs: [lints, test, security_audit, doc, cargo-deny]
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: GoogleCloudPlatform/release-please-action@v2
+        with:
+          release-type: rust
