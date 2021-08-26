@@ -113,7 +113,7 @@ jobs:
           args: --release --all-targets --target=${{ matrix.target }} --features static_ssl
 
   release-please:
-    needs: [lints, test, security_audit, doc, cargo-deny]
+    needs: [lints, test, security_audit, doc, cargo-deny, build]
     if: ${{ github.ref == 'refs/heads/main' }}
     runs-on: ubuntu-latest
     steps:
