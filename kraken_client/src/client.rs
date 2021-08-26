@@ -159,7 +159,7 @@ impl Client {
                     .header("API-Key", api_key)
                     .header(
                         "API-Sign",
-                        sign::compute_signature(api_secret, &pathname, &nonce, &formdata)?,
+                        sign::compute_signature(api_secret, pathname, &nonce, &formdata)?,
                     )
                     .body(formdata.into_bytes())
                     .send()

@@ -69,15 +69,15 @@ impl AssetName {
     }
 }
 
-impl Into<AssetName> for &str {
-    fn into(self) -> AssetName {
-        AssetName::from(self)
+impl From<&str> for AssetName {
+    fn from(val: &str) -> Self {
+        AssetName::from(val)
     }
 }
 
-impl Into<AssetName> for String {
-    fn into(self) -> AssetName {
-        AssetName::from(&self)
+impl From<String> for AssetName {
+    fn from(val: String) -> Self {
+        AssetName::from(&val)
     }
 }
 

@@ -122,8 +122,8 @@ impl AddOrderRequest {
     ) -> Self {
         Self {
             close_order_type: Some(close_order_type),
-            close_price: close_price,
-            close_price2: close_price2,
+            close_price,
+            close_price2,
             ..self
         }
     }
