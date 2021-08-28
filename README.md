@@ -8,7 +8,7 @@ This project is an *unofficial*, community-driven effort.
 
 The SDK contains the following components:
 
-- [kraken_client](kraken_client/README.md)
+- [kraken_sdk_rest](kraken_sdk_rest/README.md)
 
 ## Status
 
@@ -26,7 +26,7 @@ For questions, suggestions, etc, you can reach the maintainer on [Twitter](https
 
 Each component of the Kraken SDK is individually licensed. Please check the corresponding directories for more details.
 
-- kraken_client: [LICENSE-MIT](kraken_client/LICENSE-MIT), [LICENSE-APACHE](kraken_client/LICENSE-APACHE)
+- kraken_sdk_rest: [LICENSE-MIT](kraken_sdk_rest/LICENSE-MIT), [LICENSE-APACHE](kraken_sdk_rest/LICENSE-APACHE)
 
 ## Disclaimer
 

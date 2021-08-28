@@ -6,7 +6,7 @@ A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/fe
 
 ```toml
 [dependencies]
-kraken_client = "0.15"
+kraken_sdk_rest = "0.16"
 ```
 
 ## Usage
