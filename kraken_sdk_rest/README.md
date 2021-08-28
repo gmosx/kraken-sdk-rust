@@ -43,6 +43,12 @@ let resp = client.cancel_order("O6CIT1-NABRS-TMVZ1X").send().await?;
 println!("{}", resp.count);
 ```
 
+## FAQ
+
+### Why provide both execute and send methods for api endpoints?
+
+Providing the lower-level `execute` method allows for more flexibility. Since `execute` is generic you can pass any type of object to deserialize the response to, e.g. you could deserialize to a `HashMap` instead of the 'default' response for each API call. Or you could use a custom struct with only the fields you are interested in.
+
 ## Status
 
 The software is under active development and the API is expected to change.
