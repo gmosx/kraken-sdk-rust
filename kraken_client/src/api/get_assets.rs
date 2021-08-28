@@ -2,7 +2,7 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-asset-info
+/// - https://docs.kraken.com/rest/#operation/getAssetInfo
 /// - https://api.kraken.com/0/public/Assets
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetAssetsRequest {
@@ -39,8 +39,8 @@ impl GetAssetsRequest {
 pub struct Asset {
     pub altname: String,
     pub aclass: String,
-    pub decimals: i32,
-    pub display_decimals: i32,
+    pub decimals: u32,
+    pub display_decimals: u32,
 }
 
 pub type GetAssetsResponse = HashMap<String, Asset>;
