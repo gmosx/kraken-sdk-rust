@@ -2,9 +2,18 @@
 
 A strongly-typed Rust SDK for the [Kraken WebSocket API](https://docs.kraken.com/websockets/).
 
+This crate is an *unofficial*, community-driven effort.
+
+## Installation
+
+```toml
+[dependencies]
+kraken_sdk_ws = "0.1"
+```
+
 ## Status
 
-**WARNING**: This crate is under construction.
+**WARNING**: This crate is under construction!
 
 ## License
 

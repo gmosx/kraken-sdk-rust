@@ -2,6 +2,8 @@
 
 A strongly-typed Rust SDK for the [Kraken REST API](https://docs.kraken.com/rest/).
 
+This crate is an *unofficial*, community-driven effort.
+
 ## Installation
 
 ```toml
