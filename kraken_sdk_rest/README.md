@@ -1,6 +1,6 @@
-# Kraken REST API Client
+# Kraken SDK component for the Kraken REST API
 
-A strongly-typed Rust client for the [Kraken REST API](https://www.kraken.com/features/api).
+A strongly-typed Rust SDK for the [Kraken REST API](https://docs.kraken.com/rest/).
 
 ## Installation
 
@@ -12,6 +12,8 @@ kraken_sdk_rest = "0.16"
 ## Usage
 
 ```rust
+use kraken_sdk_rest::{Client, PairName, OrderSide};
+
 let client = Client::new(
     "YOUR-API-KEY",
     "YOUR_API-SECRET",
