@@ -4,7 +4,7 @@ description = "A strongly-typed SDK for the Kraken REST API"
 version = "0.16.2"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/gmosx/rust_kraken_sdk/tree/main/kraken_sdk_rest"
-keywords = ["kraken", "sdk", "api", "client", "rest", "trading"]
+keywords = ["kraken", "api", "client", "rest", "trading"]
 authors = ["George Moschovitis <gmosx@reizu.com>"]
 edition = "2018"
 

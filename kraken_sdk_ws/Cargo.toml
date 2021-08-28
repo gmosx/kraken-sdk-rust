@@ -4,7 +4,7 @@ description = "A strongly-typed SDK for the Kraken WebSocket API"
 version = "0.1.0"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/gmosx/rust_kraken_sdk/tree/main/kraken_sdk_ws"
-keywords = ["kraken", "sdk", "api", "client", "websocket", "trading"]
+keywords = ["kraken", "api", "client", "websocket", "trading"]
 authors = ["George Moschovitis <gmosx@reizu.com>"]
 edition = "2018"
 
