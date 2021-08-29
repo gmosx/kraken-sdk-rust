@@ -1,6 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
+// TODO: consider renaming to `get_staking_assets`.
+
 /// - https://docs.kraken.com/rest/#operation/getStakingAssetInfo
 /// - https://api.kraken.com/0/private/Staking/Assets
 #[must_use = "Does nothing until you send or execute it"]
@@ -21,11 +23,19 @@ impl GetStakeableAssetsRequest {
 }
 
 #[derive(Debug, Deserialize)]
+pub struct MinimumAmount {
+    pub unstaking: String,
+    pub staking: String,
+}
+
+#[derive(Debug, Deserialize)]
 pub struct StakeableAsset {
     pub asset: String,
     pub staking_asset: String,
     pub method: Option<String>,
-    pub on_change: Option<bool>,
+    pub on_chain: Option<bool>,
+    pub minimum_amount: Option<MinimumAmount>,
+    pub enabled_for_user: Option<bool>,
     // TODO...
 }
 

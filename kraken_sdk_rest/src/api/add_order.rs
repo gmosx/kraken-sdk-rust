@@ -325,10 +325,12 @@ mod tests {
         rt.block_on(async {
             let client = Client::default();
 
-            let builder = client
+            let req = client
                 .add_market_order("XXBTZUSD", OrderSide::Buy, "0.1")
+                .validate_only()
                 .post_only();
-            assert_eq!(builder.oflags, Some("post".to_string()));
+
+            assert_eq!(req.oflags, Some("post".to_string()));
         });
     }
 }
