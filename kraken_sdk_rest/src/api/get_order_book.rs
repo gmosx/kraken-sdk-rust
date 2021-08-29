@@ -2,18 +2,19 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-order-book
+/// - https://docs.kraken.com/rest/#operation/getOrderBook
 /// - https://api.kraken.com/0/public/Depth
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOrderBookRequest {
     client: Client,
     pair: String,
-    count: Option<i32>,
+    /// Maximum number of asks/bids [1..500], default = 100
+    count: Option<u32>,
 }
 
 impl GetOrderBookRequest {
     /// Maximum number of asks/bids
-    pub fn count(self, count: i32) -> Self {
+    pub fn count(self, count: u32) -> Self {
         Self {
             count: Some(count),
             ..self
@@ -35,7 +36,7 @@ impl GetOrderBookRequest {
     }
 }
 #[derive(Debug, Deserialize)]
-pub struct OrderBookTier(String, String, i32);
+pub struct OrderBookTier(pub String, pub String, pub i32);
 
 #[derive(Debug, Deserialize)]
 pub struct OrderBook {

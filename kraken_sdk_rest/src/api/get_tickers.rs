@@ -2,7 +2,7 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-ticker-info
+/// - https://docs.kraken.com/rest/#operation/getTickerInformation
 /// - https://api.kraken.com/0/public/Ticker
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetTickersRequest {
