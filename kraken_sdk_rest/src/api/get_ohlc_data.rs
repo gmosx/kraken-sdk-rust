@@ -1,5 +1,7 @@
-use crate::{Client, JsonValue, Result};
-use serde::de::DeserializeOwned;
+use std::collections::HashMap;
+
+use crate::{error::Error, Client, JsonValue, Result};
+use serde::{de::DeserializeOwned, Deserialize};
 
 /// Time frame interval.
 pub enum Interval {
@@ -14,7 +16,7 @@ pub enum Interval {
     Day15 = 21_600,
 }
 
-/// - https://www.kraken.com/features/api#get-ohlc-data
+/// - https://docs.kraken.com/rest/#operation/getOHLCData
 /// - https://api.kraken.com/0/public/OHLC
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOhlcDataRequest {
@@ -42,12 +44,38 @@ impl GetOhlcDataRequest {
     }
 
     pub async fn send(self) -> Result<GetOhlcDataResponse> {
-        self.execute().await
+        // TODO: how tro avoid this?
+        let pair = self.pair.clone();
+
+        let resp = self.execute::<GetOhlcDataRawResponse>().await?;
+
+        if let Some(value) = resp.get(&pair) {
+            if let Ok(ohlc_data) = serde_json::from_value(value.clone()) {
+                Ok(ohlc_data)
+            } else {
+                Err(Error::internal("cannot deserialize OHLC data"))
+            }
+        } else {
+            Err(Error::internal("no OHLC data"))
+        }
     }
 }
 
-// TODO: temp solution.
-pub type GetOhlcDataResponse = JsonValue;
+// TODO: better name?
+#[derive(Debug, Deserialize)]
+pub struct OHLC(
+    pub i64,
+    pub String,
+    pub String,
+    pub String,
+    pub String,
+    pub String,
+    pub String,
+    pub u64,
+);
+
+pub type GetOhlcDataRawResponse = HashMap<String, JsonValue>;
+pub type GetOhlcDataResponse = Vec<OHLC>;
 
 impl Client {
     pub fn get_ohlc_data(&self, pair: impl Into<String>) -> GetOhlcDataRequest {
@@ -77,10 +105,12 @@ mod tests {
                 .send()
                 .await;
 
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
+            // dbg!(&resp);
+
+            // match resp {
+            //     Ok(resp) => println!("{:?}", resp),
+            //     Err(error) => eprintln!("{:?}", error),
+            // }
         });
     }
 }
