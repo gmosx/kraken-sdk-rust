@@ -13,7 +13,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 const DEFAULT_BASE_URL: &str = "https://api.kraken.com";
 
-const DEFAULT_USER_AGENT: &str = "rust-kraken-client/0.15";
+const DEFAULT_USER_AGENT: &str = "rust-kraken-client/0.16";
 
 #[derive(Default)]
 pub struct ClientBuilder {

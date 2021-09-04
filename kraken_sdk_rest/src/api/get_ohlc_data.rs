@@ -99,18 +99,17 @@ mod tests {
             let client = Client::default();
 
             let pair = PairName::from("XBT", "USD");
-            let resp = client
+            let ohlc_bars = client
                 .get_ohlc_data(&pair)
                 .interval(Interval::Day1)
                 .send()
                 .await;
 
-            // dbg!(&resp);
+            // dbg!(&ohlc_bars);
 
-            // match resp {
-            //     Ok(resp) => println!("{:?}", resp),
-            //     Err(error) => eprintln!("{:?}", error),
-            // }
+            if let Ok(ohlc_bars) = ohlc_bars {
+                assert!(!ohlc_bars.is_empty());
+            }
         });
     }
 }

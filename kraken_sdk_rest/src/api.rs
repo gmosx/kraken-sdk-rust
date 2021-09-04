@@ -59,4 +59,9 @@ pub use unstake_asset::*;
 pub mod get_stakeable_assets;
 pub use get_stakeable_assets::*;
 
+// WebSockets Authentication
+
+pub mod get_web_sockets_token;
+pub use get_web_sockets_token::*;
+
 // endregion: private
