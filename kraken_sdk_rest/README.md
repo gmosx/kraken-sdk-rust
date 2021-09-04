@@ -1,4 +1,4 @@
-# Kraken SDK component for the Kraken REST API
+# Kraken REST API
 
 A strongly-typed Rust SDK for the [Kraken REST API](https://docs.kraken.com/rest/).
 
