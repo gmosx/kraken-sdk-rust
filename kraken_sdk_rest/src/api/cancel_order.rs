@@ -1,7 +1,7 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://www.kraken.com/features/api#cancel-open-order
+/// - https://docs.kraken.com/rest/#operation/cancelOrder
 /// - https://api.kraken.com/0/private/CancelOrder
 #[must_use = "Does nothing until you send or execute it"]
 pub struct CancelOrderRequest {

@@ -51,13 +51,14 @@ pub struct OrderInfo {
     pub pair: String,
     // pub time: f64,
     #[serde(rename(deserialize = "type"))]
-    pub marketside: String,
+    pub orderside: String,
     pub ordertype: String,
     pub price: String,
     pub price2: String,
     pub leverage: String,
     pub order: String,
     pub close: String,
+    // TODO: the following fields are missing in some orders:
     // pub cost: String,
     // pub fee: String,
     // pub vol: String,
