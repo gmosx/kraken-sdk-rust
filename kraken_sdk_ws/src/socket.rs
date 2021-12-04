@@ -8,7 +8,7 @@ pub const WS_AUTH_URL: &str = "wss://ws-auth.kraken.com";
 pub const BETA_WS_URL: &str = "wss://beta-ws.kraken.com";
 pub const BETA_WS_AUTH_URL: &str = "wss://beta-ws-auth.kraken.com";
 
-// TODO: add support for handling getting the token!
+// TODO: add support for getting the auth token!
 
 #[derive(Debug)]
 pub struct Socket {
