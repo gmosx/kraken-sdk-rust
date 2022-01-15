@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-
 use crate::{error::Error, Client, JsonValue, Result};
 use serde::{de::DeserializeOwned, Deserialize};
+use std::collections::HashMap;
 
 /// Time frame interval.
 pub enum Interval {
@@ -62,15 +61,23 @@ impl GetOhlcDataRequest {
 }
 
 // TODO: better name?
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct OHLC(
+    /// time (0)
     pub i64,
+    /// open (1)
     pub String,
+    /// high (2)
     pub String,
+    /// low (3)
     pub String,
+    /// close (4)
     pub String,
+    /// vwap (5)
     pub String,
+    /// volume (6)
     pub String,
+    /// count (7)
     pub u64,
 );
 

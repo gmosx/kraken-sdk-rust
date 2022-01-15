@@ -1,2 +1,3 @@
-pub struct SubscriptionMessage {
-}
+// TODO: enum
+
+pub struct SubscriptionMessage {}
