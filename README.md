@@ -10,6 +10,10 @@ The SDK contains the following components:
 
 - [kraken_sdk_rest](kraken_sdk_rest/README.md)
 
+## Links
+
+- [Github Repository](https://github.com/gmosx/kraken_sdk_rust)
+
 ## Status
 
 The software is under active development and the API is expected to change.

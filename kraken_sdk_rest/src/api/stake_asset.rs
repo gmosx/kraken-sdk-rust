@@ -33,7 +33,7 @@ impl StakeAssetRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct StakeAssetResponse {
-    refid: String,
+    pub refid: String,
 }
 
 impl Client {

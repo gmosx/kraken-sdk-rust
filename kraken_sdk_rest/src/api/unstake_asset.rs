@@ -28,7 +28,7 @@ impl UnstakeAssetRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct UnstakeAssetResponse {
-    refid: String,
+    pub refid: String,
 }
 
 impl Client {
