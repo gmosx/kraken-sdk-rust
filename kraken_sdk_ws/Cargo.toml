@@ -1,6 +1,6 @@
 [package]
 name = "kraken_sdk_ws"
-description = "A strongly-typed SDK for the Kraken WebSocket API"
+description = "A strongly-typed client for the Kraken WebSocket API"
 version = "0.1.2"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_sdk_ws"
@@ -11,11 +11,10 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "*"
 log = "0.4"
 futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
 futures-channel = "0.3"
-tokio = { version = "*", features = ["full"] }
+tokio = { version = "1", features = ["full"] }
 url = "2"
 env_logger = "0.7"
 tokio-tungstenite = { version = "0.16", features = [ "native-tls" ] }
