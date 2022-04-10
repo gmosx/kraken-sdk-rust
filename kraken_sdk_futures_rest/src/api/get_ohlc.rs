@@ -67,8 +67,10 @@ pub struct GetOhlcRequest {
     symbol: String,
     interval: Interval,
     price_type: PriceType,
-    /// 
+    /// Unix timestamp in seconds. Returns up to 5000 candles from the specified
+    /// value. Returns most recent candle if not included
     from: Option<i64>,
+    /// Unix timestamp in seconds. Requires `from` argument.
     to: Option<i64>,
 }
 
@@ -89,7 +91,7 @@ impl GetOhlcRequest {
 
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut url = format!(
-            "/charts/v1/{}/{}/{}",
+            "/api/charts/v1/{}/{}/{}",
             self.price_type, self.symbol, self.interval
         );
 

@@ -5,9 +5,9 @@ use serde::de::DeserializeOwned;
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-const DEFAULT_BASE_URL: &str = "https://futures.kraken.com/api";
+const DEFAULT_BASE_URL: &str = "https://futures.kraken.com";
 
-const DEFAULT_USER_AGENT: &str = "rust-kraken-futures-client/0.1";
+const DEFAULT_USER_AGENT: &str = "rust-kraken-futures-client/0.2";
 
 #[derive(Default)]
 pub struct ClientBuilder {
