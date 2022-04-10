@@ -2,5 +2,7 @@
 
 members = [
     "kraken_sdk_rest",
-    "kraken_sdk_ws"
+    "kraken_sdk_ws",
+    "kraken_sdk_futures_rest",
+    "kraken_sdk_futures_ws"
 ]

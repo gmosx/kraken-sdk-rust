@@ -10,7 +10,7 @@ pub struct Client {
 // TODO: run concurrently in standalone thread.
 
 fn name_from_subscription(name: SubscriptionName) -> String {
-    match (name) {
+    match name {
         SubscriptionName::Book => "book",
         SubscriptionName::Ohlc => "ohlc",
         SubscriptionName::OpenOrders => "openOrders",
