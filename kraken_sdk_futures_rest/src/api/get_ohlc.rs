@@ -67,8 +67,9 @@ pub struct GetOhlcRequest {
     symbol: String,
     interval: Interval,
     price_type: PriceType,
-    from: Option<i64>, // TODO: correct type
-    to: Option<i64>,   // TODO: correct type
+    /// 
+    from: Option<i64>,
+    to: Option<i64>,
 }
 
 impl GetOhlcRequest {
@@ -91,8 +92,6 @@ impl GetOhlcRequest {
             "/charts/v1/{}/{}/{}",
             self.price_type, self.symbol, self.interval
         );
-
-        // TODO: if has `to` check that `from` exists.
 
         if let Some(from) = self.from {
             url.push_str(&format!("?from={}", from));
@@ -117,7 +116,7 @@ pub struct Candle {
     pub high: String,
     pub low: String,
     pub close: String,
-    pub volume: u64, // TODO: correct type?
+    pub volume: u64,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -126,8 +125,6 @@ pub struct GetOhlcResponse {
 }
 
 impl Client {
-    // TODO: introduce custom versions for all price_types.
-
     pub fn get_ohlc(
         &self,
         symbol: impl Into<String>,
@@ -157,8 +154,12 @@ mod tests {
         rt.block_on(async {
             let client = Client::default();
 
+            let from = chrono::Local::now();
+            let from = from - chrono::Duration::hours(1);
+
             let res = client
                 .get_ohlc("PI_XBTUSD", Interval::Min1, PriceType::Mark)
+                .from(from.timestamp())
                 .send()
                 .await;
 
