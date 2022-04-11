@@ -96,20 +96,8 @@ impl Client {
     where
         Resp: DeserializeOwned,
     {
-        // let resp: ResponseWrapper<Resp> = resp.json().await?;
         let resp: Resp = resp.json().await?;
-
-        // if !resp.error.is_empty() {
-        //     return Err(Error::Api(resp.error.join(",")));
-        // }
-
         Ok(resp)
-
-        // if let Some(result) = resp.result {
-        //     Ok(result)
-        // } else {
-        //     Err(Error::internal("no result field in response"))
-        // }
     }
 
     /// Sends a public request to the API.
@@ -118,6 +106,8 @@ impl Client {
         Resp: DeserializeOwned,
     {
         let url = format!("{}{}", self.base_url, url);
+
+        println!("=== {url}");
 
         let resp = self
             .http_client

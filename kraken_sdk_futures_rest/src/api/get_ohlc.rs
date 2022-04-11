@@ -1,6 +1,7 @@
 use crate::{client::Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
+#[derive(Clone, Copy)]
 pub enum PriceType {
     Trade,
     Mark,
@@ -18,6 +19,7 @@ impl std::fmt::Display for PriceType {
 }
 
 /// Time interval for candle.
+#[derive(Clone, Copy)]
 pub enum Interval {
     Min1,
     Min5,
@@ -99,7 +101,7 @@ impl GetOhlcRequest {
             url.push_str(&format!("?from={}", from));
 
             if let Some(to) = self.to {
-                url.push_str(&format!("?to={}", to));
+                url.push_str(&format!("&to={}", to));
             }
         }
 
@@ -124,6 +126,7 @@ pub struct Candle {
 #[derive(Debug, Deserialize, Clone)]
 pub struct GetOhlcResponse {
     pub candles: Vec<Candle>,
+    pub more_candles: bool,
 }
 
 impl Client {
