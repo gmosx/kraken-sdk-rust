@@ -6,7 +6,7 @@ license = "MIT OR Apache-2.0"
 repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_sdk_ws"
 keywords = ["kraken", "api", "client", "websocket", "trading"]
 authors = ["George Moschovitis <gmosx@reizu.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
