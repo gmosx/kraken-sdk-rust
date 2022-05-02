@@ -46,4 +46,4 @@ DEALINGS IN THE SOFTWARE.
 
 ## Copyright
 
-Copyright © 2021 [George Moschovitis](https://gmosx.ninja).
+Copyright © 2021-2022 [George Moschovitis](https://gmosx.ninja).
