@@ -45,7 +45,7 @@ impl fmt::Display for OrderType {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct OrderInfo {
+pub struct OrderDescription {
     // pub ordertxid: Option<String>,
     // pub postxid: Option<String>,
     pub pair: String,

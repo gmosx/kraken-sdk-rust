@@ -40,6 +40,9 @@ pub use get_closed_orders::*;
 pub mod get_trades_history;
 pub use get_trades_history::*;
 
+pub mod query_orders_info;
+pub use query_orders_info::*;
+
 // User Trading
 
 pub mod add_order;
