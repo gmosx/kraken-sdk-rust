@@ -8,7 +8,7 @@ This crate is an *unofficial*, community-driven effort.
 
 ```toml
 [dependencies]
-kraken_sdk_rest = "0.16"
+kraken_sdk_rest = "0.17"
 ```
 
 ## Usage
@@ -85,4 +85,4 @@ DEALINGS IN THE SOFTWARE.
 
 ## Copyright
 
-Copyright © 2021 [George Moschovitis](https://gmosx.ninja).
+Copyright © 2021-2022 [George Moschovitis](https://gmosx.ninja).
