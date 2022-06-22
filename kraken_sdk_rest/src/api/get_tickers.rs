@@ -60,19 +60,15 @@ impl Client {
 mod tests {
     use crate::Client;
 
-    #[test]
-    fn get_tickers() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_tickers() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let resp = client.get_tickers("XXBTZUSD,DOTUSD").send().await;
 
-            let resp = client.get_tickers("XXBTZUSD,DOTUSD").send().await;
-
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
-        });
+        match resp {
+            Ok(resp) => println!("{:?}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
     }
 }

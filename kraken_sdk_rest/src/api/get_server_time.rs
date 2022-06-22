@@ -36,26 +36,22 @@ impl Client {
 mod tests {
     use crate::{Client, JsonValue, Result};
 
-    #[test]
-    fn get_server_time() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_server_time() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let resp = client.get_server_time().send().await;
 
-            let resp = client.get_server_time().send().await;
+        match resp {
+            Ok(resp) => println!("{}", resp.unixtime),
+            Err(error) => eprintln!("{:?}", error),
+        }
 
-            match resp {
-                Ok(resp) => println!("{}", resp.unixtime),
-                Err(error) => eprintln!("{:?}", error),
-            }
+        let resp: Result<JsonValue> = client.get_server_time().execute().await;
 
-            let resp: Result<JsonValue> = client.get_server_time().execute().await;
-
-            match resp {
-                Ok(resp) => println!("{}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
-        });
+        match resp {
+            Ok(resp) => println!("{}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
     }
 }

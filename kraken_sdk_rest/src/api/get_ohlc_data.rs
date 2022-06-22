@@ -98,25 +98,21 @@ impl Client {
 mod tests {
     use crate::{Client, Interval, PairName};
 
-    #[test]
-    fn get_ohlc_data() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_ohlc_data() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let pair = PairName::from("XBT", "USD");
+        let ohlc_bars = client
+            .get_ohlc_data(&pair)
+            .interval(Interval::Day1)
+            .send()
+            .await;
 
-            let pair = PairName::from("XBT", "USD");
-            let ohlc_bars = client
-                .get_ohlc_data(&pair)
-                .interval(Interval::Day1)
-                .send()
-                .await;
+        // dbg!(&ohlc_bars);
 
-            // dbg!(&ohlc_bars);
-
-            if let Ok(ohlc_bars) = ohlc_bars {
-                assert!(!ohlc_bars.is_empty());
-            }
-        });
+        if let Ok(ohlc_bars) = ohlc_bars {
+            assert!(!ohlc_bars.is_empty());
+        }
     }
 }

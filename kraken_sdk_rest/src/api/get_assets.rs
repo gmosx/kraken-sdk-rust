@@ -58,27 +58,23 @@ impl Client {
 mod tests {
     use crate::{AssetName, Client};
 
-    #[test]
-    fn get_assets() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_assets() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let resp = client.get_assets().asset("DOT,XXRP,XXMR").send().await;
 
-            let resp = client.get_assets().asset("DOT,XXRP,XXMR").send().await;
+        match resp {
+            Ok(resp) => println!("{:?}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
 
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
+        let asset = AssetName::from("XRP");
+        let resp = client.get_assets().asset(&asset).send().await;
 
-            let asset = AssetName::from("XRP");
-            let resp = client.get_assets().asset(&asset).send().await;
-
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
-        });
+        match resp {
+            Ok(resp) => println!("{:?}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
     }
 }

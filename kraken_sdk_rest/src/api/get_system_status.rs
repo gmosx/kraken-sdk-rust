@@ -43,26 +43,22 @@ impl Client {
 mod tests {
     use crate::{Client, JsonValue, Result};
 
-    #[test]
-    fn get_system_status() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_system_status() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let resp = client.get_system_status().send().await;
 
-            let resp = client.get_system_status().send().await;
+        match resp {
+            Ok(resp) => println!("{}", resp.status),
+            Err(error) => eprintln!("{:?}", error),
+        }
 
-            match resp {
-                Ok(resp) => println!("{}", resp.status),
-                Err(error) => eprintln!("{:?}", error),
-            }
+        let resp: Result<JsonValue> = client.get_system_status().execute().await;
 
-            let resp: Result<JsonValue> = client.get_system_status().execute().await;
-
-            match resp {
-                Ok(resp) => println!("{}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
-        });
+        match resp {
+            Ok(resp) => println!("{}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
     }
 }

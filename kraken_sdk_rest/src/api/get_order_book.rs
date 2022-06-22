@@ -62,19 +62,15 @@ impl Client {
 mod tests {
     use crate::Client;
 
-    #[test]
-    fn get_order_book() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_order_book() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let resp = client.get_order_book("XXBTZUSD").count(5).send().await;
 
-            let resp = client.get_order_book("XXBTZUSD").count(5).send().await;
-
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
-        });
+        match resp {
+            Ok(resp) => println!("{:?}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
     }
 }

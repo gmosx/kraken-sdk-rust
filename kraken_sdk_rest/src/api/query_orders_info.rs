@@ -82,12 +82,11 @@ impl Client {
     ///
     /// ## Example
     ///
-    /// ```
     /// let orders = client
     ///     .query_orders_info("OXEHQQ-R25RV-NDOGKM,ORQC1X-TSQHB-KIEE7I")
     ///     .send()
     ///     .await?;
-    /// ```
+    /// ()
     pub fn query_orders_info(&self, txid: &str) -> QueryOrdersInfoRequest {
         QueryOrdersInfoRequest {
             client: self.clone(),

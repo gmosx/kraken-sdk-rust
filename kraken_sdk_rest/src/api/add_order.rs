@@ -318,19 +318,15 @@ impl Client {
 mod tests {
     use crate::{Client, OrderSide};
 
-    #[test]
-    fn test_post_only() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn test_post_only() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let req = client
+            .add_market_order("XXBTZUSD", OrderSide::Buy, "0.1")
+            .validate_only()
+            .post_only();
 
-            let req = client
-                .add_market_order("XXBTZUSD", OrderSide::Buy, "0.1")
-                .validate_only()
-                .post_only();
-
-            assert_eq!(req.oflags, Some("post".to_string()));
-        });
+        assert_eq!(req.oflags, Some("post".to_string()));
     }
 }

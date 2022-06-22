@@ -92,27 +92,23 @@ impl Client {
 mod tests {
     use crate::{Client, JsonValue, PairName, Result};
 
-    #[test]
-    fn get_asset_pairs() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_asset_pairs() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let resp = client.get_asset_pairs().pair("XXBTZUSD").send().await;
 
-            let resp = client.get_asset_pairs().pair("XXBTZUSD").send().await;
+        match resp {
+            Ok(resp) => println!("{:?}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
 
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
+        let pair = PairName::from("BTC", "USD");
+        let resp: Result<JsonValue> = client.get_asset_pairs().pair(&pair).execute().await;
 
-            let pair = PairName::from("BTC", "USD");
-            let resp: Result<JsonValue> = client.get_asset_pairs().pair(&pair).execute().await;
-
-            match resp {
-                Ok(resp) => println!("{:?}", resp),
-                Err(error) => eprintln!("{:?}", error),
-            }
-        });
+        match resp {
+            Ok(resp) => println!("{:?}", resp),
+            Err(error) => eprintln!("{:?}", error),
+        }
     }
 }
