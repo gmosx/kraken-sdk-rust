@@ -152,23 +152,19 @@ mod tests {
     use super::{Interval, PriceType};
     use crate::Client;
 
-    #[test]
-    fn get_ohlc_fetches_candles() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_ohlc_fetches_candles() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let from = chrono::Local::now();
+        let from = from - chrono::Duration::hours(1);
 
-            let from = chrono::Local::now();
-            let from = from - chrono::Duration::hours(1);
+        let res = client
+            .get_ohlc("PI_XBTUSD", Interval::Min1, PriceType::Mark)
+            .from(from.timestamp())
+            .send()
+            .await;
 
-            let res = client
-                .get_ohlc("PI_XBTUSD", Interval::Min1, PriceType::Mark)
-                .from(from.timestamp())
-                .send()
-                .await;
-
-            dbg!(&res);
-        });
+        dbg!(&res);
     }
 }

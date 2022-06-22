@@ -71,16 +71,12 @@ impl Client {
 mod tests {
     use crate::Client;
 
-    #[test]
-    fn get_instruments_fetches_the_supported_instruments() {
-        let rt = tokio::runtime::Runtime::new().unwrap();
+    #[tokio::test]
+    async fn get_instruments_fetches_the_supported_instruments() {
+        let client = Client::default();
 
-        rt.block_on(async {
-            let client = Client::default();
+        let res = client.get_instruments().send().await;
 
-            let res = client.get_instruments().send().await;
-
-            dbg!(&res);
-        });
+        dbg!(&res);
     }
 }

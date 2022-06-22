@@ -16,6 +16,6 @@ sha2 = "0.9"
 hmac = "0.10"
 base64 = "0.13"
 tokio = { version = "1", features = ["full"] }
-reqwest = { version = "0.11", features = ["json"] }
+reqwest = { version = "0.11", default-features = false, features = ["json", "rustls-tls"] }
 urlencoding = "1.1"
 chrono = "0.4"
