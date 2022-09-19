@@ -2,6 +2,7 @@ use crate::error::Error;
 use crate::sign;
 use reqwest::header;
 use serde::{de::DeserializeOwned, Deserialize};
+use std::time::Duration;
 
 #[derive(Debug, Deserialize)]
 struct ResponseWrapper<T> {
@@ -13,6 +14,8 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 const DEFAULT_BASE_URL: &str = "https://api.kraken.com";
 
+const DEFAULT_TIMEOUT: Duration = Duration::from_secs(10);
+
 const DEFAULT_USER_AGENT: &str = "rust-kraken-client/0.16";
 
 #[derive(Default)]
@@ -22,6 +25,7 @@ pub struct ClientBuilder {
     api_key: Option<String>,
     api_secret: Option<String>,
     http_client: Option<reqwest::Client>,
+    timeout: Option<Duration>,
 }
 
 impl ClientBuilder {
@@ -56,6 +60,11 @@ impl ClientBuilder {
         self
     }
 
+    pub fn timeout(mut self, timeout: Duration) -> Self {
+        self.timeout = Some(timeout);
+        self
+    }
+
     pub fn build(self) -> Client {
         Client {
             base_url: self
@@ -67,6 +76,7 @@ impl ClientBuilder {
             api_key: self.api_key,
             api_secret: self.api_secret,
             http_client: self.http_client.unwrap_or_else(reqwest::Client::new),
+            timeout: self.timeout.unwrap_or(DEFAULT_TIMEOUT),
         }
     }
 }
@@ -80,6 +90,7 @@ pub struct Client {
     api_key: Option<String>,
     api_secret: Option<String>,
     http_client: reqwest::Client,
+    timeout: Duration,
 }
 
 impl Default for Client {
@@ -89,10 +100,11 @@ impl Default for Client {
 }
 
 impl Client {
-    pub fn new(api_key: &str, api_secret: &str) -> Self {
+    pub fn new(api_key: &str, api_secret: &str, timeout: Option<Duration>) -> Self {
         Self::builder()
             .api_key(api_key)
             .api_secret(api_secret)
+            .timeout(timeout.unwrap_or(DEFAULT_TIMEOUT))
             .build()
     }
 
@@ -172,5 +184,24 @@ impl Client {
         };
 
         self.unwrap_response(resp).await
+    }
+}
+
+mod tests {
+    use std::time::Duration;
+
+    use crate::Client;
+    use crate::client::DEFAULT_TIMEOUT;
+
+    #[tokio::test]
+    async fn test_default_timeout() {
+        let client = Client::default();
+        assert_eq!(client.timeout, DEFAULT_TIMEOUT);
+    }
+
+    #[tokio::test]
+    async fn test_specified_timeout() {
+        let client = Client::new("KEY", "SECRET", Some(Duration::from_secs(5)));
+        assert_eq!(client.timeout, Duration::from_secs(5));
     }
 }
