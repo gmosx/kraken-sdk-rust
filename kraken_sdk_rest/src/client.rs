@@ -2,6 +2,7 @@ use crate::error::Error;
 use crate::sign;
 use reqwest::header;
 use serde::{de::DeserializeOwned, Deserialize};
+use std::time::Duration;
 
 #[derive(Debug, Deserialize)]
 struct ResponseWrapper<T> {
@@ -10,6 +11,8 @@ struct ResponseWrapper<T> {
 }
 
 pub type Result<T> = std::result::Result<T, Error>;
+
+const DEFAULT_TIMEOUT: Duration = Duration::from_secs(10);
 
 const DEFAULT_BASE_URL: &str = "https://api.kraken.com";
 
@@ -22,6 +25,7 @@ pub struct ClientBuilder {
     api_key: Option<String>,
     api_secret: Option<String>,
     http_client: Option<reqwest::Client>,
+    timeout: Option<Duration>,
 }
 
 impl ClientBuilder {
@@ -56,6 +60,11 @@ impl ClientBuilder {
         self
     }
 
+    pub fn timeout(mut self, timeout: Duration) -> Self {
+        self.timeout = Some(timeout);
+        self
+    }
+
     pub fn build(self) -> Client {
         Client {
             base_url: self
@@ -66,7 +75,12 @@ impl ClientBuilder {
                 .unwrap_or_else(|| DEFAULT_USER_AGENT.to_string()),
             api_key: self.api_key,
             api_secret: self.api_secret,
-            http_client: self.http_client.unwrap_or_else(reqwest::Client::new),
+            http_client: self.http_client.unwrap_or_else(|| {
+                reqwest::Client::builder()
+                    .timeout(self.timeout.unwrap_or(DEFAULT_TIMEOUT))
+                    .build()
+                    .unwrap()
+            }),
         }
     }
 }
