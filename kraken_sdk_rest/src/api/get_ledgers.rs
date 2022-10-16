@@ -118,6 +118,7 @@ pub struct LedgerEntry {
 #[derive(Debug, Deserialize)]
 pub struct GetLedgersResponse {
     pub ledger: HashMap<String, LedgerEntry>,
+    pub count: u32,
 }
 
 impl Client {
