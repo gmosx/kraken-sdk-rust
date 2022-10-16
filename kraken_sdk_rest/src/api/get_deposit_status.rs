@@ -47,7 +47,7 @@ pub struct DepositStatus {
     pub info: String,
     pub amount: String,
     pub fee: String,
-    pub time: u32,
+    pub time: u64,
     pub status: String,
     #[serde(rename(deserialize = "status-prop"))]
     pub status_prop: Option<String>,

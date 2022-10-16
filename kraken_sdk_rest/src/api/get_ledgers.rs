@@ -10,8 +10,8 @@ pub struct GetLedgersRequest {
     asset: Option<String>,
     aclass: Option<String>,
     ledgertype: Option<String>,
-    start: Option<u32>,
-    end: Option<u32>,
+    start: Option<u64>,
+    end: Option<u64>,
     ofs: Option<u32>,
 }
 
@@ -39,14 +39,14 @@ impl GetLedgersRequest {
         }
     }
     /// Starting unix timestamp or ledger ID of results (exclusive)
-    pub fn start(self, start: u32) -> Self {
+    pub fn start(self, start: u64) -> Self {
         Self {
             start: Some(start),
             ..self
         }
     }
     /// Ending unix timestamp or ledger ID of results (inclusive)
-    pub fn end(self, end: u32) -> Self {
+    pub fn end(self, end: u64) -> Self {
         Self {
             end: Some(end),
             ..self
