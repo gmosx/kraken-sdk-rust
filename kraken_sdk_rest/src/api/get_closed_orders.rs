@@ -104,7 +104,7 @@ impl GetClosedOrdersRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct ClosedOrderInfo {
-    pub userref: i32,
+    pub userref: Option<i32>,
     pub status: String,
     pub descr: OrderDescription,
     pub oflags: String,

@@ -103,7 +103,7 @@ impl GetTradesHistoryRequest {
 #[derive(Debug, Deserialize)]
 pub struct TradeInfo {
     pub ordertxid: String,
-    pub postxid: String,
+    pub postxid: Option<String>,
     pub pair: String,
     pub time: f64,
     #[serde(rename(deserialize = "type"))]
