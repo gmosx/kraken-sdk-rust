@@ -1,13 +1,14 @@
-use crate::{Client, OrderDescription, Result};
+use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
-use std::collections::HashMap;
 
-/// - https://docs.kraken.com/rest/#tag/User-Funding/operation/getDepositStatus
+/// - https://docs.kraken.com/rest/#tag/User-Funding/operation/getStatusRecentDeposits
 /// - https://api.kraken.com/0/private/DepositStatus
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetDepositStatusRequest {
     client: Client,
+    /// Asset being deposited
     asset: String,
+    /// Name of the deposit method
     method: Option<String>,
 }
 
@@ -39,15 +40,25 @@ impl GetDepositStatusRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct DepositStatus {
+    /// Name of deposit method
     pub method: String,
+    /// Asset class
     pub aclass: String,
+    /// Asset
     pub asset: String,
+    /// Reference ID
     pub refid: String,
+    /// Transaction ID
     pub txid: String,
+    /// Transaction information
     pub info: String,
+    /// Amount deposited
     pub amount: String,
+    /// Fee paid
     pub fee: String,
+    /// Unix timestamp when request was made
     pub time: u64,
+    /// Status of deposit
     pub status: String,
     #[serde(rename(deserialize = "status-prop"))]
     pub status_prop: Option<String>,

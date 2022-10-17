@@ -1,4 +1,4 @@
-use crate::{Client, OrderDescription, Result};
+use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
@@ -9,7 +9,7 @@ pub struct GetLedgersRequest {
     client: Client,
     asset: Option<String>,
     aclass: Option<String>,
-    ledgertype: Option<String>,
+    ledger_type: Option<String>,
     start: Option<u64>,
     end: Option<u64>,
     ofs: Option<u32>,
@@ -24,6 +24,7 @@ impl GetLedgersRequest {
             ..self
         }
     }
+
     /// Asset class
     pub fn aclass(self, aclass: impl Into<String>) -> Self {
         Self {
@@ -31,13 +32,15 @@ impl GetLedgersRequest {
             ..self
         }
     }
+
     /// Type of ledger to retrieve
-    pub fn ledgertype(self, ledgertype: impl Into<String>) -> Self {
+    pub fn ledger_type(self, ledger_type: impl Into<String>) -> Self {
         Self {
-            aclass: Some(ledgertype.into()),
+            aclass: Some(ledger_type.into()),
             ..self
         }
     }
+
     /// Starting unix timestamp or ledger ID of results (exclusive)
     pub fn start(self, start: u64) -> Self {
         Self {
@@ -45,6 +48,7 @@ impl GetLedgersRequest {
             ..self
         }
     }
+
     /// Ending unix timestamp or ledger ID of results (inclusive)
     pub fn end(self, end: u64) -> Self {
         Self {
@@ -52,6 +56,7 @@ impl GetLedgersRequest {
             ..self
         }
     }
+
     /// Result offset for pagination
     pub fn ofs(self, ofs: u32) -> Self {
         Self {
@@ -64,15 +69,15 @@ impl GetLedgersRequest {
         let mut query: Vec<String> = Vec::new();
 
         if let Some(asset) = self.asset {
-            query.push(String::from("asset={}"));
+            query.push(format!("asset={}", asset));
         }
 
         if let Some(aclass) = self.aclass {
             query.push(format!("aclass={}", aclass));
         }
 
-        if let Some(ledgertype) = self.ledgertype {
-            query.push(format!("type={}", ledgertype));
+        if let Some(ledger_type) = self.ledger_type {
+            query.push(format!("type={}", ledger_type));
         }
 
         if let Some(start) = self.start {
@@ -103,15 +108,24 @@ impl GetLedgersRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct LedgerEntry {
+    /// Reference Id
     pub refid: String,
+    /// Unix timestamp of ledger
     pub time: f64,
+    /// Type of ledger entry
     #[serde(rename(deserialize = "type"))]
     pub ledger_type: String,
+    /// Additional info relating to the ledger entry type, where applicable
     pub subtype: String,
+    /// Asset class
     pub aclass: String,
+    /// Asset
     pub asset: String,
+    /// Transaction amount
     pub amount: String,
+    /// Transaction fee
     pub fee: String,
+    /// Resulting balance
     pub balance: String,
 }
 
@@ -127,7 +141,7 @@ impl Client {
             client: self.clone(),
             asset: None,
             aclass: None,
-            ledgertype: None,
+            ledger_type: None,
             start: None,
             end: None,
             ofs: None,

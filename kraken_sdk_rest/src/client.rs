@@ -66,6 +66,7 @@ impl ClientBuilder {
     }
 
     pub fn build(self) -> Client {
+        // #TODO handle the unwrap
         Client {
             base_url: self
                 .base_url
