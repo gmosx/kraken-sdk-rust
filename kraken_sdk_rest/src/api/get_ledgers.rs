@@ -1,5 +1,5 @@
 use crate::{Client, Result};
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// - https://docs.kraken.com/rest/#tag/User-Data/operation/getLedgers
@@ -106,19 +106,53 @@ impl GetLedgersRequest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
+pub enum LedgerType {
+    Trade,
+    Deposit,
+    Withdrawal,
+    Transfer,
+    Margin,
+    Rollover,
+    Spend,
+    Receive,
+    Settled,
+    Adjustment,
+    Staking,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
+pub enum Subtype {
+    SpotFromStaking,
+    SpotToStaking,
+    StakingFromSpot,
+    StakingToSpot,
+    SpotFromFutures,
+    #[serde(alias = "")]
+    None,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
+pub enum AssetClass {
+    Currency,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct LedgerEntry {
     /// Reference Id
     pub refid: String,
     /// Unix timestamp of ledger
     pub time: f64,
     /// Type of ledger entry
-    #[serde(rename(deserialize = "type"))]
-    pub ledger_type: String,
+    #[serde(rename(serialize = "type", deserialize = "type"))]
+    pub ledger_type: LedgerType,
     /// Additional info relating to the ledger entry type, where applicable
-    pub subtype: String,
+    pub subtype: Subtype,
     /// Asset class
-    pub aclass: String,
+    pub aclass: AssetClass,
     /// Asset
     pub asset: String,
     /// Transaction amount
@@ -129,7 +163,7 @@ pub struct LedgerEntry {
     pub balance: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetLedgersResponse {
     pub ledger: HashMap<String, LedgerEntry>,
     pub count: u32,
