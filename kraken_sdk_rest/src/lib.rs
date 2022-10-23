@@ -1,6 +1,7 @@
 pub mod api;
 pub mod client;
 pub mod error;
+mod serde;
 mod sign;
 pub mod types;
 

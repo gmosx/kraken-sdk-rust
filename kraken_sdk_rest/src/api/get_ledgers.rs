@@ -1,4 +1,5 @@
 use crate::{Client, Result};
+use crate::serde::{string_as_f64, f64_as_string};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -156,11 +157,14 @@ pub struct LedgerEntry {
     /// Asset
     pub asset: String,
     /// Transaction amount
-    pub amount: String,
+    #[serde(deserialize_with = "string_as_f64", serialize_with = "f64_as_string")]
+    pub amount: f64,
     /// Transaction fee
-    pub fee: String,
+    #[serde(deserialize_with = "string_as_f64", serialize_with = "f64_as_string")]
+    pub fee: f64,
     /// Resulting balance
-    pub balance: String,
+    #[serde(deserialize_with = "string_as_f64", serialize_with = "f64_as_string")]
+    pub balance: f64,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
