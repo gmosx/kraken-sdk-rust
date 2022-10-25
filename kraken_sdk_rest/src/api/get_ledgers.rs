@@ -120,6 +120,8 @@ pub enum LedgerType {
     Settled,
     Adjustment,
     Staking,
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -132,12 +134,16 @@ pub enum Subtype {
     SpotFromFutures,
     #[serde(alias = "")]
     None,
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
 pub enum AssetClass {
     Currency,
+    #[serde(other)]
+    Unknown,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
