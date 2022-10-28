@@ -1,5 +1,5 @@
 use crate::{Client, Result};
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// Retrieve information about trades/fills. 50 results are returned at a time,
@@ -100,13 +100,13 @@ impl GetTradesHistoryRequest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct TradeInfo {
     pub ordertxid: String,
     pub postxid: Option<String>,
     pub pair: String,
     pub time: f64,
-    #[serde(rename(deserialize = "type"))]
+    #[serde(rename(serialize = "type", deserialize = "type"))]
     pub orderside: String,
     pub ordertype: String,
     pub price: String,
@@ -118,7 +118,7 @@ pub struct TradeInfo {
     // TODO: add position related fields.
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetTradesHistoryResponse {
     pub trades: HashMap<String, TradeInfo>,
     pub count: i32,

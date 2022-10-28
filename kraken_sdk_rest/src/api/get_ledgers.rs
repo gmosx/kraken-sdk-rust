@@ -1,5 +1,5 @@
 use crate::{Client, Result};
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// - https://docs.kraken.com/rest/#tag/User-Data/operation/getLedgers
@@ -106,14 +106,54 @@ impl GetLedgersRequest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
+pub enum LedgerType {
+    Trade,
+    Deposit,
+    Withdrawal,
+    Transfer,
+    Margin,
+    Rollover,
+    Spend,
+    Receive,
+    Settled,
+    Adjustment,
+    Staking,
+    // #[serde(other)]
+    // Unknown,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
+pub enum Subtype {
+    SpotFromStaking,
+    SpotToStaking,
+    StakingFromSpot,
+    StakingToSpot,
+    SpotFromFutures,
+    #[serde(alias = "")]
+    None,
+    // #[serde(other)]
+    // Unknown,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+#[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
+pub enum AssetClass {
+    Currency,
+    // #[serde(other)]
+    // Unknown,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct LedgerEntry {
     /// Reference Id
     pub refid: String,
     /// Unix timestamp of ledger
     pub time: f64,
     /// Type of ledger entry
-    #[serde(rename(deserialize = "type"))]
+    #[serde(rename(serialize = "type", deserialize = "type"))]
     pub ledger_type: String,
     /// Additional info relating to the ledger entry type, where applicable
     pub subtype: String,
@@ -128,8 +168,27 @@ pub struct LedgerEntry {
     /// Resulting balance
     pub balance: String,
 }
+pub trait LedgerEntryEnums {
+    fn ledger_type_enum(&self) -> serde_json::Result<LedgerType>;
+    fn subtype_enum(&self) -> serde_json::Result<Subtype>;
+    fn aclass_enum(&self) -> serde_json::Result<AssetClass>;
+}
 
-#[derive(Debug, Deserialize)]
+impl LedgerEntryEnums for LedgerEntry {
+    fn ledger_type_enum(&self) -> serde_json::Result<LedgerType> {
+        serde_json::from_str(&format!("\"{}\"", self.ledger_type))
+    }
+
+    fn subtype_enum(&self) -> serde_json::Result<Subtype> {
+        serde_json::from_str(&format!("\"{}\"", self.subtype))
+    }
+
+    fn aclass_enum(&self) -> serde_json::Result<AssetClass> {
+        serde_json::from_str(&format!("\"{}\"", self.aclass))
+    }
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct GetLedgersResponse {
     pub ledger: HashMap<String, LedgerEntry>,
     pub count: u32,
