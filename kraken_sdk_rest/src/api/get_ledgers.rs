@@ -168,22 +168,18 @@ pub struct LedgerEntry {
     /// Resulting balance
     pub balance: String,
 }
-pub trait LedgerEntryEnums {
-    fn ledger_type_enum(&self) -> serde_json::Result<LedgerType>;
-    fn subtype_enum(&self) -> serde_json::Result<Subtype>;
-    fn aclass_enum(&self) -> serde_json::Result<AssetClass>;
-}
 
-impl LedgerEntryEnums for LedgerEntry {
-    fn ledger_type_enum(&self) -> serde_json::Result<LedgerType> {
+impl LedgerEntry {
+    // #TODO make it return a non-Result enum.
+    pub fn ledger_type_enum(&self) -> serde_json::Result<LedgerType> {
         serde_json::from_str(&format!("\"{}\"", self.ledger_type))
     }
 
-    fn subtype_enum(&self) -> serde_json::Result<Subtype> {
+    pub fn subtype_enum(&self) -> serde_json::Result<Subtype> {
         serde_json::from_str(&format!("\"{}\"", self.subtype))
     }
 
-    fn aclass_enum(&self) -> serde_json::Result<AssetClass> {
+    pub fn aclass_enum(&self) -> serde_json::Result<AssetClass> {
         serde_json::from_str(&format!("\"{}\"", self.aclass))
     }
 }
