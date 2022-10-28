@@ -120,6 +120,8 @@ pub enum LedgerType {
     Settled,
     Adjustment,
     Staking,
+    // #[serde(other)]
+    // Unknown,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -132,12 +134,16 @@ pub enum Subtype {
     SpotFromFutures,
     #[serde(alias = "")]
     None,
+    // #[serde(other)]
+    // Unknown,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
 #[serde(rename_all(serialize = "lowercase", deserialize = "lowercase"))]
 pub enum AssetClass {
     Currency,
+    // #[serde(other)]
+    // Unknown,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -162,21 +168,23 @@ pub struct LedgerEntry {
     /// Resulting balance
     pub balance: String,
 }
-pub trait LedgerEntryEnum {
+pub trait LedgerEntryEnums {
     fn ledger_type_enum(&self) -> serde_json::Result<LedgerType>;
     fn subtype_enum(&self) -> serde_json::Result<Subtype>;
     fn aclass_enum(&self) -> serde_json::Result<AssetClass>;
 }
 
-impl LedgerEntryEnum for LedgerEntry {
+impl LedgerEntryEnums for LedgerEntry {
     fn ledger_type_enum(&self) -> serde_json::Result<LedgerType> {
-        return serde_json::from_str(&format!("\"{}\"", self.ledger_type));
+        serde_json::from_str(&format!("\"{}\"", self.ledger_type))
     }
+
     fn subtype_enum(&self) -> serde_json::Result<Subtype> {
-        return serde_json::from_str(&format!("\"{}\"", self.subtype));
+        serde_json::from_str(&format!("\"{}\"", self.subtype))
     }
+
     fn aclass_enum(&self) -> serde_json::Result<AssetClass> {
-        return serde_json::from_str(&format!("\"{}\"", self.aclass));
+        serde_json::from_str(&format!("\"{}\"", self.aclass))
     }
 }
 
