@@ -26,6 +26,9 @@ pub struct AddOrderRequest {
     /// - nompp = no market price protection
     /// - post = post only order (available when ordertype = limit)
     oflags: Option<String>,
+    /// Time-in-force of the order to specify how long it should remain in the
+    /// order book before being cancelled.
+    timeinforce: Option<String>,
     /// Scheduled start time.
     starttm: Option<String>,
     /// Expiration time.
@@ -81,6 +84,20 @@ impl AddOrderRequest {
         }
     }
 
+    // #TODO introduce a timeinforce enum!
+    /// Time-in-force of the order to specify how long it should remain in the
+    /// order book before being cancelled. GTC (Good-'til-cancelled) is default
+    /// if the parameter is omitted. IOC (immediate-or-cancel) will immediately
+    /// execute the amount possible and cancel any remaining balance rather than
+    /// resting in the book. GTD (good-'til-date), if specified, must coincide
+    /// with a desired expiretm.
+    pub fn timeinforce(self, timeinforce: &str) -> Self {
+        Self {
+            timeinforce: Some(timeinforce.to_owned()),
+            ..self
+        }
+    }
+
     /// Start time
     /// +<n> = expire <n> seconds from now
     /// <n> = unix timestamp of expiration time
@@ -97,7 +114,6 @@ impl AddOrderRequest {
 
     // TODO:
     // Add convenience functions
-    // - `expire_after`
     // - `expire_timestamp`
 
     /// Expiration time
@@ -179,6 +195,10 @@ impl AddOrderRequest {
             query.push_str(&format!("&oflags={}", oflags));
         }
 
+        if let Some(timeinforce) = &self.timeinforce {
+            query.push_str(&format!("&timeinforce={}", timeinforce));
+        }
+
         if let Some(starttm) = &self.starttm {
             query.push_str(&format!("&starttm={}", starttm));
         }
@@ -206,6 +226,8 @@ impl AddOrderRequest {
         if let Some(true) = &self.validate {
             query.push_str("&validate=true");
         }
+
+        dbg!(&query);
 
         self.client
             .send_private("/0/private/AddOrder", Some(query))
@@ -250,6 +272,7 @@ impl Client {
             volume: volume.to_string(),
             leverage: None,
             oflags: None,
+            timeinforce: None,
             starttm: None,
             expiretm: None,
             userref: None,
@@ -276,6 +299,7 @@ impl Client {
             volume: volume.to_string(),
             leverage: None,
             oflags: None,
+            timeinforce: None,
             starttm: None,
             expiretm: None,
             userref: None,
@@ -303,6 +327,7 @@ impl Client {
             volume: volume.to_string(),
             leverage: None,
             oflags: None,
+            timeinforce: None,
             starttm: None,
             expiretm: None,
             userref: None,
