@@ -227,8 +227,6 @@ impl AddOrderRequest {
             query.push_str("&validate=true");
         }
 
-        dbg!(&query);
-
         self.client
             .send_private("/0/private/AddOrder", Some(query))
             .await
