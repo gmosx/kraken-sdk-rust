@@ -8,12 +8,22 @@ use std::collections::HashMap;
 pub struct GetTickersRequest {
     client: Client,
     /// Comma delimited list of asset pairs to get info on.
-    pair: String,
+    pair: Option<String>,
 }
 
 impl GetTickersRequest {
+    pub fn pair(self, pair: &str) -> Self {
+        Self {
+            pair: Some(pair.to_owned()),
+            ..self
+        }
+    }
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
-        let url = format!("/0/public/Ticker?pair={}", self.pair);
+        let url = if let Some(pair) = self.pair {
+            format!("/0/public/Ticker?pair={pair}")
+        } else {
+            format!("/0/public/Ticker")
+        };
 
         self.client.send_public(&url).await
     }
@@ -48,10 +58,24 @@ pub struct Ticker {
 pub type GetTickersResponse = HashMap<String, Ticker>;
 
 impl Client {
+    pub fn get_all_tickers(&self) -> GetTickersRequest {
+        GetTickersRequest {
+            client: self.clone(),
+            pair: None,
+        }
+    }
+
     pub fn get_tickers(&self, pair: &str) -> GetTickersRequest {
         GetTickersRequest {
             client: self.clone(),
-            pair: pair.to_string(),
+            pair: Some(pair.to_owned()),
+        }
+    }
+
+    pub fn get_ticker(&self, pair: &str) -> GetTickersRequest {
+        GetTickersRequest {
+            client: self.clone(),
+            pair: Some(pair.to_owned()),
         }
     }
 }
