@@ -29,9 +29,10 @@ pub struct Client {
 }
 
 // #TODO extract socket like in the previous impl?
+// #TODO support auth
 
 impl Client {
-    pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
+    pub async fn connect(url: &str, _token: Option<String>) -> Result<Self> {
         let (stream, _) = connect_async(url).await?;
         let (sender, receiver) = stream.split();
 

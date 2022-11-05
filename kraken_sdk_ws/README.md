@@ -21,7 +21,7 @@ use kraken_sdk_ws::{api::SubscriptionRequest, Client};
 async fn main() {
     let mut client = Client::connect_public().await.expect("cannot connect");
 
-    let req = SubscriptionRequest::new("ticker", &["XBT/USD", "XBT/EUR"]);
+    let req = SubscriptionRequest::ticker(&["XBT/USD", "XBT/EUR"]);
 
     client.call(req).await.expect("cannot send request");
 
@@ -57,4 +57,4 @@ DEALINGS IN THE SOFTWARE.
 
 ## Copyright
 
-Copyright © 2021 [George Moschovitis](https://gmosx.ninja).
+Copyright © 2021-2022 [George Moschovitis](https://gmosx.ninja).
