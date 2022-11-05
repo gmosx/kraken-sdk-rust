@@ -1,7 +1,13 @@
+//! A strongly-typed client for Kraken.
+
+pub mod api;
 pub mod client;
+pub mod error;
+
+mod util;
+
+// #[cfg(test)]
+// mod client_tests;
+
 pub use client::Client;
-
-pub mod socket;
-pub use socket::*;
-
-pub mod types;
+pub use util::Result;
