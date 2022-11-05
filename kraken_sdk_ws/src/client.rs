@@ -40,14 +40,4 @@ impl Client {
     pub async fn next(&mut self) -> Option<Result<Message, tokio_tungstenite::tungstenite::Error>> {
         self.socket.next().await
     }
-
-    pub fn ping() {}
-
-    pub fn subscribe(name: SubscriptionName) {
-        let name = name_from_subscription(name);
-    }
-
-    pub fn unsubscribe(name: SubscriptionName) {}
-
-    pub fn subscribe_own_trades() {}
 }
