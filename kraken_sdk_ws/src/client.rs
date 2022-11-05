@@ -28,9 +28,11 @@ pub struct Client {
     pub messages: Pin<Box<dyn Stream<Item = Result<TypedMessage>>>>,
 }
 
+// #TODO extract socket like in the previous impl?
+
 impl Client {
-    pub async fn connect(url: &str) -> Result<Self> {
-        let (stream, _response) = connect_async(url).await?;
+    pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
+        let (stream, _) = connect_async(url).await?;
         let (sender, receiver) = stream.split();
 
         let receiver = receiver
@@ -47,6 +49,14 @@ impl Client {
             sender,
             messages: Box::pin(receiver),
         })
+    }
+
+    pub async fn connect_public() -> Result<Self> {
+        Self::connect(WS_URL, None).await
+    }
+
+    pub async fn connect_auth(token: &str) -> Result<Self> {
+        Self::connect(WS_AUTH_URL, Some(token.to_owned())).await
     }
 
     pub async fn call<Req>(&mut self, req: Req) -> Result<()>

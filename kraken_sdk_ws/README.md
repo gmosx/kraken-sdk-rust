@@ -11,6 +11,28 @@ This crate is an *unofficial*, community-driven effort.
 kraken_sdk_ws = "0.1"
 ```
 
+## Usage
+
+```rust
+use futures::StreamExt;
+use kraken_sdk_ws::{api::SubscriptionRequest, Client};
+
+#[tokio::main]
+async fn main() {
+    let mut client = Client::connect_public().await.expect("cannot connect");
+
+    let req = SubscriptionRequest::new("ticker", &["XBT/USD", "XBT/EUR"]);
+
+    client.call(req).await.expect("cannot send request");
+
+    loop {
+        if let Some(msg) = client.messages.next().await {
+            dbg!(&msg);
+        }
+    }
+}
+```
+
 ## Status
 
 **WARNING**: This crate is under construction!
