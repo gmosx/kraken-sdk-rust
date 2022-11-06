@@ -1,6 +1,6 @@
 use serde::Serialize;
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub enum SubscriptionName {
     Book,
@@ -13,12 +13,12 @@ pub enum SubscriptionName {
     All,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct Subscription {
     pub name: SubscriptionName,
 }
 
-#[derive(Serialize)]
+#[derive(Debug, Serialize)]
 pub struct SubscriptionRequest<'a> {
     pub event: &'a str,
     pub pair: &'a [&'a str],
