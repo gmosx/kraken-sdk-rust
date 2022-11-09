@@ -1,6 +1,10 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
+/// Returns a WebSocket API token. The token should be used within 15 minutes
+/// of creation. The token does not expire once a connection to a WebSockets API
+/// feed is maintained.
+///
 /// - https://docs.kraken.com/rest/#operation/getWebsocketsToken
 /// - https://api.kraken.com/0/private/GetWebSocketsToken
 #[must_use = "Does nothing until you send or execute it"]
