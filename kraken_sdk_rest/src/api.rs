@@ -49,6 +49,9 @@ pub use get_trades_history::*;
 pub mod query_orders_info;
 pub use query_orders_info::*;
 
+pub mod get_open_positions;
+pub use get_open_positions::*;
+
 // User Trading
 
 pub mod add_order;
