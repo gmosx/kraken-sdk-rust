@@ -48,7 +48,8 @@ pub struct OpenPositionInfo {
     pub posstatus: String,
     pub pair: String,
     pub time: f64,
-    pub r#type: String,
+    #[serde(rename = "type")]
+    pub position_type: String,
     pub ordertype: String,
     pub cost: String,
     pub fee: String,
@@ -63,11 +64,7 @@ pub struct OpenPositionInfo {
     pub oflags: String,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct GetOpenPositionsResponse {
-    #[serde(flatten)]
-    pub result: HashMap<String, OpenPositionInfo>,
-}
+pub type GetOpenPositionsResponse = HashMap<String, OpenPositionInfo>;
 
 impl Client {
     pub fn get_open_positions(&self) -> GetOpenPositionsRequest {

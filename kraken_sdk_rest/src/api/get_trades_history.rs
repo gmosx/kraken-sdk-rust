@@ -106,7 +106,7 @@ pub struct TradeInfo {
     pub postxid: Option<String>,
     pub pair: String,
     pub time: f64,
-    #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(rename = "type")]
     pub orderside: String,
     pub ordertype: String,
     pub price: String,

@@ -50,7 +50,7 @@ pub struct OrderDescription {
     // pub postxid: Option<String>,
     pub pair: String,
     // pub time: f64,
-    #[serde(rename(deserialize = "type"))]
+    #[serde(rename = "type")]
     pub orderside: String,
     pub ordertype: String,
     pub price: String,

@@ -153,7 +153,7 @@ pub struct LedgerEntry {
     /// Unix timestamp of ledger
     pub time: f64,
     /// Type of ledger entry
-    #[serde(rename(serialize = "type", deserialize = "type"))]
+    #[serde(rename = "type")]
     pub ledger_type: String,
     /// Additional info relating to the ledger entry type, where applicable
     pub subtype: String,
