@@ -81,6 +81,40 @@ pub struct OHLC(
     pub u64,
 );
 
+impl OHLC {
+    pub fn time(&self) -> i64 {
+        self.0
+    }
+
+    pub fn open(&self) -> &String {
+        &self.1
+    }
+
+    pub fn high(&self) -> &String {
+        &self.2
+    }
+
+    pub fn low(&self) -> &String {
+        &self.3
+    }
+
+    pub fn close(&self) -> &String {
+        &self.4
+    }
+
+    pub fn vwap(&self) -> &String {
+        &self.5
+    }
+
+    pub fn volume(&self) -> &String {
+        &self.6
+    }
+
+    pub fn count(&self) -> u64 {
+        self.7
+    }
+}
+
 pub type GetOhlcDataRawResponse = HashMap<String, JsonValue>;
 pub type GetOhlcDataResponse = Vec<OHLC>;
 
