@@ -8,3 +8,5 @@ pub mod order;
 pub use order::*;
 
 pub type JsonValue = serde_json::Value;
+
+pub type Userref = i32;

@@ -60,7 +60,7 @@ impl QueryOrdersInfoRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct OrderInfo {
-    pub userref: i32,
+    pub userref: Option<i32>,
     pub status: String,
     pub descr: OrderDescription,
     pub oflags: String,
