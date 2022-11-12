@@ -22,7 +22,7 @@ pub struct GetTradesHistoryRequest {
     /// end = ending unix timestamp or order tx id of results (inclusive)
     end: Option<i64>,
     /// result offset
-    ofs: Option<i64>,
+    ofs: Option<usize>,
 }
 
 impl GetTradesHistoryRequest {
@@ -55,7 +55,7 @@ impl GetTradesHistoryRequest {
         }
     }
 
-    pub fn ofs(self, ofs: i64) -> Self {
+    pub fn ofs(self, ofs: usize) -> Self {
         Self {
             ofs: Some(ofs),
             ..self
@@ -122,7 +122,7 @@ pub struct TradeInfo {
 #[derive(Debug, Deserialize, Serialize)]
 pub struct GetTradesHistoryResponse {
     pub trades: HashMap<String, TradeInfo>,
-    pub count: i32,
+    pub count: usize,
 }
 
 impl Client {
