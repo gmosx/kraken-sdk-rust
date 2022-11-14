@@ -2,8 +2,8 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://docs.kraken.com/rest/#operation/getTickerInformation
-/// - https://api.kraken.com/0/public/Ticker
+/// - <https://docs.kraken.com/rest/#operation/getTickerInformation>
+/// - <https://api.kraken.com/0/public/Ticker>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetTickersRequest {
     client: Client,
@@ -22,7 +22,7 @@ impl GetTickersRequest {
         let url = if let Some(pair) = self.pair {
             format!("/0/public/Ticker?pair={pair}")
         } else {
-            format!("/0/public/Ticker")
+            "/0/public/Ticker".to_owned()
         };
 
         self.client.send_public(&url).await
@@ -53,6 +53,16 @@ pub struct Ticker {
     pub h: Vec<String>,
     /// today's opening price
     pub o: String,
+}
+
+impl Ticker {
+    pub fn bid_price(&self) -> &String {
+        &self.b[0]
+    }
+
+    pub fn ask_price(&self) -> &String {
+        &self.a[0]
+    }
 }
 
 pub type GetTickersResponse = HashMap<String, Ticker>;

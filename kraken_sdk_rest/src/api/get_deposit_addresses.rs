@@ -1,8 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://docs.kraken.com/rest/#tag/User-Funding/operation/getDepositAddresses
-/// - https://api.kraken.com/0/private/DepositAddresses
+/// - <https://docs.kraken.com/rest/#tag/User-Funding/operation/getDepositAddresses>
+/// - <https://api.kraken.com/0/private/DepositAddresses>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetDepositAddressesRequest {
     client: Client,
@@ -14,9 +14,7 @@ pub struct GetDepositAddressesRequest {
 
 impl GetDepositAddressesRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
-        let mut query = format!("asset={}", self.asset);
-
-        query.push_str(format!("&method={}", self.method).as_str());
+        let query = format!("asset={}&method={}", self.asset, self.method);
 
         self.client
             .send_private("/0/private/DepositAddresses", Some(query))

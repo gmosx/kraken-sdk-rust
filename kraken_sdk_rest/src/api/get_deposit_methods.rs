@@ -1,8 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://docs.kraken.com/rest/#tag/User-Funding/operation/getDepositMethods
-/// - https://api.kraken.com/0/private/DepositMethods
+/// - <https://docs.kraken.com/rest/#tag/User-Funding/operation/getDepositMethods>
+/// - <https://api.kraken.com/0/private/DepositMethods>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetDepositMethodsRequest {
     client: Client,
