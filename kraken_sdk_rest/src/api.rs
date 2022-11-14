@@ -25,6 +25,12 @@ pub use get_order_book::*;
 
 // region: private
 
+pub mod get_deposit_addresses;
+pub use get_deposit_addresses::*;
+
+pub mod get_deposit_methods;
+pub use get_deposit_methods::*;
+
 pub mod get_deposit_status;
 pub use get_deposit_status::*;
 
