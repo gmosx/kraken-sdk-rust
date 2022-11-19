@@ -1,43 +1,110 @@
-use crate::{types::SubscriptionName, Socket};
-use tokio_tungstenite::tungstenite::Message;
+use crate::{util::Result};
+use futures::{future, stream::SplitSink, StreamExt};
+use futures_util::SinkExt;
+use serde::{Deserialize, Serialize};
+use std::pin::Pin;
+use tokio::net::TcpStream;
+use tokio_stream::Stream;
+use tokio_tungstenite::{
+    connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
+};
 
+pub const WS_URL: &str = "wss://ws.kraken.com/v2";
+pub const WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
+
+pub const DEFAULT_WS_URL: &str = WS_URL;
+pub const DEFAULT_WS_AUTH_URL: &str = WS_AUTH_URL;
+
+pub trait Request {
+    fn method(&self) -> &'static str;
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Response<R> {
+    pub method: String,
+    pub req_id: Option<i64>,
+    pub result: R,
+    pub success: bool,
+    pub time_in: String,
+    pub time_out: String,
+}
+
+// #TODO consider renaming SubscriptionEvent or ChannelEvent.
+#[derive(Debug, Deserialize)]
+pub struct Event<D> {
+    pub channel: String,
+    pub data: D,
+    #[serde(rename = "type")]
+    pub event_type: String,
+}
+
+// #TODO not used yet!
+#[derive(Serialize, Deserialize, Debug)]
+pub enum TypedMessage {
+    Other(String),
+}
+
+// Subscription messages (event) have the `channel` field.
+// RPC messages (response) have the `method` field.
+// Error messages have the `error` field.
+
+/// A WebSocket client for Kraken.
+/// The client can connect to a `public` endpoint or an `auth` endpoint.
+/// The `auth` endpoint only supports auth messages.
 pub struct Client {
-    pub socket: Socket,
+    #[allow(dead_code)]
+    token: Option<String>,
+    sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
+    pub messages: Pin<Box<dyn Stream<Item = Result<TypedMessage>>>>,
 }
 
-// TODO: return stream.
-// TODO: implement reference counting for subscriptions
-// TODO: run concurrently in standalone thread.
-
-fn name_from_subscription(name: SubscriptionName) -> String {
-    match name {
-        SubscriptionName::Book => "book",
-        SubscriptionName::Ohlc => "ohlc",
-        SubscriptionName::OpenOrders => "openOrders",
-        SubscriptionName::OwnTrades => "ownTrades",
-        SubscriptionName::Spread => "spread",
-        SubscriptionName::Ticker => "ticker",
-        SubscriptionName::Trade => "trade",
-        SubscriptionName::All => "*",
-    }
-    .to_owned()
-}
-
+// #TODO extract socket like in the previous impl?
 impl Client {
-    pub async fn connect_public() -> Self {
-        Self {
-            socket: Socket::connect_public().await,
-        }
+    pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
+        let (stream, _) = connect_async(url).await?;
+        let (sender, receiver) = stream.split();
+
+        let receiver = receiver
+            .map(move |msg| {
+                if let Message::Text(string) = msg.unwrap() {
+                    tracing::debug!("{string}");
+                    Ok(Some(TypedMessage::Other(string)))
+                } else {
+                    Ok(None)
+                }
+            })
+            .filter_map(|res| future::ready(res.transpose()));
+
+        Ok(Self {
+            token,
+            sender,
+            messages: Box::pin(receiver),
+        })
     }
 
-    pub async fn send(
-        &mut self,
-        msg: Message,
-    ) -> Result<(), tokio_tungstenite::tungstenite::Error> {
-        self.socket.send(msg).await
+    pub async fn connect_public() -> Result<Self> {
+        Self::connect(WS_URL, None).await
     }
 
-    pub async fn next(&mut self) -> Option<Result<Message, tokio_tungstenite::tungstenite::Error>> {
-        self.socket.next().await
+    pub async fn connect_auth(token: String) -> Result<Self> {
+        Self::connect(WS_AUTH_URL, Some(token)).await
+    }
+
+    pub async fn send<Req>(&mut self, req: Req) -> Result<()>
+        where Req: Request + Serialize {
+        // #TODO attach the token to the request here! nah!
+        // #Insight the request is actually the params object.
+        let params = serde_json::to_string(&req).unwrap();
+        // #TODO add rec_id
+        let msg = format!(r#"{{"method":"{}","params":{}}}"#, req.method(), params);
+        tracing::debug!("{msg}");
+        self.sender.send(Message::Text(msg.to_string())).await?;
+
+        Ok(())
+    }
+
+    // #TODO make this customizable.
+    pub fn next_id(&self) -> isize {
+        todo!()
     }
 }
