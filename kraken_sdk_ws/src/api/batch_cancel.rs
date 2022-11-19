@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use crate::client::{Request, Response};
+use crate::client::{IRequest, Response};
 
 /// Multiple orders can be canceled in one request via batch_cancel method.
 ///
@@ -13,7 +13,7 @@ pub struct BatchCancelRequest<'a> {
     pub orders: Vec<String>,
 }
 
-impl Request for BatchCancelRequest<'_> {
+impl IRequest for BatchCancelRequest<'_> {
     fn method(&self) -> &'static str {
         "batch_cancel"
     }

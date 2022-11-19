@@ -15,8 +15,16 @@ pub const WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
 pub const DEFAULT_WS_URL: &str = WS_URL;
 pub const DEFAULT_WS_AUTH_URL: &str = WS_AUTH_URL;
 
-pub trait Request {
+pub trait IRequest {
     fn method(&self) -> &'static str;
+}
+
+#[derive(Debug, Serialize)]
+pub struct Request<P> {
+    pub method: String,
+    pub params: P,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub req_id: Option<i64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -91,12 +99,13 @@ impl Client {
     }
 
     pub async fn send<Req>(&mut self, req: Req) -> Result<()>
-        where Req: Request + Serialize {
+        where Req: Serialize {
         // #TODO attach the token to the request here! nah!
         // #Insight the request is actually the params object.
-        let params = serde_json::to_string(&req).unwrap();
-        // #TODO add rec_id
-        let msg = format!(r#"{{"method":"{}","params":{}}}"#, req.method(), params);
+        // let params = serde_json::to_string(&req).unwrap();
+        // // #TODO add rec_id
+        // let msg = format!(r#"{{"method":"{}","params":{}}}"#, req.method(), params);
+        let msg = serde_json::to_string(&req).unwrap();
         tracing::debug!("{msg}");
         self.sender.send(Message::Text(msg.to_string())).await?;
 

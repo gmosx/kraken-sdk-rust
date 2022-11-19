@@ -1,5 +1,5 @@
 use serde::{Serialize, Deserialize};
-use crate::client::{Request, Response};
+use crate::client::{IRequest, Response};
 
 /// cancel_all_orders_after provides a "Dead Man's Switch" mechanism to protect
 /// the client from network malfunction, extreme latency or unexpected matching
@@ -19,7 +19,7 @@ pub struct CancelAllOrdersAfterRequest<'a> {
     pub timeout: i32,
 }
 
-impl Request for CancelAllOrdersAfterRequest<'_> {
+impl IRequest for CancelAllOrdersAfterRequest<'_> {
     fn method(&self) -> &'static str {
         "cancel_all_orders_after"
     }

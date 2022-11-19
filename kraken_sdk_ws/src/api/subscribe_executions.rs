@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::Request, types::{OrderType, OrderStatus, Amount, OrderSide, SubscriptionName}};
+use crate::{client::IRequest, types::{OrderType, OrderStatus, Amount, OrderSide, SubscriptionName}};
 
 /// - <https://docs.kraken.com/websockets-v2/#executions>
 /// - <https://docs.kraken.com/websockets/#message-ownTrades>
@@ -26,7 +26,7 @@ pub struct SubscribeExecutionsRequest<'a> {
     pub token: &'a str,
 }
 
-impl Request for SubscribeExecutionsRequest<'_> {
+impl IRequest for SubscribeExecutionsRequest<'_> {
     fn method(&self) -> &'static str {
         "subscribe"
     }

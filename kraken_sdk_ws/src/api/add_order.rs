@@ -1,5 +1,5 @@
 use serde::Serialize;
-use crate::{client::Request, types::{OrderType, OrderSide, TimeInForce}};
+use crate::{client::IRequest, types::{OrderType, OrderSide, TimeInForce}};
 
 /// <https://docs.kraken.com/websockets-v2/#add-order>
 #[derive(Debug, Serialize)]
@@ -33,7 +33,7 @@ pub struct AddOrderRequest<'a> {
     pub validate: Option<bool>,
 }
 
-impl Request for AddOrderRequest<'_> {
+impl IRequest for AddOrderRequest<'_> {
     fn method(&self) -> &'static str {
         "add_order"
     }

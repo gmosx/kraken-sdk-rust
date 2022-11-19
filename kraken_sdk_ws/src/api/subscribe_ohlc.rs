@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Request, Event}, types::SubscriptionName};
+use crate::{client::{Event, Request}, types::SubscriptionName};
 
-/// - <https://docs.kraken.com/websockets-v2/#open-high-low-and-close-ohlc>
 #[derive(Debug, Serialize)]
-pub struct SubscribeOhlcRequest<'a> {
+pub struct SubscribeOhlcParams<'a> {
     pub channel: SubscriptionName,
     pub symbol: &'a [&'a str],
     /// Request a snapshot after subscribing.
@@ -12,24 +11,24 @@ pub struct SubscribeOhlcRequest<'a> {
     pub snapshot: Option<bool>,
 }
 
-impl Request for SubscribeOhlcRequest<'_> {
-    fn method(&self) -> &'static str {
-        "subscribe"
-    }
-}
+/// - <https://docs.kraken.com/websockets-v2/#open-high-low-and-close-ohlc>
+pub type SubscribeOhlcRequest<'a> = Request<SubscribeOhlcParams<'a>>;
 
 impl SubscribeOhlcRequest<'_> {
     pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeOhlcRequest<'a> {
         SubscribeOhlcRequest {
-            channel: SubscriptionName::OHLC,
-            symbol,
-            snapshot: None,
+            method: "subscribe".to_owned(),
+            params: SubscribeOhlcParams { channel:  SubscriptionName::OHLC, symbol, snapshot: None },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeOhlcParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
         }
     }

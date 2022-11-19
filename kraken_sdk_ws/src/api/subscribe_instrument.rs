@@ -1,9 +1,8 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Request, Event}, types::SubscriptionName};
+use crate::{client::{Event, Request}, types::SubscriptionName};
 
-/// - <https://docs.kraken.com/websockets-v2/#ticker>
 #[derive(Debug, Serialize)]
-pub struct SubscribeInstrumentRequest {
+pub struct SubscribeInstrumentParams {
     pub channel: SubscriptionName,
     /// Request a snapshot after subscribing.
     /// Default: true
@@ -11,11 +10,8 @@ pub struct SubscribeInstrumentRequest {
     pub snapshot: Option<bool>,
 }
 
-impl Request for SubscribeInstrumentRequest {
-    fn method(&self) -> &'static str {
-        "subscribe"
-    }
-}
+/// - <https://docs.kraken.com/websockets-v2/#instrument>
+pub type SubscribeInstrumentRequest = Request<SubscribeInstrumentParams>;
 
 impl Default for SubscribeInstrumentRequest {
     fn default() -> Self {
@@ -26,14 +22,18 @@ impl Default for SubscribeInstrumentRequest {
 impl SubscribeInstrumentRequest {
     pub fn new() -> SubscribeInstrumentRequest {
         SubscribeInstrumentRequest {
-            channel: SubscriptionName::Instrument,
-            snapshot: None,
+            method: "subscribe".to_owned(),
+            params: SubscribeInstrumentParams { channel:  SubscriptionName::Instrument, snapshot: None },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeInstrumentParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
         }
     }

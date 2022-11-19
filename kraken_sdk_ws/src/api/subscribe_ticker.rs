@@ -1,36 +1,42 @@
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use crate::{client::{Request, Event}, types::SubscriptionName};
+use crate::{client::{Event, Request}, types::SubscriptionName};
 
-/// - <https://docs.kraken.com/websockets-v2/#ticker>
 #[derive(Debug, Serialize)]
-pub struct SubscribeTickerRequest<'a> {
+pub struct SubscribeTickerParams<'a> {
     pub channel: SubscriptionName,
     pub symbol: &'a [&'a str],
-    /// Request a snapshot after subscribing.
-    /// Default: true
+    /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }
 
-impl Request for SubscribeTickerRequest<'_> {
-    fn method(&self) -> &'static str {
-        "subscribe"
-    }
-}
+/// - <https://docs.kraken.com/websockets-v2/#ticker>
+pub type SubscribeTickerRequest<'a> = Request<SubscribeTickerParams<'a>>;
 
 impl SubscribeTickerRequest<'_> {
     pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeTickerRequest<'a> {
         SubscribeTickerRequest {
-            channel: SubscriptionName::Ticker,
-            symbol,
-            snapshot: None,
+            method: "subscribe".to_owned(),
+            params: SubscribeTickerParams { channel:  SubscriptionName::Ticker, symbol, snapshot: None },
+            req_id: None,
+        }
+    }
+
+    pub fn all<'a>() -> SubscribeTickerRequest<'a> {
+        SubscribeTickerRequest {
+            method: "subscribe".to_owned(),
+            params: SubscribeTickerParams { channel:  SubscriptionName::Ticker, symbol: &["*"], snapshot: None },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeTickerParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
         }
     }

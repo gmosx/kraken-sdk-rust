@@ -1,5 +1,5 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Request, Event}, types::{OrderSide, OrderType, SubscriptionName}};
+use crate::{client::{IRequest, Event}, types::{OrderSide, OrderType, SubscriptionName}};
 
 /// - <https://docs.kraken.com/websockets-v2/#trade>
 #[derive(Debug, Serialize)]
@@ -12,7 +12,7 @@ pub struct SubscribeTradeRequest<'a> {
     pub snapshot: Option<bool>,
 }
 
-impl Request for SubscribeTradeRequest<'_> {
+impl IRequest for SubscribeTradeRequest<'_> {
     fn method(&self) -> &'static str {
         "subscribe"
     }

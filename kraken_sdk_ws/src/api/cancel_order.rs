@@ -1,5 +1,5 @@
 use serde::Serialize;
-use crate::client::Request;
+use crate::client::IRequest;
 
 /// <https://docs.kraken.com/websockets-v2/#cancel-order>
 ///
@@ -19,7 +19,7 @@ pub struct CancelOrderRequest<'a> {
 
 // #TODO add a check if the request is valid before sending.
 
-impl Request for CancelOrderRequest<'_> {
+impl IRequest for CancelOrderRequest<'_> {
     fn method(&self) -> &'static str {
         "cancel_order"
     }
