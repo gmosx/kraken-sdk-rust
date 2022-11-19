@@ -1,14 +1,10 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::IRequest, types::{OrderType, OrderStatus, Amount, OrderSide, Channel}};
+use crate::{client::{Request}, types::{OrderType, OrderStatus, Amount, OrderSide, Channel}};
 
-/// - <https://docs.kraken.com/websockets-v2/#executions>
-/// - <https://docs.kraken.com/websockets/#message-ownTrades>
-/// - <https://docs.kraken.com/websockets/#message-openOrders>
 #[derive(Debug, Serialize)]
-pub struct SubscribeExecutionsRequest<'a> {
+pub struct SubscribeExecutionsParams<'a> {
     pub channel: Channel,
-    /// Request a snapshot of the last 50 execution events.
-    /// Default: true
+    /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
     /// If true snapshot only provides execution events referencing trades.
@@ -26,34 +22,43 @@ pub struct SubscribeExecutionsRequest<'a> {
     pub token: &'a str,
 }
 
-impl IRequest for SubscribeExecutionsRequest<'_> {
-    fn method(&self) -> &'static str {
-        "subscribe"
-    }
-}
+/// - <https://docs.kraken.com/websockets-v2/#executions>
+/// - <https://docs.kraken.com/websockets/#message-ownTrades>
+/// - <https://docs.kraken.com/websockets/#message-openOrders>
+pub type SubscribeExecutionsRequest<'a> = Request<SubscribeExecutionsParams<'a>>;
 
 impl SubscribeExecutionsRequest<'_> {
     pub fn new(token: &str) -> SubscribeExecutionsRequest<'_> {
         SubscribeExecutionsRequest {
-            channel: Channel::Executions,
-            snapshot: None,
-            snapshot_trades: None,
-            order_status: None,
-            ratecounter: None,
-            token,
+            method: "subscribe".to_owned(),
+            params: SubscribeExecutionsParams {
+                channel: Channel::Executions,
+                snapshot: None,
+                snapshot_trades: None,
+                order_status: None,
+                ratecounter: None,
+                token
+            },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeExecutionsParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
         }
     }
 
     pub fn ratecounter(self, ratecounter: bool) -> Self {
         Self {
-            ratecounter: Some(ratecounter),
+            params: SubscribeExecutionsParams {
+                ratecounter: Some(ratecounter),
+                ..self.params
+            },
             ..self
         }
     }

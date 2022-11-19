@@ -1,11 +1,8 @@
 use serde::{Serialize, Deserialize};
-use crate::client::{IRequest, Response};
+use crate::client::{Response, Request};
 
-/// Multiple orders can be canceled in one request via batch_cancel method.
-///
-/// <https://docs.kraken.com/websockets-v2/#batch-cancel>
 #[derive(Debug, Serialize)]
-pub struct BatchCancelRequest<'a> {
+pub struct BatchCancelParams<'a> {
     /// Session token.
     pub token: &'a str,
     /// Array of strings representing either: order_userref(s) or order_id(s)
@@ -13,18 +10,20 @@ pub struct BatchCancelRequest<'a> {
     pub orders: Vec<String>,
 }
 
-impl IRequest for BatchCancelRequest<'_> {
-    fn method(&self) -> &'static str {
-        "batch_cancel"
-    }
-}
+/// Multiple orders can be canceled in one request via batch_cancel method.
+///
+/// <https://docs.kraken.com/websockets-v2/#batch-cancel>
+pub type BatchCancelRequest<'a> = Request<BatchCancelParams<'a>>;
 
 impl BatchCancelRequest<'_> {
     pub fn new(orders: Vec<String>, token: &str) -> BatchCancelRequest {
-        BatchCancelRequest { token, orders }
+        BatchCancelRequest {
+            method: "batch_cancel".to_owned(),
+            params: BatchCancelParams { token, orders },
+            req_id: None,
+        }
     }
 }
-
 #[derive(Debug, Deserialize)]
 pub struct BatchCancelResult {
     pub count: i32,

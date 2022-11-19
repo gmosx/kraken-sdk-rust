@@ -15,7 +15,7 @@ pub type CancelAllOrdersRequest<'a> = Request<CancelAllOrdersParams<'a>>;
 impl CancelAllOrdersRequest<'_> {
     pub fn new(token: &str) -> CancelAllOrdersRequest {
         CancelAllOrdersRequest {
-            method: "subscribe".to_owned(),
+            method: "cancel_all".to_owned(),
             params: CancelAllOrdersParams { token },
             req_id: None,
         }

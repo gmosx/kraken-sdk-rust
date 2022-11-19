@@ -1,9 +1,8 @@
 use serde::Serialize;
-use crate::{client::IRequest, types::{OrderType, OrderSide, TimeInForce}};
+use crate::{client::{Request}, types::{OrderType, OrderSide, TimeInForce}};
 
-/// <https://docs.kraken.com/websockets-v2/#add-order>
 #[derive(Debug, Serialize)]
-pub struct AddOrderRequest<'a> {
+pub struct AddOrderParams<'a> {
     pub token: &'a str,
     pub side: OrderSide,
     pub order_type: OrderType,
@@ -33,46 +32,51 @@ pub struct AddOrderRequest<'a> {
     pub validate: Option<bool>,
 }
 
-impl IRequest for AddOrderRequest<'_> {
-    fn method(&self) -> &'static str {
-        "add_order"
-    }
-}
+/// - <https://docs.kraken.com/websockets-v2/#add-order>
+pub type AddOrderRequest<'a> = Request<AddOrderParams<'a>>;
 
 impl AddOrderRequest<'_> {
     pub fn market<'a>(side: OrderSide, order_qty: f64, symbol: &'a str, token: &'a str) -> AddOrderRequest<'a> {
         AddOrderRequest {
-            side,
-            limit_price: None,
-            order_qty: Some(order_qty),
-            display_qty: None,
-            order_type: OrderType::Limit,
-            symbol,
-            time_in_force: None,
-            order_userref: None,
-            no_mpp: None,
-            post_only: None,
-            reduce_only: None,
-            validate: None,
-            token,
+            method: "add_order".to_owned(),
+            params: AddOrderParams {
+                side,
+                limit_price: None,
+                order_qty: Some(order_qty),
+                display_qty: None,
+                order_type: OrderType::Limit,
+                symbol,
+                time_in_force: None,
+                order_userref: None,
+                no_mpp: None,
+                post_only: None,
+                reduce_only: None,
+                validate: None,
+                token,
+            },
+            req_id: None,
         }
     }
 
     pub fn limit<'a>(side: OrderSide, order_qty: f64, symbol: &'a str, limit_price: f64, token: &'a str) -> AddOrderRequest<'a> {
         AddOrderRequest {
-            side,
-            limit_price: Some(limit_price),
-            order_qty: Some(order_qty),
-            display_qty: None,
-            order_type: OrderType::Limit,
-            symbol,
-            time_in_force: None,
-            order_userref: None,
-            no_mpp: None,
-            post_only: None,
-            reduce_only: None,
-            validate: None,
-            token,
+            method: "add_order".to_owned(),
+            params: AddOrderParams {
+                side,
+                limit_price: Some(limit_price),
+                order_qty: Some(order_qty),
+                display_qty: None,
+                order_type: OrderType::Limit,
+                symbol,
+                time_in_force: None,
+                order_userref: None,
+                no_mpp: None,
+                post_only: None,
+                reduce_only: None,
+                validate: None,
+                token,
+                },
+            req_id: None,
         }
     }
 
@@ -86,42 +90,61 @@ impl AddOrderRequest<'_> {
 
     pub fn display_qty(self, display_qty: f64) -> Self {
         Self {
-            display_qty: Some(display_qty),
+            params: AddOrderParams {
+                display_qty: Some(display_qty),
+                ..self.params
+            },
             ..self
         }
     }
 
     pub fn no_mpp(self, no_mpp: bool) -> Self {
         Self {
-            no_mpp: Some(no_mpp),
+            params: AddOrderParams {
+                no_mpp: Some(no_mpp),
+                ..self.params
+            },
             ..self
         }
     }
 
     pub fn post_only(self, post_only: bool) -> Self {
         Self {
-            post_only: Some(post_only),
+            params: AddOrderParams {
+                post_only: Some(post_only),
+                ..self.params
+            },
             ..self
         }
     }
 
     pub fn reduce_only(self, reduce_only: bool) -> Self {
         Self {
-            reduce_only: Some(reduce_only),
+            params: AddOrderParams {
+                reduce_only: Some(reduce_only),
+                ..self.params
+            },
             ..self
         }
     }
 
     pub fn validate(self, validate: bool) -> Self {
         Self {
-            validate: Some(validate),
+            params: AddOrderParams {
+                validate: Some(validate),
+                ..self.params
+            },
             ..self
         }
     }
 
+    // #TODO find a better name.
     pub fn validate_only(self) -> Self {
         Self {
-            validate: Some(true),
+            params: AddOrderParams {
+                validate: Some(true),
+                ..self.params
+            },
             ..self
         }
     }

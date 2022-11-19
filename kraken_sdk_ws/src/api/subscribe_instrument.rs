@@ -4,8 +4,7 @@ use crate::{client::{Event, Request}, types::Channel};
 #[derive(Debug, Serialize)]
 pub struct SubscribeInstrumentParams {
     pub channel: Channel,
-    /// Request a snapshot after subscribing.
-    /// Default: true
+    /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }

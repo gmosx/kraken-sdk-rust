@@ -1,35 +1,33 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{IRequest, Event}, types::{OrderSide, OrderType, Channel}};
+use crate::{client::{Event, Request}, types::{OrderSide, OrderType, Channel}};
 
-/// - <https://docs.kraken.com/websockets-v2/#trade>
 #[derive(Debug, Serialize)]
-pub struct SubscribeTradeRequest<'a> {
+pub struct SubscribeTradeParams<'a> {
     pub channel: Channel,
     pub symbol: &'a [&'a str],
-    /// Request a snapshot after subscribing.
-    /// Default: true
+    /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }
 
-impl IRequest for SubscribeTradeRequest<'_> {
-    fn method(&self) -> &'static str {
-        "subscribe"
-    }
-}
+/// - <https://docs.kraken.com/websockets-v2/#trade>
+pub type SubscribeTradeRequest<'a> = Request<SubscribeTradeParams<'a>>;
 
 impl SubscribeTradeRequest<'_> {
     pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeTradeRequest<'a> {
         SubscribeTradeRequest {
-            channel: Channel::Trade,
-            symbol,
-            snapshot: None,
+            method: "subscribe".to_owned(),
+            params: SubscribeTradeParams { channel:  Channel::Trade, symbol, snapshot: None },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeTradeParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
         }
     }

@@ -5,8 +5,7 @@ use crate::{client::{Event, Request}, types::Channel};
 pub struct SubscribeOhlcParams<'a> {
     pub channel: Channel,
     pub symbol: &'a [&'a str],
-    /// Request a snapshot after subscribing.
-    /// Default: true
+    /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }

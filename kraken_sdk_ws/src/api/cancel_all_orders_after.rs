@@ -24,7 +24,7 @@ pub type CancelAllOrdersAfterRequest<'a> = Request<CancelAllOrdersAfterParams<'a
 impl CancelAllOrdersAfterRequest<'_> {
     pub fn new(timeout: i32, token: &str) -> CancelAllOrdersAfterRequest {
         CancelAllOrdersAfterRequest {
-            method: "subscribe".to_owned(),
+            method: "cancel_all_orders_after".to_owned(),
             params: CancelAllOrdersAfterParams { token, timeout },
             req_id: None,
         }
