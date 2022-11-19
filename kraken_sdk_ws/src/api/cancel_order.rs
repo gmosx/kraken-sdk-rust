@@ -1,6 +1,10 @@
+//! <https://docs.kraken.com/websockets-v2/#cancel-order>
+
 use serde::Serialize;
 use crate::client::Request;
 
+/// Note: Though order_id and order_userref are individually optional, at least
+/// one of them must be filled.
 #[derive(Debug, Serialize)]
 pub struct CancelOrderParams<'a> {
     /// Session token.
@@ -13,10 +17,6 @@ pub struct CancelOrderParams<'a> {
     pub order_userref: Option<Vec<i32>>,
 }
 
-/// <https://docs.kraken.com/websockets-v2/#cancel-order>
-///
-/// Note: Though order_id and order_userref are individually optional, at least
-/// one of them must be filled.
 pub type CancelOrderRequest<'a> = Request<CancelOrderParams<'a>>;
 
 impl CancelOrderRequest<'_> {
