@@ -1,12 +1,12 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::IRequest, types::{OrderType, OrderStatus, Amount, OrderSide, SubscriptionName}};
+use crate::{client::IRequest, types::{OrderType, OrderStatus, Amount, OrderSide, Channel}};
 
 /// - <https://docs.kraken.com/websockets-v2/#executions>
 /// - <https://docs.kraken.com/websockets/#message-ownTrades>
 /// - <https://docs.kraken.com/websockets/#message-openOrders>
 #[derive(Debug, Serialize)]
 pub struct SubscribeExecutionsRequest<'a> {
-    pub channel: SubscriptionName,
+    pub channel: Channel,
     /// Request a snapshot of the last 50 execution events.
     /// Default: true
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -35,7 +35,7 @@ impl IRequest for SubscribeExecutionsRequest<'_> {
 impl SubscribeExecutionsRequest<'_> {
     pub fn new(token: &str) -> SubscribeExecutionsRequest<'_> {
         SubscribeExecutionsRequest {
-            channel: SubscriptionName::Executions,
+            channel: Channel::Executions,
             snapshot: None,
             snapshot_trades: None,
             order_status: None,

@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Event, Request}, types::SubscriptionName};
+use crate::{client::{Event, Request}, types::Channel};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeInstrumentParams {
-    pub channel: SubscriptionName,
+    pub channel: Channel,
     /// Request a snapshot after subscribing.
     /// Default: true
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -23,7 +23,7 @@ impl SubscribeInstrumentRequest {
     pub fn new() -> SubscribeInstrumentRequest {
         SubscribeInstrumentRequest {
             method: "subscribe".to_owned(),
-            params: SubscribeInstrumentParams { channel:  SubscriptionName::Instrument, snapshot: None },
+            params: SubscribeInstrumentParams { channel:  Channel::Instrument, snapshot: None },
             req_id: None,
         }
     }

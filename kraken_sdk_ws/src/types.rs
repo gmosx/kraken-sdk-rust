@@ -53,7 +53,7 @@ pub enum OrderStatus {
 
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "lowercase")]
-pub enum SubscriptionName {
+pub enum Channel {
     Book,
     Executions,
     Instrument,

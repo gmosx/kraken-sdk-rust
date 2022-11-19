@@ -1,22 +1,23 @@
 use serde::Serialize;
-use crate::client::IRequest;
+use crate::client::{Request};
 
-/// Cancels all pending orders.
-/// <https://docs.kraken.com/websockets-v2/#cancel-all-orders>
 #[derive(Debug, Serialize)]
-pub struct CancelAllOrdersRequest<'a> {
+pub struct CancelAllOrdersParams<'a> {
     /// Session token.
     pub token: &'a str,
 }
 
-impl IRequest for CancelAllOrdersRequest<'_> {
-    fn method(&self) -> &'static str {
-        "cancel_all"
-    }
-}
+/// Cancels all pending orders.
+///
+/// <https://docs.kraken.com/websockets-v2/#cancel-all-orders>
+pub type CancelAllOrdersRequest<'a> = Request<CancelAllOrdersParams<'a>>;
 
 impl CancelAllOrdersRequest<'_> {
     pub fn new(token: &str) -> CancelAllOrdersRequest {
-        CancelAllOrdersRequest { token }
+        CancelAllOrdersRequest {
+            method: "subscribe".to_owned(),
+            params: CancelAllOrdersParams { token },
+            req_id: None,
+        }
     }
 }

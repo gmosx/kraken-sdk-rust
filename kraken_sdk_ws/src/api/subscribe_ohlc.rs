@@ -1,9 +1,9 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Event, Request}, types::SubscriptionName};
+use crate::{client::{Event, Request}, types::Channel};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeOhlcParams<'a> {
-    pub channel: SubscriptionName,
+    pub channel: Channel,
     pub symbol: &'a [&'a str],
     /// Request a snapshot after subscribing.
     /// Default: true
@@ -18,7 +18,7 @@ impl SubscribeOhlcRequest<'_> {
     pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeOhlcRequest<'a> {
         SubscribeOhlcRequest {
             method: "subscribe".to_owned(),
-            params: SubscribeOhlcParams { channel:  SubscriptionName::OHLC, symbol, snapshot: None },
+            params: SubscribeOhlcParams { channel:  Channel::OHLC, symbol, snapshot: None },
             req_id: None,
         }
     }

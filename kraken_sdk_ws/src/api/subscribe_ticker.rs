@@ -1,10 +1,10 @@
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use crate::{client::{Event, Request}, types::SubscriptionName};
+use crate::{client::{Event, Request}, types::Channel};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeTickerParams<'a> {
-    pub channel: SubscriptionName,
+    pub channel: Channel,
     pub symbol: &'a [&'a str],
     /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -18,7 +18,7 @@ impl SubscribeTickerRequest<'_> {
     pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeTickerRequest<'a> {
         SubscribeTickerRequest {
             method: "subscribe".to_owned(),
-            params: SubscribeTickerParams { channel:  SubscriptionName::Ticker, symbol, snapshot: None },
+            params: SubscribeTickerParams { channel:  Channel::Ticker, symbol, snapshot: None },
             req_id: None,
         }
     }
@@ -26,7 +26,7 @@ impl SubscribeTickerRequest<'_> {
     pub fn all<'a>() -> SubscribeTickerRequest<'a> {
         SubscribeTickerRequest {
             method: "subscribe".to_owned(),
-            params: SubscribeTickerParams { channel:  SubscriptionName::Ticker, symbol: &["*"], snapshot: None },
+            params: SubscribeTickerParams { channel:  Channel::Ticker, symbol: &["*"], snapshot: None },
             req_id: None,
         }
     }
