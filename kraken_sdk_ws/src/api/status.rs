@@ -1,5 +1,7 @@
 use serde::{Deserialize};
 
+use crate::client::Event;
+
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum SystemStatus {
@@ -17,10 +19,4 @@ pub struct StatusData {
     pub version: String,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct StatusEvent {
-    pub channel: String,
-    pub data: Vec<StatusData>,
-    #[serde(rename = "type")]
-    pub event_type: String,
-}
+pub type StatusEvent = Event<Vec<StatusData>>;
