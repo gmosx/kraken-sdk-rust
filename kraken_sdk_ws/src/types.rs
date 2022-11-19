@@ -61,3 +61,20 @@ pub enum SubscriptionName {
     Trade,
     OHLC,
 }
+
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "kebab-case")]
+pub enum ConditionalOrderType {
+    Limit,
+    StopLoss,
+    StopLossLimit,
+    TakeProfit,
+    TakeProfitLimit,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct ConditionalParams {
+    pub limit_price: Option<f64>,
+    pub stop_price: Option<f64>,
+    pub order_type: Option<ConditionalOrderType>,
+}
