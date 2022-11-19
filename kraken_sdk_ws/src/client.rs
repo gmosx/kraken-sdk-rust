@@ -42,24 +42,19 @@ pub struct Event<D> {
     pub event_type: String,
 }
 
-// #TODO not used yet!
-#[derive(Serialize, Deserialize, Debug)]
-pub enum TypedMessage {
-    Other(String),
-}
-
 // Subscription messages (event) have the `channel` field.
 // RPC messages (response) have the `method` field.
 // Error messages have the `error` field.
 
 /// A WebSocket client for Kraken.
+///
 /// The client can connect to a `public` endpoint or an `auth` endpoint.
 /// The `auth` endpoint only supports auth messages.
 pub struct Client {
     #[allow(dead_code)]
     token: Option<String>,
     sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
-    pub messages: Pin<Box<dyn Stream<Item = Result<TypedMessage>>>>,
+    pub messages: Pin<Box<dyn Stream<Item = Result<String>>>>,
 }
 
 // #TODO extract socket like in the previous impl?
@@ -72,7 +67,7 @@ impl Client {
             .map(move |msg| {
                 if let Message::Text(string) = msg.unwrap() {
                     tracing::debug!("{string}");
-                    Ok(Some(TypedMessage::Other(string)))
+                    Ok(Some(string))
                 } else {
                     Ok(None)
                 }
@@ -97,7 +92,7 @@ impl Client {
     pub async fn send<Req>(&mut self, req: Req) -> Result<()>
         where Req: Serialize {
         // #TODO attach the token to the request here! nah!
-        // // #TODO add rec_id
+        // #TODO add rec_id
         let msg = serde_json::to_string(&req).unwrap();
         tracing::debug!("{msg}");
         self.sender.send(Message::Text(msg.to_string())).await?;
