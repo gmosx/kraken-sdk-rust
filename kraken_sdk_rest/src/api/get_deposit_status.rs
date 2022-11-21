@@ -54,8 +54,8 @@ pub struct DepositStatus {
     pub info: String,
     /// Amount deposited
     pub amount: String,
-    /// Fee paid
-    pub fee: String,
+    /// Fee paid (not present when the deposit is pending)
+    pub fee: Option<String>,
     /// Unix timestamp when request was made
     pub time: u64,
     /// Status of deposit
