@@ -9,8 +9,8 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetTradeVolumeRequest {
     client: Client,
-    pair: Option<String>,
-    fee_info: Option<bool>
+    pair: String,
+    fee_info: Option<bool>,
 }
 
 impl GetTradeVolumeRequest {
@@ -22,32 +22,20 @@ impl GetTradeVolumeRequest {
         }
     }
 
-    /// Restrict results to a given trading pair
-    pub fn pair(self, pair: String) -> Self {
-        Self {
-            pair: Some(pair),
-            ..self
-        }
-    }
-
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut query: Vec<String> = Vec::new();
 
-        if let Some(pair) = self.pair {
-            query.push(format!("pair={}", pair));
-        }
+        query.push(format!("pair={}", self.pair));
 
         if let Some(true) = self.fee_info {
             query.push(String::from("fee-info=true"));
         }
 
-        let query = if query.is_empty() {
-            None
-        } else {
-            Some(query.join("&"))
-        };
+        let query = Some(query.join("&"));
 
-        self.client.send_private("/0/private/TradeVolume", query).await
+        self.client
+            .send_private("/0/private/TradeVolume", query)
+            .await
     }
 
     pub async fn send(self) -> Result<GetTradeVolumeResponse> {
@@ -67,7 +55,7 @@ pub struct FeeTierInfo {
     #[serde(rename = "tiervolume")]
     tier_volume: Option<String>,
     #[serde(rename = "nextvolume")]
-    next_volume: Option<String>
+    next_volume: Option<String>,
 }
 
 #[derive(Debug, Deserialize, Serialize)]
@@ -75,15 +63,15 @@ pub struct GetTradeVolumeResponse {
     pub currency: String,
     pub volume: String,
     pub fees: HashMap<String, FeeTierInfo>,
-    pub fees_maker: HashMap<String, FeeTierInfo>
+    pub fees_maker: HashMap<String, FeeTierInfo>,
 }
 
 impl Client {
-     pub fn get_trade_volume(&self) -> GetTradeVolumeRequest {
+    pub fn get_trade_volume(&self, pair: &str) -> GetTradeVolumeRequest {
         GetTradeVolumeRequest {
             client: self.clone(),
-            pair: None,
-            fee_info: None
+            pair: pair.to_owned(),
+            fee_info: None,
         }
     }
 }
