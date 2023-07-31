@@ -2,7 +2,7 @@
 
 # Kraken SDK component for the Kraken WebSocket API
 
-A strongly-typed Rust SDK for the [Kraken WebSocket API V2](https://docs.kraken.com/websockets-v2).
+A strongly-typed Rust SDK for the [Kraken WebSocket API](https://docs.kraken.com/websockets-v2).
 
 This crate is an _unofficial_, community-driven effort.
 
