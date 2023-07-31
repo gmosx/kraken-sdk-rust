@@ -1,4 +1,4 @@
-# Support for Kraken WebSocket API V2
+# Support for Kraken WebSocket API
 
 # Kraken SDK component for the Kraken WebSocket API
 
