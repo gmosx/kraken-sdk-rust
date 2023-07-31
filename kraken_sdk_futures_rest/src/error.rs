@@ -15,6 +15,7 @@ pub enum Error {
 }
 
 impl Error {
+    #[allow(dead_code)]
     pub(crate) fn internal(message: impl fmt::Display) -> Self {
         Self::Internal(message.to_string())
     }

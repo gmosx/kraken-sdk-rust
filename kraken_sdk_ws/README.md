@@ -1,19 +1,57 @@
+# Support for Kraken WebSocket API
+
 # Kraken SDK component for the Kraken WebSocket API
 
-A strongly-typed Rust SDK for the [Kraken WebSocket API](https://docs.kraken.com/websockets/).
+A strongly-typed Rust SDK for the [Kraken WebSocket API](https://docs.kraken.com/websockets-v2).
 
-This crate is an *unofficial*, community-driven effort.
+This crate is an _unofficial_, community-driven effort.
 
 ## Installation
 
 ```toml
 [dependencies]
-kraken_sdk_ws = "0.1"
+kraken_sdk_ws = "0.18"
+```
+
+## Usage
+
+```rs
+use futures::StreamExt;
+use kraken_sdk_ws::{api::SubscribeTickerRequest, client::WS_URL, Client};
+
+#[tokio::main]
+async fn main() {
+    let mut client = Client::connect(WS_URL, None).await.expect("cannot connect");
+
+    let req = SubscribeTickerRequest::new(&["BTC/USD"]);
+
+    client.send(req).await.expect("cannot send request");
+
+    loop {
+        if let Some(msg) = client.messages.next().await {
+            dbg!(&msg);
+        }
+    }
+}
+```
+
+or run the example:
+
+```rs
+cargo run --example ticker
 ```
 
 ## Status
 
-**WARNING**: This crate is under construction!
+The software is under active development and the API is expected to change.
+
+## Contributing
+
+Pull requests, issues and comments are welcome! Make sure to add tests for new features and bug fixes.
+
+## Contact
+
+For questions, suggestions, etc, you can reach the maintainer on [Twitter](https://twitter.com/gmosx).
 
 ## License
 
@@ -35,4 +73,4 @@ DEALINGS IN THE SOFTWARE.
 
 ## Copyright
 
-Copyright © 2021 [George Moschovitis](https://gmosx.ninja).
+Copyright © 2022 [George Moschovitis](https://gmosx.ninja).

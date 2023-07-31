@@ -83,7 +83,9 @@ impl ClientBuilder {
 pub struct Client {
     base_url: String,
     user_agent: String,
+    #[allow(dead_code)]
     public_key: Option<String>,
+    #[allow(dead_code)]
     private_key: Option<String>,
     http_client: reqwest::Client,
 }
