@@ -132,6 +132,7 @@ impl Client {
         }
     }
 
+    // #TODO the parameter is path, not url!
     /// Sends a public request to the API.
     pub async fn send_public<Resp>(&self, url: &str) -> Result<Resp>
     where
@@ -149,6 +150,7 @@ impl Client {
         self.unwrap_response(resp).await
     }
 
+    // #TODO the parameter is path, not url!
     /// Sends a private request to the API.
     pub async fn send_private<Resp>(&self, url: &str, query: Option<String>) -> Result<Resp>
     where
