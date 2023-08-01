@@ -22,28 +22,10 @@ The software is under active development and the API is expected to change.
 
 Pull requests, issues and comments are welcome! Make sure to add tests for new features and bug fixes.
 
-## Contact
-
-For questions, suggestions, etc, you can reach the maintainer on [Twitter](https://twitter.com/gmosx).
-
 ## License
 
-Each component of the Kraken SDK is individually licensed. Please check the corresponding directories for more details.
-
-- kraken_sdk_rest: [LICENSE-MIT](kraken_sdk_rest/LICENSE-MIT), [LICENSE-APACHE](kraken_sdk_rest/LICENSE-APACHE)
-
-## Disclaimer
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
-ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
-TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
-SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
-CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
-IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-DEALINGS IN THE SOFTWARE.
+This work is licensed under the Apache-2.0 License. See [LICENSE.txt](LICENSE.txt) or <https://spdx.org/licenses/Apache-2.0.html> for details.
 
 ## Copyright
 
-Copyright © 2021-2022 [George Moschovitis](https://gmosx.ninja).
+Copyright © 2021 [Georgios Moschovitis](https://gmosx.ninja).
