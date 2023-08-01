@@ -1,8 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://docs.kraken.com/rest/#operation/getTradeBalance
-/// - https://api.kraken.com/0/private/TradeBalance
+/// - <https://docs.kraken.com/rest/#operation/getTradeBalance>
+/// - <https://api.kraken.com/0/private/TradeBalance>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetTradeBalanceRequest {
     client: Client,
