@@ -1,8 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://www.kraken.com/features/api#get-server-time
-/// - https://api.kraken.com/0/public/Time
+/// - <https://www.kraken.com/features/api#get-server-time>
+/// - <https://api.kraken.com/0/public/Time>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetServerTimeRequest {
     client: Client,

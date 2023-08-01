@@ -55,14 +55,14 @@ impl std::fmt::Display for Interval {
 ///
 /// ## Documentation
 ///
-/// - https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC
-/// - https://support.kraken.com/hc/en-us/articles/360022835891-Ticker-symbols
+/// - <https://support.kraken.com/hc/en-us/articles/4403284627220-OHLC>
+/// - <https://support.kraken.com/hc/en-us/articles/360022835891-Ticker-symbols>
 ///
 /// ## Sample calls
 ///
-/// - https://futures.kraken.com/api/charts/v1/trade/PI_XBTUSD/1m
-/// - https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1m?from=1625405796
-/// - https://futures.kraken.com/api/charts/v1/mark/PI_XBTUSD/1m?from=1625405796&to=1625492256
+/// - <https://futures.kraken.com/api/charts/v1/trade/PI_XBTUSD/1m>
+/// - <https://futures.kraken.com/api/charts/v1/spot/PI_XBTUSD/1m?from=1625405796>
+/// - <https://futures.kraken.com/api/charts/v1/mark/PI_XBTUSD/1m?from=1625405796&to=1625492256>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOhlcRequest {
     client: Client,

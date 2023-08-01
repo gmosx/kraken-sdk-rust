@@ -1,8 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://www.kraken.com/features/api#get-system-status
-/// - https://api.kraken.com/0/public/SystemStatus
+/// - <https://www.kraken.com/features/api#get-system-status>
+/// - <https://api.kraken.com/0/public/SystemStatus>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetSystemStatusRequest {
     client: Client,

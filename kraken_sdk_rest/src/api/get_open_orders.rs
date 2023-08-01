@@ -2,8 +2,8 @@ use crate::{Client, OrderDescription, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-open-orders
-/// - https://api.kraken.com/0/private/OpenOrders
+/// - <https://www.kraken.com/features/api#get-open-orders>
+/// - <https://api.kraken.com/0/private/OpenOrders>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOpenOrdersRequest {
     client: Client,

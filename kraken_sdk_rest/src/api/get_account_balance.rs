@@ -2,8 +2,8 @@ use crate::{Client, Result};
 use serde::de::DeserializeOwned;
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-account-balance
-/// - https://api.kraken.com/0/private/Balance
+/// - <https://www.kraken.com/features/api#get-account-balance>
+/// - <https://api.kraken.com/0/private/Balance>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetAccountBalanceRequest {
     client: Client,

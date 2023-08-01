@@ -3,8 +3,8 @@ use serde::{de::DeserializeOwned, Deserialize};
 
 // TODO: consider renaming to `get_staking_assets`.
 
-/// - https://docs.kraken.com/rest/#operation/getStakingAssetInfo
-/// - https://api.kraken.com/0/private/Staking/Assets
+/// - <https://docs.kraken.com/rest/#operation/getStakingAssetInfo>
+/// - <https://api.kraken.com/0/private/Staking/Assets>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetStakeableAssetsRequest {
     client: Client,

@@ -2,8 +2,8 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://docs.kraken.com/rest/#operation/getOrderBook
-/// - https://api.kraken.com/0/public/Depth
+/// - <https://docs.kraken.com/rest/#operation/getOrderBook>
+/// - <https://api.kraken.com/0/public/Depth>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOrderBookRequest {
     client: Client,

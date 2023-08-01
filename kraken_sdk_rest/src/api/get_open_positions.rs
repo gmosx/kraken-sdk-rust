@@ -2,8 +2,8 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://docs.kraken.com/rest/#tag/User-Data/operation/getOpenPositions
-/// - https://api.kraken.com/0/private/OpenPositions
+/// - <https://docs.kraken.com/rest/#tag/User-Data/operation/getOpenPositions>
+/// - <https://api.kraken.com/0/private/OpenPositions>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOpenPositionsRequest {
     client: Client,
@@ -13,10 +13,7 @@ pub struct GetOpenPositionsRequest {
 impl GetOpenPositionsRequest {
     /// Whether to include P&L calculations (default = false)
     pub fn docalcs(self, docalcs: bool) -> Self {
-        Self {
-            docalcs,
-            ..self
-        }
+        Self { docalcs, ..self }
     }
 
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {

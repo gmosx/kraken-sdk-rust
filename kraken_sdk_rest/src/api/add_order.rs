@@ -4,9 +4,9 @@ use crate::{
 };
 use serde::{de::DeserializeOwned, Deserialize};
 
-/// - https://www.kraken.com/features/api#add-standard-order
-/// - https://api.kraken.com/0/private/AddOrder
-/// - https://support.kraken.com/hc/en-us/articles/205893708-Minimum-order-size-volume-for-trading
+/// - <https://www.kraken.com/features/api#add-standard-order>
+/// - <https://api.kraken.com/0/private/AddOrder>
+/// - <https://support.kraken.com/hc/en-us/articles/205893708-Minimum-order-size-volume-for-trading>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct AddOrderRequest {
     client: Client,

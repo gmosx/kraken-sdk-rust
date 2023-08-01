@@ -6,7 +6,7 @@ use serde::{de::DeserializeOwned, Deserialize};
 ///
 /// ## Documentation
 ///
-/// - https://support.kraken.com/hc/en-us/articles/360022635672-Instruments
+/// - <https://support.kraken.com/hc/en-us/articles/360022635672-Instruments>
 ///
 /// ## Sample call
 ///

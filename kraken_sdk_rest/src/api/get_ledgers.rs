@@ -2,8 +2,8 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
-/// - https://docs.kraken.com/rest/#tag/User-Data/operation/getLedgers
-/// - https://api.kraken.com/0/private/Ledgers
+/// - <https://docs.kraken.com/rest/#tag/User-Data/operation/getLedgers>
+/// - <https://api.kraken.com/0/private/Ledgers>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetLedgersRequest {
     client: Client,

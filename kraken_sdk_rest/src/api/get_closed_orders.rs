@@ -5,8 +5,8 @@ use std::collections::HashMap;
 // TODO: This endpoint is under construction. Don't use yet!
 // TODO: Rename to `get_close_orders_history`.
 
-/// - https://docs.kraken.com/rest/#operation/getClosedOrders
-/// - https://api.kraken.com/0/private/ClosedOrders
+/// - <https://docs.kraken.com/rest/#operation/getClosedOrders>
+/// - <https://api.kraken.com/0/private/ClosedOrders>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetClosedOrdersRequest {
     client: Client,

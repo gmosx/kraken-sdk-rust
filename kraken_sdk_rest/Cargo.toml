@@ -2,7 +2,7 @@
 name = "kraken_sdk_rest"
 description = "A strongly-typed client for the Kraken REST API"
 version = "0.19.0"
-license = "MIT OR Apache-2.0"
+license = "Apache-2.0"
 repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_sdk_rest"
 keywords = ["kraken", "api", "client", "rest", "trading"]
 authors = ["George Moschovitis <gmosx@reizu.com>"]

@@ -2,8 +2,8 @@ use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
 use std::collections::HashMap;
 
-/// - https://www.kraken.com/features/api#get-tradable-pairs
-/// - https://api.kraken.com/0/public/AssetPairs
+/// - <https://www.kraken.com/features/api#get-tradable-pairs>
+/// - <https://api.kraken.com/0/public/AssetPairs>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetAssetPairsRequest {
     client: Client,

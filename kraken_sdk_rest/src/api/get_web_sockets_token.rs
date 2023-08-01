@@ -5,8 +5,8 @@ use serde::{de::DeserializeOwned, Deserialize};
 /// of creation. The token does not expire once a connection to a WebSockets API
 /// feed is maintained.
 ///
-/// - https://docs.kraken.com/rest/#operation/getWebsocketsToken
-/// - https://api.kraken.com/0/private/GetWebSocketsToken
+/// - <https://docs.kraken.com/rest/#operation/getWebsocketsToken>
+/// - <https://api.kraken.com/0/private/GetWebSocketsToken>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetWebSocketsTokenRequest {
     client: Client,

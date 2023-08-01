@@ -15,8 +15,8 @@ pub enum Interval {
     Day15 = 21_600,
 }
 
-/// - https://docs.kraken.com/rest/#operation/getOHLCData
-/// - https://api.kraken.com/0/public/OHLC
+/// - <https://docs.kraken.com/rest/#operation/getOHLCData>
+/// - <https://api.kraken.com/0/public/OHLC>
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetOhlcDataRequest {
     client: Client,
