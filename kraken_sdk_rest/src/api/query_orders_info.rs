@@ -68,6 +68,7 @@ pub struct OrderInfo {
     pub expiretm: f64,
     pub vol: String,
     pub vol_exec: String,
+    pub cost: String,
     pub fee: String,
     pub misc: String,
     pub limitprice: String,
