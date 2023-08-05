@@ -1,5 +1,5 @@
 use crate::{Client, Result};
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// - <https://docs.kraken.com/rest/#operation/getOrderBook>
@@ -35,10 +35,10 @@ impl GetOrderBookRequest {
         self.execute().await
     }
 }
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct OrderBookTier(pub String, pub String, pub i32);
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct OrderBook {
     /// ask side array of array entries(<price>, <volume>, <timestamp>)
     pub asks: Vec<OrderBookTier>,

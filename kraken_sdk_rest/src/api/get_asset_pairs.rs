@@ -34,10 +34,10 @@ impl GetAssetPairsRequest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct FeeSchedule(f64, f64);
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct PairInfo {
     /// alternate pair name
     pub altname: String,
