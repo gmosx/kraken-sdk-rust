@@ -1,4 +1,4 @@
-use crate::{util::Result};
+use crate::util::Result;
 use futures::{future, stream::SplitSink, StreamExt};
 use futures_util::SinkExt;
 use serde::{Deserialize, Serialize};
@@ -9,11 +9,8 @@ use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
 };
 
-pub const WS_URL: &str = "wss://ws.kraken.com/v2";
-pub const WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
-
-pub const DEFAULT_WS_URL: &str = WS_URL;
-pub const DEFAULT_WS_AUTH_URL: &str = WS_AUTH_URL;
+pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
+pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
 
 #[derive(Debug, Serialize)]
 pub struct Request<P> {
@@ -82,15 +79,17 @@ impl Client {
     }
 
     pub async fn connect_public() -> Result<Self> {
-        Self::connect(WS_URL, None).await
+        Self::connect(DEFAULT_WS_URL, None).await
     }
 
     pub async fn connect_auth(token: String) -> Result<Self> {
-        Self::connect(WS_AUTH_URL, Some(token)).await
+        Self::connect(DEFFAULT_WS_AUTH_URL, Some(token)).await
     }
 
     pub async fn send<Req>(&mut self, req: Req) -> Result<()>
-        where Req: Serialize {
+    where
+        Req: Serialize,
+    {
         // #TODO attach the token to the request here! nah!
         // #TODO add rec_id
         let msg = serde_json::to_string(&req).unwrap();
