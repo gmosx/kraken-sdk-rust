@@ -34,8 +34,16 @@ impl GetAssetPairsRequest {
     }
 }
 
+// #todo consider making FeeSchedule a struct with named fields.
+//
+// #[derive(Debug, Deserialize, Clone)]
+// pub struct FeeSchedule {
+//   pub volume: f64,
+//   pub percent_fee: f64
+// }
+
 #[derive(Debug, Deserialize, Clone)]
-pub struct FeeSchedule(f64, f64);
+pub struct FeeSchedule(pub f64, pub f64);
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct PairInfo {
