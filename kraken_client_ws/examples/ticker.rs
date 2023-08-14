@@ -1,5 +1,5 @@
 use futures::StreamExt;
-use kraken_sdk_ws::{api::SubscribeTickerRequest, client::DEFAULT_WS_URL, Client};
+use kraken_client_ws::{api::SubscribeTickerRequest, client::DEFAULT_WS_URL, Client};
 
 #[tokio::main]
 async fn main() {

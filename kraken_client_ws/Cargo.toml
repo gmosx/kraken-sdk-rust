@@ -1,11 +1,11 @@
 [package]
-name = "kraken_sdk_ws"
+name = "kraken_client_ws"
 description = "A strongly-typed client for the Kraken WebSocket API"
-version = "0.19.0"
+version = "0.20.0"
 license = "Apache-2.0"
-repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_sdk_ws"
+repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_client_ws"
 keywords = ["kraken", "api", "client", "websocket", "trading"]
-authors = ["George Moschovitis <gmosx@reizu.com>"]
+authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
 edition = "2021"
 
 [dependencies]
