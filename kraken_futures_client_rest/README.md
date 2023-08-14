@@ -8,7 +8,7 @@ This crate is an *unofficial*, community-driven effort.
 
 ```toml
 [dependencies]
-kraken_sdk_futures_rest = "0.2"
+kraken_futures_client_rest = "0.2"
 ```
 
 ## Usage
