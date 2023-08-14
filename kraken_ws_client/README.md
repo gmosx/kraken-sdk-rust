@@ -1,6 +1,4 @@
-# Support for Kraken WebSocket API
-
-# Kraken SDK component for the Kraken WebSocket API
+# Kraken WebSocket API Client
 
 A strongly-typed Rust SDK for the [Kraken WebSocket API](https://docs.kraken.com/websockets-v2).
 
@@ -10,14 +8,14 @@ This crate is an _unofficial_, community-driven effort.
 
 ```toml
 [dependencies]
-kraken_sdk_ws = "0.18"
+kraken_ws_client = "0.20"
 ```
 
 ## Usage
 
 ```rs
 use futures::StreamExt;
-use kraken_client_ws::{api::SubscribeTickerRequest, client::WS_URL, Client};
+use kraken_ws_client::{api::SubscribeTickerRequest, client::WS_URL, Client};
 
 #[tokio::main]
 async fn main() {

@@ -1,8 +1,8 @@
 [workspace]
 
 members = [
-    "kraken_client_rest",
-    "kraken_client_ws",
-    "kraken_futures_client_rest",
-    "kraken_futures_client_ws",
+    "kraken_rest_client",
+    "kraken_ws_client",
+    "kraken_futures_rest_client",
+    "kraken_futures_ws_client",
 ]

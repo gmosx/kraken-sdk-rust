@@ -1,4 +1,4 @@
-# Kraken REST API
+# Kraken REST API Client
 
 A strongly-typed Rust SDK for the [Kraken REST API](https://docs.kraken.com/rest/).
 
@@ -8,13 +8,13 @@ This crate is an *unofficial*, community-driven effort.
 
 ```toml
 [dependencies]
-kraken_client_rest = "0.20"
+kraken_rest_client = "0.20"
 ```
 
 ## Usage
 
 ```rust
-use kraken_client_rest::{Client, PairName, OrderSide};
+use kraken_rest_client::{Client, PairName, OrderSide};
 
 let client = Client::new(
     "YOUR-API-KEY",

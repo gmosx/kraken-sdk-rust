@@ -1,10 +1,10 @@
 [package]
-name = "kraken_futures_client_rest"
-description = "A strongly-typed client for the Kraken Futures REST API"
+name = "kraken_rest_client"
+description = "A strongly-typed client for the Kraken REST API"
 version = "0.20.0"
 license = "Apache-2.0"
-repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_sdk_futures_rest"
-keywords = ["kraken", "api", "client", "rest", "futures"]
+repository = "https://github.com/gmosx/kraken_sdk_rust/tree/main/kraken_sdk_rest"
+keywords = ["kraken", "api", "client", "rest", "trading"]
 authors = ["George Moschovitis <gmosx@reizu.com>"]
 edition = "2021"
 
@@ -21,4 +21,3 @@ reqwest = { version = "0.11", default-features = false, features = [
     "rustls-tls",
 ] }
 urlencoding = "1.1"
-chrono = "0.4"

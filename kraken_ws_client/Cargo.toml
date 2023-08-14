@@ -1,5 +1,5 @@
 [package]
-name = "kraken_client_ws"
+name = "kraken_ws_client"
 description = "A strongly-typed client for the Kraken WebSocket API"
 version = "0.20.0"
 license = "Apache-2.0"
