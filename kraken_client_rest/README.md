@@ -8,13 +8,13 @@ This crate is an *unofficial*, community-driven effort.
 
 ```toml
 [dependencies]
-kraken_sdk_rest = "0.17"
+kraken_client_rest = "0.20"
 ```
 
 ## Usage
 
 ```rust
-use kraken_sdk_rest::{Client, PairName, OrderSide};
+use kraken_client_rest::{Client, PairName, OrderSide};
 
 let client = Client::new(
     "YOUR-API-KEY",
