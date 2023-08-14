@@ -1,5 +1,5 @@
 [package]
-name = "kraken_sdk_futures_ws"
+name = "kraken_futures_client_ws"
 version = "0.20.0"
 edition = "2021"
 
