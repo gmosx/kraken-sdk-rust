@@ -8,7 +8,10 @@ This project is an *unofficial*, community-driven effort.
 
 The SDK contains the following components:
 
-- [kraken_sdk_rest](kraken_sdk_rest/README.md)
+- [kraken_rest_client](kraken_rest_client/README.md)
+- [kraken_ws_client](kraken_ws_client/README.md)
+- [kraken_futures_rest_client](kraken_futures_rest_client/README.md)
+- [kraken_futures_ws_client](kraken_futures_ws_client/README.md)
 
 ## Links
 
