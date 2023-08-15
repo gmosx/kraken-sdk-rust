@@ -1,8 +1,10 @@
-use crate::client::Result;
-use crate::error::Error;
+use base64::{engine::general_purpose::STANDARD as base64_engine, Engine as _};
 use hmac::{Hmac, Mac, NewMac};
 use sha2::{Digest, Sha256, Sha512};
 use std::time::{SystemTime, UNIX_EPOCH};
+
+use crate::client::Result;
+use crate::error::Error;
 
 fn sha256(input: String) -> Vec<u8> {
     let mut hasher = Sha256::new();
@@ -41,10 +43,10 @@ pub fn compute_signature(
     to_hash.append(&mut path.as_bytes().to_owned());
     to_hash.append(&mut sha256_res);
 
-    let secret = base64::decode(api_secret).map_err(Error::internal)?;
+    let secret = base64_engine.decode(api_secret).map_err(Error::internal)?;
     let sha512_res = sha512(to_hash, &secret)?;
 
-    Ok(base64::encode(&sha512_res))
+    Ok(base64_engine.encode(&sha512_res))
 }
 
 #[cfg(test)]
