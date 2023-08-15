@@ -12,12 +12,13 @@ edition = "2021"
 thiserror = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
-sha2 = "0.9"
-hmac = "0.10"
-base64 = "0.13"
+crypto-common = "0.1"
+sha2 = "0.10"
+hmac = "0.12"
+base64 = "0.21"
 tokio = { version = "1", features = ["full"] }
 reqwest = { version = "0.11", default-features = false, features = [
     "json",
     "rustls-tls",
 ] }
-urlencoding = "1.1"
+urlencoding = "2"

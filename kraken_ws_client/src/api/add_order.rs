@@ -1,5 +1,8 @@
+use crate::{
+    client::Request,
+    types::{OrderSide, OrderType, TimeInForce},
+};
 use serde::Serialize;
-use crate::{client::{Request}, types::{OrderType, OrderSide, TimeInForce}};
 
 #[derive(Debug, Serialize)]
 pub struct AddOrderParams<'a> {
@@ -36,7 +39,12 @@ pub struct AddOrderParams<'a> {
 pub type AddOrderRequest<'a> = Request<AddOrderParams<'a>>;
 
 impl AddOrderRequest<'_> {
-    pub fn market<'a>(side: OrderSide, order_qty: f64, symbol: &'a str, token: &'a str) -> AddOrderRequest<'a> {
+    pub fn market<'a>(
+        side: OrderSide,
+        order_qty: f64,
+        symbol: &'a str,
+        token: &'a str,
+    ) -> AddOrderRequest<'a> {
         AddOrderRequest {
             method: "add_order".to_owned(),
             params: AddOrderParams {
@@ -58,7 +66,13 @@ impl AddOrderRequest<'_> {
         }
     }
 
-    pub fn limit<'a>(side: OrderSide, order_qty: f64, symbol: &'a str, limit_price: f64, token: &'a str) -> AddOrderRequest<'a> {
+    pub fn limit<'a>(
+        side: OrderSide,
+        order_qty: f64,
+        symbol: &'a str,
+        limit_price: f64,
+        token: &'a str,
+    ) -> AddOrderRequest<'a> {
         AddOrderRequest {
             method: "add_order".to_owned(),
             params: AddOrderParams {
@@ -75,17 +89,27 @@ impl AddOrderRequest<'_> {
                 reduce_only: None,
                 validate: None,
                 token,
-                },
+            },
             req_id: None,
         }
     }
 
-    pub fn buy_limit<'a>(order_qty: f64, symbol: &'a str, limit_price: f64, token: &'a str) -> AddOrderRequest<'a> {
-        AddOrderRequest::limit(OrderSide::Buy, order_qty, symbol, limit_price,  token)
+    pub fn buy_limit<'a>(
+        order_qty: f64,
+        symbol: &'a str,
+        limit_price: f64,
+        token: &'a str,
+    ) -> AddOrderRequest<'a> {
+        AddOrderRequest::limit(OrderSide::Buy, order_qty, symbol, limit_price, token)
     }
 
-    pub fn sell_limit<'a>(order_qty: f64, symbol: &'a str, limit_price: f64, token: &'a str) -> AddOrderRequest<'a> {
-        AddOrderRequest::limit(OrderSide::Sell, order_qty, symbol, limit_price,  token)
+    pub fn sell_limit<'a>(
+        order_qty: f64,
+        symbol: &'a str,
+        limit_price: f64,
+        token: &'a str,
+    ) -> AddOrderRequest<'a> {
+        AddOrderRequest::limit(OrderSide::Sell, order_qty, symbol, limit_price, token)
     }
 
     pub fn display_qty(self, display_qty: f64) -> Self {

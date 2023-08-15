@@ -1,5 +1,4 @@
 use crate::error::Error;
-// use crate::sign;
 use reqwest::header;
 use serde::de::DeserializeOwned;
 use std::time::Duration;
