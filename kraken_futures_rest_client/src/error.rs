@@ -30,12 +30,6 @@ impl From<reqwest::Error> for Error {
     }
 }
 
-impl From<hmac::crypto_mac::InvalidKeyLength> for Error {
-    fn from(e: hmac::crypto_mac::InvalidKeyLength) -> Self {
-        Self::Internal(e.to_string())
-    }
-}
-
 impl From<std::time::SystemTimeError> for Error {
     fn from(e: std::time::SystemTimeError) -> Self {
         Self::Internal(e.to_string())
