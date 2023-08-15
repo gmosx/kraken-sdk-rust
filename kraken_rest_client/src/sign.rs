@@ -1,5 +1,5 @@
 use base64::{engine::general_purpose::STANDARD as base64_engine, Engine as _};
-use hmac::{Hmac, Mac, NewMac};
+use hmac::{Hmac, Mac};
 use sha2::{Digest, Sha256, Sha512};
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -13,7 +13,7 @@ fn sha256(input: String) -> Vec<u8> {
 }
 
 fn sha512(input: Vec<u8>, secret: &[u8]) -> Result<Vec<u8>> {
-    let mut mac = Hmac::<Sha512>::new_varkey(secret)?;
+    let mut mac = Hmac::<Sha512>::new_from_slice(secret)?;
     mac.update(&input);
     Ok(mac.finalize().into_bytes().to_vec())
 }

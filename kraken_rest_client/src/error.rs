@@ -29,8 +29,8 @@ impl From<reqwest::Error> for Error {
     }
 }
 
-impl From<hmac::crypto_mac::InvalidKeyLength> for Error {
-    fn from(e: hmac::crypto_mac::InvalidKeyLength) -> Self {
+impl From<crypto_common::InvalidLength> for Error {
+    fn from(e: crypto_common::InvalidLength) -> Self {
         Self::Internal(e.to_string())
     }
 }
