@@ -20,5 +20,5 @@ reqwest = { version = "0.11", default-features = false, features = [
     "json",
     "rustls-tls",
 ] }
-urlencoding = "1.1"
+urlencoding = "2"
 chrono = "0.4"

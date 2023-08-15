@@ -103,7 +103,7 @@ impl AddOrderRequest {
     /// <n> = unix timestamp of expiration time
     pub fn starttm(self, starttm: &str) -> Self {
         Self {
-            starttm: Some(urlencoding::encode(starttm)),
+            starttm: Some(urlencoding::encode(starttm).to_string()),
             ..self
         }
     }
@@ -121,7 +121,7 @@ impl AddOrderRequest {
     /// <n> = unix timestamp of expiration time
     pub fn expiretm(self, expiretm: &str) -> Self {
         Self {
-            expiretm: Some(urlencoding::encode(expiretm)),
+            expiretm: Some(urlencoding::encode(expiretm).to_string()),
             ..self
         }
     }
