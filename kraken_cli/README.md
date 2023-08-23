@@ -4,7 +4,7 @@ A CLI for the Kraken Exchange.
 
 ## Status
 
-The software is under active development and the API is expected to change.
+This work is under active development and the API is expected to change.
 
 ## Contributing
 
