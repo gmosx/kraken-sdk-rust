@@ -1,5 +1,8 @@
 use crate::{Client, Result};
 use serde::{de::DeserializeOwned, Deserialize};
+use serde_json::json;
+
+// #warning under construction, don't use yet.
 
 /// - <https://docs.kraken.com/rest/#tag/Trading/operation/cancelOrderBatch>
 /// - <https://api.kraken.com/0/private/CancelOrderBatch>
@@ -13,25 +16,27 @@ pub struct CancelOrderBatchRequest {
 
 impl CancelOrderBatchRequest {
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
-        let query = format!("txid={}", self.txid);
+        let json = json!({
+            "txid": self.txid,
+        });
 
         self.client
-            .send_private("/0/private/CancelOrder", Some(query))
+            .send_private_json("/0/private/CancelOrder", json)
             .await
     }
 
-    pub async fn send(self) -> Result<CancelOrderResponse> {
+    pub async fn send(self) -> Result<CancelOrderBatchResponse> {
         self.execute().await
     }
 }
 
 #[derive(Debug, Deserialize)]
-pub struct CancelOrderResponse {
+pub struct CancelOrderBatchResponse {
     pub count: i32,
 }
 
 impl Client {
-    pub fn cancel_order(&self, txid: impl Into<Vec<String>>) -> CancelOrderBatchRequest {
+    pub fn cancel_order_batch(&self, txid: impl Into<Vec<String>>) -> CancelOrderBatchRequest {
         CancelOrderBatchRequest {
             client: self.clone(),
             txid: txid.into(),

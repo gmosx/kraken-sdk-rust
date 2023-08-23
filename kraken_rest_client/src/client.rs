@@ -1,8 +1,11 @@
-use crate::error::Error;
-use crate::sign;
+use std::time::Duration;
+
 use reqwest::header;
 use serde::{de::DeserializeOwned, Deserialize};
-use std::time::Duration;
+use serde_json::Value;
+
+use crate::error::Error;
+use crate::sign;
 
 #[derive(Debug, Deserialize)]
 struct ResponseWrapper<T> {
@@ -193,7 +196,7 @@ impl Client {
 
     // #TODO the parameter is path, not url!
     /// Sends a private request to the API.
-    pub async fn send_private_json<Resp>(&self, url: &str, body: String) -> Result<Resp>
+    pub async fn send_private_json<Resp>(&self, url: &str, json: Value) -> Result<Resp>
     where
         Resp: DeserializeOwned,
     {
@@ -204,11 +207,14 @@ impl Client {
 
                 let nonce = sign::compute_nonce().to_string();
 
-                let formdata = if let Some(query) = query {
-                    format!("{}&nonce={}", query, nonce)
-                } else {
-                    format!("nonce={}", nonce)
-                };
+                let mut json = json;
+
+                // #todo handle the unwrap.
+                let data = json.as_object_mut().unwrap();
+
+                data.insert("nonce".into(), nonce.clone().into());
+
+                let body = json.to_string();
 
                 self.http_client
                     .post(&url)
@@ -217,9 +223,9 @@ impl Client {
                     .header("API-Key", api_key)
                     .header(
                         "API-Sign",
-                        sign::compute_signature(api_secret, pathname, &nonce, &formdata)?,
+                        sign::compute_signature(api_secret, pathname, &nonce, &body)?,
                     )
-                    .body(body.into_bytes())
+                    .body(body)
                     .send()
                     .await?
             } else {
