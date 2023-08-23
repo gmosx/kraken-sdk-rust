@@ -5,4 +5,5 @@ members = [
     "kraken_ws_client",
     "kraken_futures_rest_client",
     "kraken_futures_ws_client",
+    "kraken_cli",
 ]
