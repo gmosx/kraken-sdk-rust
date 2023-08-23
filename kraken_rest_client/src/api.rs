@@ -72,6 +72,9 @@ pub use cancel_order::*;
 pub mod cancel_all_orders;
 pub use cancel_all_orders::*;
 
+pub mod cancel_order_batch;
+pub use cancel_order_batch::*;
+
 // User Staking
 
 pub mod stake_asset;
