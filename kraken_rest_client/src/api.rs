@@ -69,6 +69,9 @@ pub use add_order::*;
 pub mod cancel_order;
 pub use cancel_order::*;
 
+pub mod cancel_all_orders;
+pub use cancel_all_orders::*;
+
 // User Staking
 
 pub mod stake_asset;

@@ -27,7 +27,7 @@ impl CancelOrderRequest {
 #[derive(Debug, Deserialize)]
 pub struct CancelOrderResponse {
     pub count: i32,
-    pub pending: Option<bool>,
+    // pub pending: Option<bool>,
 }
 
 impl Client {
