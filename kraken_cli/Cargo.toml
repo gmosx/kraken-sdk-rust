@@ -1,0 +1,11 @@
+[package]
+name = "kraken_cli"
+description = "A CLI for the Kraken Exchange"
+version = "0.22.0"
+license = "Apache-2.0"
+repository = "https://github.com/gmosx/kraken-sdk-rust/tree/main/kraken_cli"
+keywords = ["kraken", "cli"]
+authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
+edition = "2021"
+
+[dependencies]
