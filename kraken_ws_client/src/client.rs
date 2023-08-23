@@ -30,7 +30,7 @@ pub struct Response<R> {
     pub time_out: String,
 }
 
-// #TODO consider renaming SubscriptionEvent or ChannelEvent.
+// #todo consider renaming SubscriptionEvent or ChannelEvent.
 #[derive(Debug, Deserialize)]
 pub struct Event<D> {
     pub channel: String,
@@ -54,7 +54,7 @@ pub struct Client {
     pub messages: Pin<Box<dyn Stream<Item = Result<String>>>>,
 }
 
-// #TODO extract socket like in the previous impl?
+// #todo extract socket like in the previous impl?
 impl Client {
     pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
         let (stream, _) = connect_async(url).await?;
@@ -90,8 +90,8 @@ impl Client {
     where
         Req: Serialize,
     {
-        // #TODO attach the token to the request here! nah!
-        // #TODO add rec_id
+        // #todo attach the token to the request here! nah!
+        // #todo add rec_id
         let msg = serde_json::to_string(&req).unwrap();
         tracing::debug!("{msg}");
         self.sender.send(Message::Text(msg.to_string())).await?;
@@ -99,7 +99,7 @@ impl Client {
         Ok(())
     }
 
-    // #TODO make this customizable.
+    // #todo make this customizable.
     pub fn next_id(&self) -> isize {
         todo!()
     }

@@ -84,7 +84,7 @@ impl AddOrderRequest {
         }
     }
 
-    // #TODO introduce a timeinforce enum!
+    // #todo introduce a timeinforce enum!
     /// Time-in-force of the order to specify how long it should remain in the
     /// order book before being cancelled. GTC (Good-'til-cancelled) is default
     /// if the parameter is omitted. IOC (immediate-or-cancel) will immediately

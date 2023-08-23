@@ -170,7 +170,7 @@ pub struct LedgerEntry {
 }
 
 impl LedgerEntry {
-    // #TODO make it return a non-Result enum.
+    // #todo make it return a non-Result enum.
     pub fn ledger_type_enum(&self) -> serde_json::Result<LedgerType> {
         serde_json::from_str(&format!("\"{}\"", self.ledger_type))
     }

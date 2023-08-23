@@ -13,10 +13,10 @@ use std::collections::HashMap;
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetTradesHistoryRequest {
     client: Client,
-    // #TODO make this typed.
+    // #todo make this typed.
     trade_type: Option<String>,
     trades: Option<bool>,
-    // #TODO support order txid
+    // #todo support order txid
     /// starting unix timestamp or order tx id of results (exclusive)
     start: Option<i64>,
     /// end = ending unix timestamp or order tx id of results (inclusive)
@@ -116,7 +116,7 @@ pub struct TradeInfo {
     pub vol: String,
     pub margin: String,
     pub misc: String,
-    // #TODO add position related fields.
+    // #todo add position related fields.
 }
 
 #[derive(Debug, Deserialize, Serialize)]

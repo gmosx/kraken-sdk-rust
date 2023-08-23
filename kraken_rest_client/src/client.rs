@@ -69,7 +69,7 @@ impl ClientBuilder {
     }
 
     pub fn build(self) -> Client {
-        // #TODO handle the unwrap
+        // #todo handle the unwrap
         Client {
             base_url: self
                 .base_url
@@ -135,7 +135,7 @@ impl Client {
         }
     }
 
-    // #TODO the parameter is path, not url!
+    // #todo the parameter is path, not url!
     /// Sends a public request to the API.
     pub async fn send_public<Resp>(&self, url: &str) -> Result<Resp>
     where
@@ -153,7 +153,7 @@ impl Client {
         self.unwrap_response(resp).await
     }
 
-    // #TODO the parameter is path, not url!
+    // #todo the parameter is path, not url!
     /// Sends a private request to the API.
     pub async fn send_private<Resp>(&self, url: &str, query: Option<String>) -> Result<Resp>
     where
@@ -194,7 +194,7 @@ impl Client {
         self.unwrap_response(resp).await
     }
 
-    // #TODO the parameter is path, not url!
+    // #todo the parameter is path, not url!
     /// Sends a private request to the API.
     pub async fn send_private_json<Resp>(&self, url: &str, json: Value) -> Result<Resp>
     where
