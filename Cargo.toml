@@ -1,5 +1,7 @@
 [workspace]
 
+resolver = "2"
+
 members = [
     "kraken_rest_client",
     "kraken_ws_client",

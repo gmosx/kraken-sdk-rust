@@ -1,12 +1,16 @@
-use crate::util::Result;
-use futures::{future, stream::SplitSink, StreamExt};
-use futures_util::SinkExt;
-use serde::{Deserialize, Serialize};
 use std::pin::Pin;
+
+use futures::{stream::SplitSink, StreamExt};
+use futures_util::{SinkExt, Stream};
+use serde::{Deserialize, Serialize};
 use tokio::net::TcpStream;
-use tokio_stream::Stream;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
+};
+
+use crate::{
+    api::TickerEvent,
+    util::Result,
 };
 
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
@@ -51,7 +55,12 @@ pub struct Client {
     #[allow(dead_code)]
     token: Option<String>,
     sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
-    pub messages: Pin<Box<dyn Stream<Item = Result<String>>>>,
+
+    // The thread_handle will be dropped when the Client drops.
+    #[allow(dead_code)]
+    thread_handle: tokio::task::JoinHandle<()>,
+    pub broadcast: tokio::sync::broadcast::Sender<String>,
+    pub ticker_events: Option<Pin<Box<dyn Stream<Item = TickerEvent> + Send + Sync>>>,
 }
 
 // #todo extract socket like in the previous impl?
@@ -59,22 +68,36 @@ impl Client {
     pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
         let (stream, _) = connect_async(url).await?;
         let (sender, receiver) = stream.split();
+        let (broadcast_sender, _) = tokio::sync::broadcast::channel::<String>(32);
 
-        let receiver = receiver
-            .map(move |msg| {
-                if let Message::Text(string) = msg.unwrap() {
-                    tracing::debug!("{string}");
-                    Ok(Some(string))
+        let broadcast = broadcast_sender.clone();
+
+        let thread_handle = tokio::spawn(async move {
+            let mut receiver = receiver;
+
+            while let Some(result) = receiver.next().await {
+                if let Ok(msg) = result {
+                    if let Message::Text(string) = msg {
+                        tracing::debug!("{string}");
+                        if let Err(err) = broadcast_sender.send(string) {
+                            tracing::trace!("{err:?}");
+                            // Break the while loop so that the receiver handle is dropped
+                            // and the task unsubscribes from the summary stream.
+                            break;
+                        }
+                    }
                 } else {
-                    Ok(None)
+                    tracing::error!("{:?}", result);
                 }
-            })
-            .filter_map(|res| future::ready(res.transpose()));
+            }
+        });
 
         Ok(Self {
             token,
             sender,
-            messages: Box::pin(receiver),
+            thread_handle,
+            broadcast,
+            ticker_events: None,
         })
     }
 
