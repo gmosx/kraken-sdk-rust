@@ -1,4 +1,3 @@
-use futures::StreamExt;
 use kraken_ws_client::{api::SubscribeTickerRequest, client::DEFAULT_WS_URL, Client};
 
 #[tokio::main]
@@ -11,9 +10,9 @@ async fn main() {
 
     client.send(req).await.expect("cannot send request");
 
-    loop {
-        if let Some(msg) = client.messages.next().await {
-            dbg!(&msg);
-        }
+    let mut messages = client.broadcast.subscribe();
+
+    while let Ok(msg) = messages.recv().await {
+        dbg!(&msg);
     }
 }
