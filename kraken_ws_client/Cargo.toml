@@ -22,4 +22,3 @@ uuid = { version = "1", features = ["v4", "fast-rng"] }
 rust_decimal = "1"
 rust_decimal_macros = "1"
 async-stream = "0.3"
-# rand = "0.8"
