@@ -7,7 +7,7 @@ async fn main() {
         .await
         .expect("cannot connect");
 
-    client.subscribe_ticker(&["BTC/USD"]).await;
+    client.subscribe_ticker("BTC/USD").await;
 
     let mut ticker_events = client.ticker_events.unwrap();
 
