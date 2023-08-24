@@ -78,21 +78,7 @@ impl Client {
     // <https://docs.kraken.com/websockets-v2/#ticker>
     pub async fn subscribe_ticker(&mut self, symbol: impl AsRef<str>) {
         let symbol = &[symbol.as_ref()];
-        let req = SubscribeTickerRequest::new(symbol);
-
-        self.send(req).await.expect("cannot send request");
-
-        let mut messages_receiver = self.broadcast.clone().subscribe();
-
-        let ticker_events = stream! {
-            while let Ok(msg) = messages_receiver.recv().await {
-                if let Ok(msg) = serde_json::from_str::<TickerEvent>(&msg) {
-                    yield msg
-                }
-            }
-        };
-
-        self.ticker_events = Some(Box::pin(ticker_events));
+        self.subscribe_tickers(symbol).await
     }
 
     // <https://docs.kraken.com/websockets-v2/#ticker>
