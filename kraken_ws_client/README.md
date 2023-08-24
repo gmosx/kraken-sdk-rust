@@ -15,20 +15,20 @@ kraken_ws_client = "0.20"
 
 ```rs
 use futures::StreamExt;
-use kraken_ws_client::{api::SubscribeTickerRequest, client::WS_URL, Client};
+use kraken_ws_client::{client::DEFAULT_WS_URL, Client};
 
 #[tokio::main]
 async fn main() {
-    let mut client = Client::connect(WS_URL, None).await.expect("cannot connect");
+    let mut client = Client::connect(DEFAULT_WS_URL, None)
+        .await
+        .expect("cannot connect");
 
-    let req = SubscribeTickerRequest::new(&["BTC/USD"]);
+    client.subscribe_ticker("BTC/USD").await;
 
-    client.send(req).await.expect("cannot send request");
+    let mut ticker_events = client.ticker_events.unwrap();
 
-    loop {
-        if let Some(msg) = client.messages.next().await {
-            dbg!(&msg);
-        }
+    while let Some(event) = ticker_events.next().await {
+        dbg!(&event);
     }
 }
 ```
