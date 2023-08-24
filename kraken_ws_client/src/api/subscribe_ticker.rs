@@ -1,6 +1,12 @@
+use async_stream::stream;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
-use crate::{client::{Event, Request}, types::Channel};
+
+use crate::{
+    client::{Event, Request},
+    types::Channel,
+    Client,
+};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeTickerParams<'a> {
@@ -15,10 +21,14 @@ pub struct SubscribeTickerParams<'a> {
 pub type SubscribeTickerRequest<'a> = Request<SubscribeTickerParams<'a>>;
 
 impl SubscribeTickerRequest<'_> {
-    pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeTickerRequest<'a> {
+    pub fn new<'a>(symbol: &'a [&'a str]) -> SubscribeTickerRequest<'a> {
         SubscribeTickerRequest {
             method: "subscribe".to_owned(),
-            params: SubscribeTickerParams { channel:  Channel::Ticker, symbol, snapshot: None },
+            params: SubscribeTickerParams {
+                channel: Channel::Ticker,
+                symbol,
+                snapshot: None,
+            },
             req_id: None,
         }
     }
@@ -26,7 +36,11 @@ impl SubscribeTickerRequest<'_> {
     pub fn all<'a>() -> SubscribeTickerRequest<'a> {
         SubscribeTickerRequest {
             method: "subscribe".to_owned(),
-            params: SubscribeTickerParams { channel:  Channel::Ticker, symbol: &["*"], snapshot: None },
+            params: SubscribeTickerParams {
+                channel: Channel::Ticker,
+                symbol: &["*"],
+                snapshot: None,
+            },
             req_id: None,
         }
     }
@@ -59,3 +73,24 @@ pub struct TickerData {
 }
 
 pub type TickerEvent = Event<Vec<TickerData>>;
+
+impl Client {
+    // <https://docs.kraken.com/websockets-v2/#ticker>
+    pub async fn subscribe_ticker(&mut self, symbol: &[&str]) {
+        let req = SubscribeTickerRequest::new(symbol);
+
+        self.send(req).await.expect("cannot send request");
+
+        let mut messages_receiver = self.broadcast.clone().subscribe();
+
+        let ticker_events = stream! {
+            while let Ok(msg) = messages_receiver.recv().await {
+                if let Ok(msg) = serde_json::from_str::<TickerEvent>(&msg) {
+                    yield msg
+                }
+            }
+        };
+
+        self.ticker_events = Some(Box::pin(ticker_events));
+    }
+}

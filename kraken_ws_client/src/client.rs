@@ -1,12 +1,17 @@
+use std::pin::Pin;
+
 use futures::{stream::SplitSink, StreamExt};
-use futures_util::SinkExt;
+use futures_util::{SinkExt, Stream};
 use serde::{Deserialize, Serialize};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
 };
 
-use crate::util::Result;
+use crate::{
+    api::TickerEvent,
+    util::Result,
+};
 
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
 pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
@@ -55,7 +60,7 @@ pub struct Client {
     #[allow(dead_code)]
     thread_handle: tokio::task::JoinHandle<()>,
     pub broadcast: tokio::sync::broadcast::Sender<String>,
-    // pub depth_events: Option<Pin<Box<dyn Stream<Item = DepthEvent> + Send + Sync>>>,
+    pub ticker_events: Option<Pin<Box<dyn Stream<Item = TickerEvent> + Send + Sync>>>,
 }
 
 // #todo extract socket like in the previous impl?
@@ -92,7 +97,7 @@ impl Client {
             sender,
             thread_handle,
             broadcast,
-            // depth_events: None,
+            ticker_events: None,
         })
     }
 
