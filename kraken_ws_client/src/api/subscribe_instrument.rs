@@ -1,5 +1,11 @@
+use crate::{
+    client::{Event, Request},
+    types::Channel,
+    util::gen_next_id,
+};
 use serde::{Deserialize, Serialize};
-use crate::{client::{Event, Request}, types::Channel};
+
+use super::SUBSCRIBE_METHOD;
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeInstrumentParams {
@@ -9,31 +15,37 @@ pub struct SubscribeInstrumentParams {
     pub snapshot: Option<bool>,
 }
 
-/// - <https://docs.kraken.com/websockets-v2/#instrument>
-pub type SubscribeInstrumentRequest = Request<SubscribeInstrumentParams>;
-
-impl Default for SubscribeInstrumentRequest {
+impl Default for SubscribeInstrumentParams {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl SubscribeInstrumentRequest {
-    pub fn new() -> SubscribeInstrumentRequest {
-        SubscribeInstrumentRequest {
-            method: "subscribe".to_owned(),
-            params: SubscribeInstrumentParams { channel:  Channel::Instrument, snapshot: None },
-            req_id: None,
+impl SubscribeInstrumentParams {
+    pub fn new() -> Self {
+        Self {
+            channel: Channel::Instrument,
+            snapshot: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            params: SubscribeInstrumentParams {
-                snapshot: Some(snapshot),
-                ..self.params
-            },
+            snapshot: Some(snapshot),
             ..self
+        }
+    }
+}
+
+/// - <https://docs.kraken.com/websockets-v2/#instrument>
+pub type SubscribeInstrumentRequest = Request<SubscribeInstrumentParams>;
+
+impl SubscribeInstrumentRequest {
+    pub fn new(params: SubscribeInstrumentParams) -> Self {
+        Self {
+            method: SUBSCRIBE_METHOD.into(),
+            params,
+            req_id: Some(gen_next_id()),
         }
     }
 }
