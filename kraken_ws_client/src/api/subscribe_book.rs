@@ -7,6 +7,9 @@ use crate::{
     Client,
 };
 
+// #todo synthesize the book
+// #todo verify the checksum
+
 #[derive(Debug, Serialize)]
 pub struct SubscribeBookParams<'a> {
     pub channel: Channel,

@@ -124,6 +124,8 @@ impl Client {
         Ok(())
     }
 
+    // #todo add call method, that also adds rec_id.
+
     // #todo make this customizable.
     pub fn next_id(&self) -> isize {
         todo!()
