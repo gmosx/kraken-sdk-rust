@@ -2,10 +2,7 @@
 
 use serde::Serialize;
 
-use crate::{
-    client::{PrivateParams, PrivateRequest},
-    util::gen_next_id,
-};
+use crate::client::{PrivateParams, PrivateRequest};
 
 use super::CANCEL_ORDER_METHOD;
 
@@ -56,16 +53,11 @@ impl CancelOrderParams {
 pub type CancelOrderRequest = PrivateRequest<CancelOrderParams>;
 
 impl CancelOrderRequest {
-    pub fn new(params: CancelOrderParams, token: impl Into<String>) -> Self {
-        let params = PrivateParams {
-            params,
-            token: token.into(),
-        };
-
+    pub fn new(params: CancelOrderParams) -> Self {
         Self {
             method: CANCEL_ORDER_METHOD.into(),
-            params,
-            req_id: Some(gen_next_id()),
+            params: PrivateParams::new(params),
+            req_id: None,
         }
     }
 }

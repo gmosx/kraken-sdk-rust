@@ -11,12 +11,22 @@ use crate::util::{gen_next_id, Result};
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
 pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
 
-// #todo create PrivateRequest, with token?
-
 #[derive(Debug, Serialize)]
 pub enum Request<P: Serialize> {
     Public(PublicRequest<P>),
     Private(PrivateRequest<P>),
+}
+
+impl<P: Serialize> From<PublicRequest<P>> for Request<P> {
+    fn from(req: PublicRequest<P>) -> Self {
+        Self::Public(req)
+    }
+}
+
+impl<P: Serialize> From<PrivateRequest<P>> for Request<P> {
+    fn from(req: PrivateRequest<P>) -> Self {
+        Self::Private(req)
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -27,11 +37,30 @@ pub struct PublicRequest<P: Serialize> {
     pub req_id: Option<u64>,
 }
 
+impl<P: Serialize> PublicRequest<P> {
+    pub fn req_id(self, req_id: u64) -> Self {
+        Self {
+            req_id: Some(req_id),
+            ..self
+        }
+    }
+}
+
 #[derive(Debug, Serialize)]
 pub struct PrivateParams<P: Serialize> {
     #[serde(flatten)]
     pub params: P,
-    pub token: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub token: Option<String>,
+}
+
+impl<P: Serialize> PrivateParams<P> {
+    pub fn new(params: P) -> Self {
+        Self {
+            params,
+            token: None,
+        }
+    }
 }
 
 #[derive(Debug, Serialize)]
@@ -40,6 +69,15 @@ pub struct PrivateRequest<P: Serialize> {
     pub params: PrivateParams<P>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub req_id: Option<u64>,
+}
+
+impl<P: Serialize> PrivateRequest<P> {
+    pub fn req_id(self, req_id: u64) -> Self {
+        Self {
+            req_id: Some(req_id),
+            ..self
+        }
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -127,11 +165,27 @@ impl Client {
     }
 
     /// Sends a message to the WebSocket.
-    pub async fn send<Req>(&mut self, req: Req) -> Result<()>
+    pub async fn send<P>(&mut self, req: impl Into<Request<P>>) -> Result<()>
     where
-        Req: Serialize,
+        P: Serialize,
     {
-        let msg = serde_json::to_string(&req).unwrap();
+        let req = req.into();
+
+        let msg = match req {
+            Request::Public(mut req) => {
+                if req.req_id.is_none() {
+                    req.req_id = Some(gen_next_id());
+                }
+                serde_json::to_string(&req).unwrap()
+            }
+            Request::Private(mut req) => {
+                req.params.token = self.token.clone();
+                if req.req_id.is_none() {
+                    req.req_id = Some(gen_next_id());
+                }
+                serde_json::to_string(&req).unwrap()
+            }
+        };
 
         tracing::debug!("{msg}");
 
@@ -147,11 +201,10 @@ impl Client {
     where
         P: Serialize,
     {
-        // #todo attach the token to the request here! nah!
         let req = PublicRequest {
             method: method.into(),
             params,
-            req_id: Some(gen_next_id()),
+            req_id: None,
         };
 
         self.send(req).await
@@ -164,11 +217,8 @@ impl Client {
     {
         let req = PrivateRequest {
             method: method.into(),
-            params: PrivateParams {
-                params: params,
-                token: self.token.clone().unwrap(),
-            },
-            req_id: Some(gen_next_id()),
+            params: PrivateParams::new(params),
+            req_id: None,
         };
 
         self.send(req).await
