@@ -1,34 +1,47 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Event, Request}, types::{OrderSide, OrderType, Channel}};
+
+use crate::{
+    client::{Event, Request},
+    types::{Channel, OrderSide, OrderType},
+    util::gen_next_id,
+};
+
+use super::SUBSCRIBE_METHOD;
 
 #[derive(Debug, Serialize)]
-pub struct SubscribeTradeParams<'a> {
+pub struct SubscribeTradeParams {
     pub channel: Channel,
-    pub symbol: &'a [&'a str],
+    pub symbol: Vec<String>,
     /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }
 
-/// - <https://docs.kraken.com/websockets-v2/#trade>
-pub type SubscribeTradeRequest<'a> = Request<SubscribeTradeParams<'a>>;
-
-impl SubscribeTradeRequest<'_> {
-    pub fn new<'a>(symbol: &'a[&'a str]) -> SubscribeTradeRequest<'a> {
-        SubscribeTradeRequest {
-            method: "subscribe".to_owned(),
-            params: SubscribeTradeParams { channel:  Channel::Trade, symbol, snapshot: None },
-            req_id: None,
+impl SubscribeTradeParams {
+    pub fn new<'a>(symbol: impl Into<Vec<String>>) -> Self {
+        Self {
+            channel: Channel::Trade,
+            symbol: symbol.into(),
+            snapshot: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            params: SubscribeTradeParams {
-                snapshot: Some(snapshot),
-                ..self.params
-            },
+            snapshot: Some(snapshot),
             ..self
+        }
+    }
+}
+
+pub type SubscribeTradeRequest = Request<SubscribeTradeParams>;
+
+impl SubscribeTradeRequest {
+    pub fn new(params: SubscribeTradeParams) -> Self {
+        Self {
+            method: SUBSCRIBE_METHOD.into(),
+            params,
+            req_id: Some(gen_next_id()),
         }
     }
 }

@@ -1,6 +1,6 @@
-use serde::{Deserialize};
-
 use crate::client::Event;
+
+use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "snake_case")]

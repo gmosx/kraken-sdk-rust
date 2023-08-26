@@ -1,8 +1,15 @@
 use serde::{Deserialize, Serialize};
-use crate::{client::{Request}, types::{OrderType, OrderStatus, Amount, OrderSide, Channel}};
+
+use crate::{
+    client::Request,
+    types::{Amount, Channel, OrderSide, OrderStatus, OrderType},
+    util::gen_next_id,
+};
+
+use super::SUBSCRIBE_METHOD;
 
 #[derive(Debug, Serialize)]
-pub struct SubscribeExecutionsParams<'a> {
+pub struct SubscribeExecutionsParams {
     pub channel: Channel,
     /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -19,47 +26,47 @@ pub struct SubscribeExecutionsParams<'a> {
     pub order_status: Option<bool>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ratecounter: Option<bool>,
-    pub token: &'a str,
+    pub token: String,
 }
 
-/// - <https://docs.kraken.com/websockets-v2/#executions>
-/// - <https://docs.kraken.com/websockets/#message-ownTrades>
-/// - <https://docs.kraken.com/websockets/#message-openOrders>
-pub type SubscribeExecutionsRequest<'a> = Request<SubscribeExecutionsParams<'a>>;
-
-impl SubscribeExecutionsRequest<'_> {
-    pub fn new(token: &str) -> SubscribeExecutionsRequest<'_> {
-        SubscribeExecutionsRequest {
-            method: "subscribe".to_owned(),
-            params: SubscribeExecutionsParams {
-                channel: Channel::Executions,
-                snapshot: None,
-                snapshot_trades: None,
-                order_status: None,
-                ratecounter: None,
-                token
-            },
-            req_id: None,
+impl SubscribeExecutionsParams {
+    pub fn new(token: impl Into<String>) -> Self {
+        Self {
+            channel: Channel::Executions,
+            snapshot: None,
+            snapshot_trades: None,
+            order_status: None,
+            ratecounter: None,
+            token: token.into(),
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            params: SubscribeExecutionsParams {
-                snapshot: Some(snapshot),
-                ..self.params
-            },
+            snapshot: Some(snapshot),
             ..self
         }
     }
 
     pub fn ratecounter(self, ratecounter: bool) -> Self {
         Self {
-            params: SubscribeExecutionsParams {
-                ratecounter: Some(ratecounter),
-                ..self.params
-            },
+            ratecounter: Some(ratecounter),
             ..self
+        }
+    }
+}
+
+/// - <https://docs.kraken.com/websockets-v2/#executions>
+/// - <https://docs.kraken.com/websockets/#message-ownTrades>
+/// - <https://docs.kraken.com/websockets/#message-openOrders>
+pub type SubscribeExecutionsRequest = Request<SubscribeExecutionsParams>;
+
+impl SubscribeExecutionsRequest {
+    pub fn new(params: SubscribeExecutionsParams) -> Self {
+        Self {
+            method: SUBSCRIBE_METHOD.into(),
+            params,
+            req_id: Some(gen_next_id()),
         }
     }
 }
