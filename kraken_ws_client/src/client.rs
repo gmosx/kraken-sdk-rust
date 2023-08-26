@@ -1,17 +1,12 @@
-use std::pin::Pin;
-
 use futures::{stream::SplitSink, StreamExt};
-use futures_util::{SinkExt, Stream};
+use futures_util::SinkExt;
 use serde::{Deserialize, Serialize};
 use tokio::net::TcpStream;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
 };
 
-use crate::{
-    api::{BookEvent, TickerEvent},
-    util::Result,
-};
+use crate::util::{gen_next_id, Result};
 
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
 pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
@@ -21,7 +16,7 @@ pub struct Request<P> {
     pub method: String,
     pub params: P,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub req_id: Option<i64>,
+    pub req_id: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -55,26 +50,23 @@ pub struct Client {
     #[allow(dead_code)]
     token: Option<String>,
     sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
-
     // The thread_handle will be dropped when the Client drops.
     #[allow(dead_code)]
     thread_handle: tokio::task::JoinHandle<()>,
-    pub broadcast: tokio::sync::broadcast::Sender<String>,
-    pub book_events: Option<Pin<Box<dyn Stream<Item = BookEvent> + Send + Sync>>>,
-    pub ticker_events: Option<Pin<Box<dyn Stream<Item = TickerEvent> + Send + Sync>>>,
+    pub messages: tokio::sync::broadcast::Sender<String>,
 }
 
 // #todo extract socket like in the previous impl?
 impl Client {
     pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
-        let (stream, _) = connect_async(url).await?;
-        let (sender, receiver) = stream.split();
+        let (websocket_stream, _) = connect_async(url).await?;
+        let (websocket_sender, websocket_receiver) = websocket_stream.split();
         let (broadcast_sender, _) = tokio::sync::broadcast::channel::<String>(32);
 
-        let broadcast = broadcast_sender.clone();
+        let broadcast_sender_clone = broadcast_sender.clone();
 
         let thread_handle = tokio::spawn(async move {
-            let mut receiver = receiver;
+            let mut receiver = websocket_receiver;
 
             while let Some(result) = receiver.next().await {
                 if let Ok(msg) = result {
@@ -95,11 +87,9 @@ impl Client {
 
         Ok(Self {
             token,
-            sender,
+            sender: websocket_sender,
             thread_handle,
-            broadcast,
-            book_events: None,
-            ticker_events: None,
+            messages: broadcast_sender_clone,
         })
     }
 
@@ -111,12 +101,11 @@ impl Client {
         Self::connect(DEFFAULT_WS_AUTH_URL, Some(token)).await
     }
 
+    /// Sends a message to the WebSocket.
     pub async fn send<Req>(&mut self, req: Req) -> Result<()>
     where
         Req: Serialize,
     {
-        // #todo attach the token to the request here! nah!
-        // #todo add rec_id
         let msg = serde_json::to_string(&req).unwrap();
         tracing::debug!("{msg}");
         self.sender.send(Message::Text(msg.to_string())).await?;
@@ -124,10 +113,18 @@ impl Client {
         Ok(())
     }
 
-    // #todo add call method, that also adds rec_id.
+    /// Performs a remote procedure call.
+    pub async fn call<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
+    where
+        P: Serialize,
+    {
+        // #todo attach the token to the request here! nah!
+        let req = Request {
+            method: method.into(),
+            params,
+            req_id: Some(gen_next_id()),
+        };
 
-    // #todo make this customizable.
-    pub fn next_id(&self) -> isize {
-        todo!()
+        self.send(req).await
     }
 }

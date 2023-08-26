@@ -1,57 +1,59 @@
-use async_stream::stream;
+use futures_util::{Stream, StreamExt};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
+use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
     client::{Event, Request},
     types::Channel,
+    util::gen_next_id,
     Client,
 };
 
+use super::SUBSCRIBE_METHOD;
+
 #[derive(Debug, Serialize)]
-pub struct SubscribeTickerParams<'a> {
+pub struct SubscribeTickerParams {
     pub channel: Channel,
-    pub symbol: &'a [&'a str],
+    pub symbol: Vec<String>,
     /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }
 
-/// - <https://docs.kraken.com/websockets-v2/#ticker>
-pub type SubscribeTickerRequest<'a> = Request<SubscribeTickerParams<'a>>;
-
-impl SubscribeTickerRequest<'_> {
-    pub fn new<'a>(symbol: &'a [&'a str]) -> SubscribeTickerRequest<'a> {
-        SubscribeTickerRequest {
-            method: "subscribe".to_owned(),
-            params: SubscribeTickerParams {
-                channel: Channel::Ticker,
-                symbol,
-                snapshot: None,
-            },
-            req_id: None,
+impl SubscribeTickerParams {
+    pub fn new(symbol: impl Into<Vec<String>>) -> Self {
+        Self {
+            channel: Channel::Ticker,
+            symbol: symbol.into(),
+            snapshot: None,
         }
     }
 
-    pub fn all<'a>() -> SubscribeTickerRequest<'a> {
-        SubscribeTickerRequest {
-            method: "subscribe".to_owned(),
-            params: SubscribeTickerParams {
-                channel: Channel::Ticker,
-                symbol: &["*"],
-                snapshot: None,
-            },
-            req_id: None,
+    pub fn all() -> Self {
+        Self {
+            channel: Channel::Ticker,
+            symbol: vec!["*".into()],
+            snapshot: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            params: SubscribeTickerParams {
-                snapshot: Some(snapshot),
-                ..self.params
-            },
+            snapshot: Some(snapshot),
             ..self
+        }
+    }
+}
+
+pub type SubscribeTickerRequest = Request<SubscribeTickerParams>;
+
+impl SubscribeTickerRequest {
+    pub fn new(params: SubscribeTickerParams) -> Self {
+        Self {
+            method: SUBSCRIBE_METHOD.into(),
+            params,
+            req_id: Some(gen_next_id()),
         }
     }
 }
@@ -76,27 +78,30 @@ pub type TickerEvent = Event<Vec<TickerData>>;
 
 impl Client {
     // <https://docs.kraken.com/websockets-v2/#ticker>
-    pub async fn subscribe_ticker(&mut self, symbol: impl AsRef<str>) {
-        let symbol = &[symbol.as_ref()];
+    pub async fn subscribe_ticker(&mut self, symbol: impl Into<String>) {
+        let symbol = vec![symbol.into()];
         self.subscribe_tickers(symbol).await
     }
 
     // <https://docs.kraken.com/websockets-v2/#ticker>
-    pub async fn subscribe_tickers(&mut self, symbol: &[&str]) {
-        let req = SubscribeTickerRequest::new(symbol);
+    pub async fn subscribe_tickers(&mut self, symbol: impl Into<Vec<String>>) {
+        self.call(SUBSCRIBE_METHOD, SubscribeTickerParams::new(symbol))
+            .await
+            .expect("cannot send request");
+    }
 
-        self.send(req).await.expect("cannot send request");
+    // #todo add support to filter for symbol.
+    pub fn ticker_events(&mut self) -> impl Stream<Item = TickerEvent> {
+        let messages_stream = BroadcastStream::new(self.messages.subscribe());
 
-        let mut messages_receiver = self.broadcast.clone().subscribe();
+        let events_stream = messages_stream.filter_map(|msg| {
+            std::future::ready(if let Ok(msg) = msg {
+                serde_json::from_str::<TickerEvent>(&msg).ok()
+            } else {
+                None
+            })
+        });
 
-        let ticker_events = stream! {
-            while let Ok(msg) = messages_receiver.recv().await {
-                if let Ok(msg) = serde_json::from_str::<TickerEvent>(&msg) {
-                    yield msg
-                }
-            }
-        };
-
-        self.ticker_events = Some(Box::pin(ticker_events));
+        events_stream
     }
 }

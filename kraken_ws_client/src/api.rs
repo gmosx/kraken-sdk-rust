@@ -33,3 +33,5 @@ pub use subscribe_trade::*;
 
 pub mod subscribe_ohlc;
 pub use subscribe_ohlc::*;
+
+pub const SUBSCRIBE_METHOD: &str = "subscribe";

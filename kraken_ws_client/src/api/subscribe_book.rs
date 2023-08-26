@@ -1,19 +1,23 @@
-use async_stream::stream;
+use futures_util::{Stream, StreamExt};
 use serde::{Deserialize, Serialize};
+use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
     client::{Event, Request},
     types::{BookDepth, Channel},
+    util::gen_next_id,
     Client,
 };
+
+use super::SUBSCRIBE_METHOD;
 
 // #todo synthesize the book
 // #todo verify the checksum
 
 #[derive(Debug, Serialize)]
-pub struct SubscribeBookParams<'a> {
+pub struct SubscribeBookParams {
     pub channel: Channel,
-    pub symbol: &'a [&'a str],
+    pub symbol: Vec<String>,
     /// Book depth for subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub depth: Option<BookDepth>,
@@ -22,40 +26,39 @@ pub struct SubscribeBookParams<'a> {
     pub snapshot: Option<bool>,
 }
 
-/// - <https://docs.kraken.com/websockets-v2/#book>
-pub type SubscribeBookRequest<'a> = Request<SubscribeBookParams<'a>>;
-
-impl SubscribeBookRequest<'_> {
-    pub fn new<'a>(symbol: &'a [&'a str]) -> SubscribeBookRequest<'a> {
-        SubscribeBookRequest {
-            method: "subscribe".to_owned(),
-            params: SubscribeBookParams {
-                channel: Channel::Book,
-                depth: None,
-                symbol,
-                snapshot: None,
-            },
-            req_id: None,
+impl SubscribeBookParams {
+    pub fn new<'a>(symbol: impl Into<Vec<String>>) -> Self {
+        Self {
+            channel: Channel::Book,
+            depth: None,
+            symbol: symbol.into(),
+            snapshot: None,
         }
     }
 
     pub fn depth(self, depth: BookDepth) -> Self {
         Self {
-            params: SubscribeBookParams {
-                depth: Some(depth),
-                ..self.params
-            },
+            depth: Some(depth),
             ..self
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            params: SubscribeBookParams {
-                snapshot: Some(snapshot),
-                ..self.params
-            },
+            snapshot: Some(snapshot),
             ..self
+        }
+    }
+}
+
+pub type SubscribeBookRequest = Request<SubscribeBookParams>;
+
+impl SubscribeBookRequest {
+    pub fn new(params: SubscribeBookParams) -> Self {
+        Self {
+            method: SUBSCRIBE_METHOD.into(),
+            params,
+            req_id: Some(gen_next_id()),
         }
     }
 }
@@ -78,28 +81,33 @@ pub type BookEvent = Event<Vec<BookData>>;
 
 impl Client {
     // <https://docs.kraken.com/websockets-v2/#book>
-    pub async fn subscribe_book(&mut self, symbol: impl AsRef<str>, depth: BookDepth) {
-        let symbol = &[symbol.as_ref()];
+    pub async fn subscribe_book(&mut self, symbol: impl Into<String>, depth: BookDepth) {
+        let symbol = vec![symbol.into()];
         self.subscribe_books(symbol, depth).await
     }
 
     // <https://docs.kraken.com/websockets-v2/#book>
-    pub async fn subscribe_books(&mut self, symbol: &[&str], depth: BookDepth) {
-        let req = SubscribeBookRequest::new(symbol).depth(depth);
+    pub async fn subscribe_books(&mut self, symbol: impl Into<Vec<String>>, depth: BookDepth) {
+        self.call(
+            SUBSCRIBE_METHOD,
+            SubscribeBookParams::new(symbol).depth(depth),
+        )
+        .await
+        .expect("cannot send request");
+    }
 
-        self.send(req).await.expect("cannot send request");
+    // #todo add support to filter for symbol.
+    pub fn book_delta_events(&mut self) -> impl Stream<Item = BookEvent> {
+        let messages_stream = BroadcastStream::new(self.messages.subscribe());
 
-        let mut messages_receiver = self.broadcast.clone().subscribe();
+        let events_stream = messages_stream.filter_map(|msg| {
+            std::future::ready(if let Ok(msg) = msg {
+                serde_json::from_str::<BookEvent>(&msg).ok()
+            } else {
+                None
+            })
+        });
 
-        let book_events = stream! {
-            while let Ok(msg) = messages_receiver.recv().await {
-               if let Ok(msg) = serde_json::from_str::<BookEvent>(&msg) {
-                    yield msg
-                }
-                // #todo not good!
-            }
-        };
-
-        self.book_events = Some(Box::pin(book_events));
+        events_stream
     }
 }
