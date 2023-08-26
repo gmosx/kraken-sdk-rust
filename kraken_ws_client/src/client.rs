@@ -67,14 +67,14 @@ pub struct Client {
 // #todo extract socket like in the previous impl?
 impl Client {
     pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
-        let (stream, _) = connect_async(url).await?;
-        let (sender, receiver) = stream.split();
+        let (websocket_stream, _) = connect_async(url).await?;
+        let (websocket_sender, websocket_receiver) = websocket_stream.split();
         let (broadcast_sender, _) = tokio::sync::broadcast::channel::<String>(32);
 
         let broadcast = broadcast_sender.clone();
 
         let thread_handle = tokio::spawn(async move {
-            let mut receiver = receiver;
+            let mut receiver = websocket_receiver;
 
             while let Some(result) = receiver.next().await {
                 if let Ok(msg) = result {
@@ -95,7 +95,7 @@ impl Client {
 
         Ok(Self {
             token,
-            sender,
+            sender: websocket_sender,
             thread_handle,
             broadcast,
             book_events: None,

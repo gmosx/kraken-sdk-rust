@@ -9,9 +9,13 @@ async fn main() {
 
     client.subscribe_book("BTC/USD", BookDepth::D10).await;
 
-    let mut book_events = client.book_events.unwrap();
+    // let mut book_events = client.book_events.unwrap();
 
-    while let Some(event) = book_events.next().await {
+    // while let Some(event) = book_events.next().await {
+    //     dbg!(&event);
+    // }
+
+    while let Some(event) = client.book_delta_events().next().await {
         dbg!(&event);
     }
 }

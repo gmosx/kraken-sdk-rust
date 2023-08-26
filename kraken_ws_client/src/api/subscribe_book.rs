@@ -1,5 +1,7 @@
 use async_stream::stream;
+use futures_util::{Stream, StreamExt};
 use serde::{Deserialize, Serialize};
+use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
     client::{Event, Request},
@@ -94,7 +96,7 @@ impl Client {
         .await
         .expect("cannot send request");
 
-        let mut messages_receiver = self.broadcast.clone().subscribe();
+        let mut messages_receiver = self.broadcast.subscribe();
 
         let book_events = stream! {
             while let Ok(msg) = messages_receiver.recv().await {
@@ -106,5 +108,21 @@ impl Client {
         };
 
         self.book_events = Some(Box::pin(book_events));
+    }
+
+    // #todo add support to filter for symbol.
+    pub fn book_delta_events(&mut self) -> impl Stream<Item = Option<BookEvent>> {
+        let messages_stream = BroadcastStream::new(self.broadcast.subscribe());
+
+        let events_stream = messages_stream.map(|msg| {
+            if let Ok(msg) = msg {
+                serde_json::from_str::<BookEvent>(&msg).ok()
+            } else {
+                // #todo report error!
+                None
+            }
+        });
+
+        events_stream
     }
 }
