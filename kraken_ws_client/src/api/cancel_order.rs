@@ -1,7 +1,9 @@
 //! <https://docs.kraken.com/websockets-v2/#cancel-order>
 
-use serde::Serialize;
 use crate::client::Request;
+use serde::Serialize;
+
+use super::CANCEL_ORDER_METHOD;
 
 /// Note: Though order_id and order_userref are individually optional, at least
 /// one of them must be filled.
@@ -20,37 +22,69 @@ pub struct CancelOrderParams<'a> {
 pub type CancelOrderRequest<'a> = Request<CancelOrderParams<'a>>;
 
 impl CancelOrderRequest<'_> {
-    pub fn order_id<'a>(order_id: &'a str, token: &'a str) -> CancelOrderRequest<'a> {
-        let order_id = vec![order_id.to_owned()];
+    pub fn order_id(order_id: impl Into<String>, token: &str) -> CancelOrderRequest {
+        let order_id = vec![order_id.into()];
         CancelOrderRequest {
-            method: "cancel_order".to_owned(),
-            params: CancelOrderParams { token, order_id: Some(order_id), order_userref: None },
+            method: CANCEL_ORDER_METHOD.to_owned(),
+            params: CancelOrderParams {
+                token,
+                order_id: Some(order_id),
+                order_userref: None,
+            },
             req_id: None,
         }
     }
 
     pub fn order_ids(order_id: Vec<String>, token: &str) -> CancelOrderRequest {
         CancelOrderRequest {
-            method: "cancel_order".to_owned(),
-            params: CancelOrderParams { token, order_id: Some(order_id), order_userref: None },
+            method: CANCEL_ORDER_METHOD.to_owned(),
+            params: CancelOrderParams {
+                token,
+                order_id: Some(order_id),
+                order_userref: None,
+            },
             req_id: None,
         }
     }
 
-    pub fn order_userref(order_userref: i32,token: &str) -> CancelOrderRequest {
+    pub fn order_userref(order_userref: i32, token: &str) -> CancelOrderRequest {
         let order_userref = vec![order_userref];
         CancelOrderRequest {
-            method: "cancel_order".to_owned(),
-            params: CancelOrderParams { token, order_id: None, order_userref: Some(order_userref) },
+            method: CANCEL_ORDER_METHOD.to_owned(),
+            params: CancelOrderParams {
+                token,
+                order_id: None,
+                order_userref: Some(order_userref),
+            },
             req_id: None,
         }
     }
 
-    pub fn order_userrefs(order_userref: Vec<i32>,token: &str) -> CancelOrderRequest {
+    pub fn order_userrefs(order_userref: Vec<i32>, token: &str) -> CancelOrderRequest {
         CancelOrderRequest {
-            method: "cancel_order".to_owned(),
-            params: CancelOrderParams { token, order_id: None, order_userref: Some(order_userref) },
+            method: CANCEL_ORDER_METHOD.to_owned(),
+            params: CancelOrderParams {
+                token,
+                order_id: None,
+                order_userref: Some(order_userref),
+            },
             req_id: None,
         }
     }
 }
+
+// #todo
+
+// impl Client {
+// cancel_order_id
+// cancel_order_ids
+// cancel_order_userref
+// cancel_order_userrefs
+// }
+
+/*
+    let cancel_order_req = CancelOrderRequest::order_id(..., client.token.unwrap()).extra(bool);
+    let resp = client.send(cancel_order_req).await;
+
+    let resp = client.cancel_order_id(...).
+*/

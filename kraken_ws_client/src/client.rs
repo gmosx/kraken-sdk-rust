@@ -51,7 +51,7 @@ pub struct Event<D> {
 pub struct Client {
     #[allow(dead_code)]
     token: Option<String>,
-    sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
+    websocket_sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
     // The thread_handle will be dropped when the Client drops.
     #[allow(dead_code)]
     thread_handle: tokio::task::JoinHandle<()>,
@@ -59,6 +59,8 @@ pub struct Client {
 }
 
 // #todo extract socket like in the previous impl?
+// #todo separate handling of Response, Event, Error.
+
 impl Client {
     pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
         let (websocket_stream, _) = connect_async(url).await?;
@@ -89,7 +91,7 @@ impl Client {
 
         Ok(Self {
             token,
-            sender: websocket_sender,
+            websocket_sender,
             thread_handle,
             messages: broadcast_sender_clone,
         })
@@ -110,7 +112,9 @@ impl Client {
     {
         let msg = serde_json::to_string(&req).unwrap();
         tracing::debug!("{msg}");
-        self.sender.send(Message::Text(msg.to_string())).await?;
+        self.websocket_sender
+            .send(Message::Text(msg.to_string()))
+            .await?;
 
         Ok(())
     }
