@@ -1,4 +1,5 @@
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
+use serde_repr::{Deserialize_repr, Serialize_repr};
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Amount {
@@ -77,4 +78,14 @@ pub struct ConditionalParams {
     pub limit_price: Option<f64>,
     pub stop_price: Option<f64>,
     pub order_type: Option<ConditionalOrderType>,
+}
+
+#[derive(Debug, Serialize_repr, Deserialize_repr)]
+#[repr(u32)]
+pub enum BookDepth {
+    D10 = 10,
+    D25 = 25,
+    D100 = 100,
+    D500 = 500,
+    D1000 = 1000,
 }

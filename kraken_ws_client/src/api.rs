@@ -16,6 +16,9 @@ pub use cancel_all_orders_after::*;
 pub mod status;
 pub use status::*;
 
+pub mod subscribe_book;
+pub use subscribe_book::*;
+
 pub mod subscribe_executions;
 pub use subscribe_executions::*;
 

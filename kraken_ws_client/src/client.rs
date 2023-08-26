@@ -9,7 +9,7 @@ use tokio_tungstenite::{
 };
 
 use crate::{
-    api::TickerEvent,
+    api::{BookEvent, TickerEvent},
     util::Result,
 };
 
@@ -60,6 +60,7 @@ pub struct Client {
     #[allow(dead_code)]
     thread_handle: tokio::task::JoinHandle<()>,
     pub broadcast: tokio::sync::broadcast::Sender<String>,
+    pub book_events: Option<Pin<Box<dyn Stream<Item = BookEvent> + Send + Sync>>>,
     pub ticker_events: Option<Pin<Box<dyn Stream<Item = TickerEvent> + Send + Sync>>>,
 }
 
@@ -97,6 +98,7 @@ impl Client {
             sender,
             thread_handle,
             broadcast,
+            book_events: None,
             ticker_events: None,
         })
     }
