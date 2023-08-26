@@ -98,7 +98,7 @@ impl Client {
 
     // #todo add support to filter for symbol.
     pub fn book_delta_events(&mut self) -> impl Stream<Item = BookEvent> {
-        let messages_stream = BroadcastStream::new(self.broadcast.subscribe());
+        let messages_stream = BroadcastStream::new(self.messages.subscribe());
 
         let events_stream = messages_stream.filter_map(|msg| {
             std::future::ready(if let Ok(msg) = msg {

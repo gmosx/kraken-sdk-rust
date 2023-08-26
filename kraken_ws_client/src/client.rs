@@ -50,11 +50,10 @@ pub struct Client {
     #[allow(dead_code)]
     token: Option<String>,
     sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
-
     // The thread_handle will be dropped when the Client drops.
     #[allow(dead_code)]
     thread_handle: tokio::task::JoinHandle<()>,
-    pub broadcast: tokio::sync::broadcast::Sender<String>,
+    pub messages: tokio::sync::broadcast::Sender<String>,
 }
 
 // #todo extract socket like in the previous impl?
@@ -64,7 +63,7 @@ impl Client {
         let (websocket_sender, websocket_receiver) = websocket_stream.split();
         let (broadcast_sender, _) = tokio::sync::broadcast::channel::<String>(32);
 
-        let broadcast = broadcast_sender.clone();
+        let broadcast_sender_clone = broadcast_sender.clone();
 
         let thread_handle = tokio::spawn(async move {
             let mut receiver = websocket_receiver;
@@ -90,7 +89,7 @@ impl Client {
             token,
             sender: websocket_sender,
             thread_handle,
-            broadcast,
+            messages: broadcast_sender_clone,
         })
     }
 
@@ -107,8 +106,6 @@ impl Client {
     where
         Req: Serialize,
     {
-        // #todo attach the token to the request here! nah!
-        // #todo add rec_id
         let msg = serde_json::to_string(&req).unwrap();
         tracing::debug!("{msg}");
         self.sender.send(Message::Text(msg.to_string())).await?;
@@ -121,6 +118,7 @@ impl Client {
     where
         P: Serialize,
     {
+        // #todo attach the token to the request here! nah!
         let req = Request {
             method: method.into(),
             params,

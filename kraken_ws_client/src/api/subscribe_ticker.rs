@@ -92,7 +92,7 @@ impl Client {
 
     // #todo add support to filter for symbol.
     pub fn ticker_events(&mut self) -> impl Stream<Item = TickerEvent> {
-        let messages_stream = BroadcastStream::new(self.broadcast.subscribe());
+        let messages_stream = BroadcastStream::new(self.messages.subscribe());
 
         let events_stream = messages_stream.filter_map(|msg| {
             std::future::ready(if let Ok(msg) = msg {
