@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
-    client::{Event, Request},
+    client::{Event, PublicRequest},
     types::Channel,
     util::gen_next_id,
     Client,
@@ -46,7 +46,7 @@ impl SubscribeTickerParams {
     }
 }
 
-pub type SubscribeTickerRequest = Request<SubscribeTickerParams>;
+pub type SubscribeTickerRequest = PublicRequest<SubscribeTickerParams>;
 
 impl SubscribeTickerRequest {
     pub fn new(params: SubscribeTickerParams) -> Self {
@@ -85,7 +85,7 @@ impl Client {
 
     // <https://docs.kraken.com/websockets-v2/#ticker>
     pub async fn subscribe_tickers(&mut self, symbol: impl Into<Vec<String>>) {
-        self.call(SUBSCRIBE_METHOD, SubscribeTickerParams::new(symbol))
+        self.call_public(SUBSCRIBE_METHOD, SubscribeTickerParams::new(symbol))
             .await
             .expect("cannot send request");
     }

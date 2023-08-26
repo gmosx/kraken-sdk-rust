@@ -14,7 +14,13 @@ pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
 // #todo create PrivateRequest, with token?
 
 #[derive(Debug, Serialize)]
-pub struct Request<P> {
+pub enum Request<P: Serialize> {
+    Public(PublicRequest<P>),
+    Private(PrivateRequest<P>),
+}
+
+#[derive(Debug, Serialize)]
+pub struct PublicRequest<P: Serialize> {
     pub method: String,
     pub params: P,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -22,14 +28,14 @@ pub struct Request<P> {
 }
 
 #[derive(Debug, Serialize)]
-pub struct PrivateParams<P> {
+pub struct PrivateParams<P: Serialize> {
     #[serde(flatten)]
     pub params: P,
     pub token: String,
 }
 
 #[derive(Debug, Serialize)]
-pub struct PrivateRequest<P> {
+pub struct PrivateRequest<P: Serialize> {
     pub method: String,
     pub params: PrivateParams<P>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -126,7 +132,9 @@ impl Client {
         Req: Serialize,
     {
         let msg = serde_json::to_string(&req).unwrap();
+
         tracing::debug!("{msg}");
+
         self.websocket_sender
             .send(Message::Text(msg.to_string()))
             .await?;
@@ -134,13 +142,13 @@ impl Client {
         Ok(())
     }
 
-    /// Performs a remote procedure call.
-    pub async fn call<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
+    /// Performs a public remote procedure call.
+    pub async fn call_public<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
     where
         P: Serialize,
     {
         // #todo attach the token to the request here! nah!
-        let req = Request {
+        let req = PublicRequest {
             method: method.into(),
             params,
             req_id: Some(gen_next_id()),
@@ -149,6 +157,7 @@ impl Client {
         self.send(req).await
     }
 
+    /// Performs a private remote procedure call.
     pub async fn call_private<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
     where
         P: Serialize,

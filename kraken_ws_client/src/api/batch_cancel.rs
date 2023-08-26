@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
-use crate::client::{Response, Request};
+use crate::client::{PublicRequest, Response};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
 pub struct BatchCancelParams<'a> {
@@ -13,7 +13,7 @@ pub struct BatchCancelParams<'a> {
 /// Multiple orders can be canceled in one request via batch_cancel method.
 ///
 /// <https://docs.kraken.com/websockets-v2/#batch-cancel>
-pub type BatchCancelRequest<'a> = Request<BatchCancelParams<'a>>;
+pub type BatchCancelRequest<'a> = PublicRequest<BatchCancelParams<'a>>;
 
 impl BatchCancelRequest<'_> {
     pub fn new(orders: Vec<String>, token: &str) -> BatchCancelRequest {

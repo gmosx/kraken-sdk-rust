@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    client::{Event, Request},
+    client::{Event, PublicRequest},
     types::Channel,
 };
 
@@ -32,7 +32,7 @@ impl SubscribeOhlcParams {
 }
 
 /// - <https://docs.kraken.com/websockets-v2/#open-high-low-and-close-ohlc>
-pub type SubscribeOhlcRequest = Request<SubscribeOhlcParams>;
+pub type SubscribeOhlcRequest = PublicRequest<SubscribeOhlcParams>;
 
 #[derive(Debug, Deserialize)]
 pub struct OhlcData {

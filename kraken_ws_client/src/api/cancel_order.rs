@@ -2,8 +2,12 @@
 
 use serde::Serialize;
 
+use crate::{
+    client::{PrivateParams, PrivateRequest},
+    util::gen_next_id,
+};
+
 use super::CANCEL_ORDER_METHOD;
-use crate::client::Request;
 
 /// Note: Though order_id and order_userref are individually optional, at least
 /// one of them must be filled.
@@ -17,68 +21,51 @@ pub struct CancelOrderParams {
     pub order_userref: Option<Vec<i32>>,
 }
 
-pub type CancelOrderRequest = Request<CancelOrderParams>;
-
-impl CancelOrderRequest {
+impl CancelOrderParams {
     pub fn order_id(order_id: impl Into<String>) -> Self {
         let order_id = vec![order_id.into()];
         Self {
-            method: CANCEL_ORDER_METHOD.to_owned(),
-            params: CancelOrderParams {
-                order_id: Some(order_id),
-                order_userref: None,
-            },
-            req_id: None,
+            order_id: Some(order_id),
+            order_userref: None,
         }
     }
 
     pub fn order_ids(order_id: Vec<String>) -> Self {
         Self {
-            method: CANCEL_ORDER_METHOD.to_owned(),
-            params: CancelOrderParams {
-                order_id: Some(order_id),
-                order_userref: None,
-            },
-            req_id: None,
+            order_id: Some(order_id),
+            order_userref: None,
         }
     }
 
     pub fn order_userref(order_userref: i32) -> Self {
         let order_userref = vec![order_userref];
         Self {
-            method: CANCEL_ORDER_METHOD.to_owned(),
-            params: CancelOrderParams {
-                order_id: None,
-                order_userref: Some(order_userref),
-            },
-            req_id: None,
+            order_id: None,
+            order_userref: Some(order_userref),
         }
     }
 
     pub fn order_userrefs(order_userref: Vec<i32>) -> Self {
         Self {
-            method: CANCEL_ORDER_METHOD.to_owned(),
-            params: CancelOrderParams {
-                order_id: None,
-                order_userref: Some(order_userref),
-            },
-            req_id: None,
+            order_id: None,
+            order_userref: Some(order_userref),
         }
     }
 }
 
-// #todo
+pub type CancelOrderRequest = PrivateRequest<CancelOrderParams>;
 
-// impl Client {
-// cancel_order_id
-// cancel_order_ids
-// cancel_order_userref
-// cancel_order_userrefs
-// }
+impl CancelOrderRequest {
+    pub fn new(params: CancelOrderParams, token: impl Into<String>) -> Self {
+        let params = PrivateParams {
+            params,
+            token: token.into(),
+        };
 
-/*
-    let cancel_order_req = CancelOrderRequest::order_id(..., client.token.unwrap()).extra(bool);
-    let resp = client.send(cancel_order_req).await;
-
-    let resp = client.cancel_order_id(...).
-*/
+        Self {
+            method: CANCEL_ORDER_METHOD.into(),
+            params,
+            req_id: Some(gen_next_id()),
+        }
+    }
+}

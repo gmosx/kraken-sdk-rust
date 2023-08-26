@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
-    client::{Event, Request},
+    client::{Event, PublicRequest},
     types::{BookDepth, Channel},
     util::gen_next_id,
     Client,
@@ -51,7 +51,7 @@ impl SubscribeBookParams {
     }
 }
 
-pub type SubscribeBookRequest = Request<SubscribeBookParams>;
+pub type SubscribeBookRequest = PublicRequest<SubscribeBookParams>;
 
 impl SubscribeBookRequest {
     pub fn new(params: SubscribeBookParams) -> Self {
@@ -88,7 +88,7 @@ impl Client {
 
     // <https://docs.kraken.com/websockets-v2/#book>
     pub async fn subscribe_books(&mut self, symbol: impl Into<Vec<String>>, depth: BookDepth) {
-        self.call(
+        self.call_public(
             SUBSCRIBE_METHOD,
             SubscribeBookParams::new(symbol).depth(depth),
         )
