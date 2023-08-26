@@ -1,9 +1,10 @@
+use serde::{Deserialize, Serialize};
+
 use crate::{
     client::{Event, Request},
     types::{Channel, OrderSide, OrderType},
     util::gen_next_id,
 };
-use serde::{Deserialize, Serialize};
 
 use super::SUBSCRIBE_METHOD;
 
