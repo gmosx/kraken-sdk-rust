@@ -21,7 +21,7 @@ pub struct Request<P> {
     pub method: String,
     pub params: P,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub req_id: Option<i64>,
+    pub req_id: Option<u64>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -111,6 +111,7 @@ impl Client {
         Self::connect(DEFFAULT_WS_AUTH_URL, Some(token)).await
     }
 
+    /// Sends a message to the WebSocket.
     pub async fn send<Req>(&mut self, req: Req) -> Result<()>
     where
         Req: Serialize,
@@ -124,10 +125,22 @@ impl Client {
         Ok(())
     }
 
-    // #todo add call method, that also adds rec_id.
+    /// Performs a remote procedure call.
+    pub async fn call<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
+    where
+        P: Serialize,
+    {
+        let req = Request {
+            method: method.into(),
+            params,
+            req_id: Some(self.next_id()),
+        };
+
+        self.send(req).await
+    }
 
     // #todo make this customizable.
-    pub fn next_id(&self) -> isize {
-        todo!()
+    pub fn next_id(&self) -> u64 {
+        rand::random()
     }
 }
