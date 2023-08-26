@@ -10,7 +10,7 @@ use tokio_tungstenite::{
 
 use crate::{
     api::{BookEvent, TickerEvent},
-    util::Result,
+    util::{gen_next_id, Result},
 };
 
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
@@ -133,14 +133,9 @@ impl Client {
         let req = Request {
             method: method.into(),
             params,
-            req_id: Some(self.next_id()),
+            req_id: Some(gen_next_id()),
         };
 
         self.send(req).await
-    }
-
-    // #todo make this customizable.
-    pub fn next_id(&self) -> u64 {
-        rand::random()
     }
 }
