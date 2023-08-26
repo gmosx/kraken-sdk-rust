@@ -25,9 +25,7 @@ async fn main() {
 
     client.subscribe_ticker("BTC/USD").await;
 
-    let mut ticker_events = client.ticker_events.unwrap();
-
-    while let Some(event) = ticker_events.next().await {
+    while let Some(event) = client.ticker_events().next().await {
         dbg!(&event);
     }
 }
