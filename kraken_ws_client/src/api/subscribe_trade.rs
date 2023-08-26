@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    client::{Event, Request},
+    client::{Event, PublicRequest},
     types::{Channel, OrderSide, OrderType},
     util::gen_next_id,
 };
@@ -34,7 +34,7 @@ impl SubscribeTradeParams {
     }
 }
 
-pub type SubscribeTradeRequest = Request<SubscribeTradeParams>;
+pub type SubscribeTradeRequest = PublicRequest<SubscribeTradeParams>;
 
 impl SubscribeTradeRequest {
     pub fn new(params: SubscribeTradeParams) -> Self {

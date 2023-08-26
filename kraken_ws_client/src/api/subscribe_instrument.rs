@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    client::{Event, Request},
+    client::{Event, PublicRequest},
     types::Channel,
     util::gen_next_id,
 };
@@ -39,7 +39,7 @@ impl SubscribeInstrumentParams {
 }
 
 /// - <https://docs.kraken.com/websockets-v2/#instrument>
-pub type SubscribeInstrumentRequest = Request<SubscribeInstrumentParams>;
+pub type SubscribeInstrumentRequest = PublicRequest<SubscribeInstrumentParams>;
 
 impl SubscribeInstrumentRequest {
     pub fn new(params: SubscribeInstrumentParams) -> Self {

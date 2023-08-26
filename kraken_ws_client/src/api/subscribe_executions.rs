@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    client::Request,
+    client::PublicRequest,
     types::{Amount, Channel, OrderSide, OrderStatus, OrderType},
     util::gen_next_id,
 };
@@ -59,7 +59,7 @@ impl SubscribeExecutionsParams {
 /// - <https://docs.kraken.com/websockets-v2/#executions>
 /// - <https://docs.kraken.com/websockets/#message-ownTrades>
 /// - <https://docs.kraken.com/websockets/#message-openOrders>
-pub type SubscribeExecutionsRequest = Request<SubscribeExecutionsParams>;
+pub type SubscribeExecutionsRequest = PublicRequest<SubscribeExecutionsParams>;
 
 impl SubscribeExecutionsRequest {
     pub fn new(params: SubscribeExecutionsParams) -> Self {

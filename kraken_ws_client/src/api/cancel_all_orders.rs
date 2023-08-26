@@ -1,5 +1,5 @@
+use crate::client::PublicRequest;
 use serde::Serialize;
-use crate::client::{Request};
 
 #[derive(Debug, Serialize)]
 pub struct CancelAllOrdersParams<'a> {
@@ -10,7 +10,7 @@ pub struct CancelAllOrdersParams<'a> {
 /// Cancels all pending orders.
 ///
 /// <https://docs.kraken.com/websockets-v2/#cancel-all-orders>
-pub type CancelAllOrdersRequest<'a> = Request<CancelAllOrdersParams<'a>>;
+pub type CancelAllOrdersRequest<'a> = PublicRequest<CancelAllOrdersParams<'a>>;
 
 impl CancelAllOrdersRequest<'_> {
     pub fn new(token: &str) -> CancelAllOrdersRequest {

@@ -1,5 +1,5 @@
-use serde::{Serialize, Deserialize};
-use crate::client::{Response, Request};
+use crate::client::{PublicRequest, Response};
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
 pub struct CancelAllOrdersAfterParams<'a> {
@@ -19,7 +19,7 @@ pub struct CancelAllOrdersAfterParams<'a> {
 /// disabled until the client provides a new (non-zero) timeout.
 ///
 /// <https://docs.kraken.com/websockets-v2/#cancel-all-orders-after>
-pub type CancelAllOrdersAfterRequest<'a> = Request<CancelAllOrdersAfterParams<'a>>;
+pub type CancelAllOrdersAfterRequest<'a> = PublicRequest<CancelAllOrdersAfterParams<'a>>;
 
 impl CancelAllOrdersAfterRequest<'_> {
     pub fn new(timeout: i32, token: &str) -> CancelAllOrdersAfterRequest {
@@ -30,7 +30,6 @@ impl CancelAllOrdersAfterRequest<'_> {
         }
     }
 }
-
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

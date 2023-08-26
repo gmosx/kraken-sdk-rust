@@ -1,5 +1,5 @@
 use crate::{
-    client::Request,
+    client::PublicRequest,
     types::{OrderSide, OrderType, TimeInForce},
 };
 use serde::Serialize;
@@ -36,7 +36,7 @@ pub struct AddOrderParams<'a> {
 }
 
 /// - <https://docs.kraken.com/websockets-v2/#add-order>
-pub type AddOrderRequest<'a> = Request<AddOrderParams<'a>>;
+pub type AddOrderRequest<'a> = PublicRequest<AddOrderParams<'a>>;
 
 impl AddOrderRequest<'_> {
     pub fn market<'a>(
