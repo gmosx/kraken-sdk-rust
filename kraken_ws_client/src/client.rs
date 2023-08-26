@@ -21,6 +21,21 @@ pub struct Request<P> {
     pub req_id: Option<u64>,
 }
 
+#[derive(Debug, Serialize)]
+pub struct PrivateParams<P> {
+    #[serde(flatten)]
+    pub params: P,
+    pub token: String,
+}
+
+#[derive(Debug, Serialize)]
+pub struct PrivateRequest<P> {
+    pub method: String,
+    pub params: PrivateParams<P>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub req_id: Option<u64>,
+}
+
 #[derive(Debug, Deserialize)]
 pub struct Response<R> {
     pub method: String,
@@ -128,6 +143,22 @@ impl Client {
         let req = Request {
             method: method.into(),
             params,
+            req_id: Some(gen_next_id()),
+        };
+
+        self.send(req).await
+    }
+
+    pub async fn call_private<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
+    where
+        P: Serialize,
+    {
+        let req = PrivateRequest {
+            method: method.into(),
+            params: PrivateParams {
+                params: params,
+                token: self.token.clone().unwrap(),
+            },
             req_id: Some(gen_next_id()),
         };
 

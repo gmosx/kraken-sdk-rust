@@ -1,16 +1,14 @@
 //! <https://docs.kraken.com/websockets-v2/#cancel-order>
 
-use crate::client::Request;
 use serde::Serialize;
 
 use super::CANCEL_ORDER_METHOD;
+use crate::client::Request;
 
 /// Note: Though order_id and order_userref are individually optional, at least
 /// one of them must be filled.
 #[derive(Debug, Serialize)]
-pub struct CancelOrderParams<'a> {
-    /// Session token.
-    pub token: &'a str,
+pub struct CancelOrderParams {
     /// Array of strings representing order_id(s).
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_id: Option<Vec<String>>,
@@ -19,15 +17,14 @@ pub struct CancelOrderParams<'a> {
     pub order_userref: Option<Vec<i32>>,
 }
 
-pub type CancelOrderRequest<'a> = Request<CancelOrderParams<'a>>;
+pub type CancelOrderRequest = Request<CancelOrderParams>;
 
-impl CancelOrderRequest<'_> {
-    pub fn order_id(order_id: impl Into<String>, token: &str) -> CancelOrderRequest {
+impl CancelOrderRequest {
+    pub fn order_id(order_id: impl Into<String>) -> Self {
         let order_id = vec![order_id.into()];
-        CancelOrderRequest {
+        Self {
             method: CANCEL_ORDER_METHOD.to_owned(),
             params: CancelOrderParams {
-                token,
                 order_id: Some(order_id),
                 order_userref: None,
             },
@@ -35,11 +32,10 @@ impl CancelOrderRequest<'_> {
         }
     }
 
-    pub fn order_ids(order_id: Vec<String>, token: &str) -> CancelOrderRequest {
-        CancelOrderRequest {
+    pub fn order_ids(order_id: Vec<String>) -> Self {
+        Self {
             method: CANCEL_ORDER_METHOD.to_owned(),
             params: CancelOrderParams {
-                token,
                 order_id: Some(order_id),
                 order_userref: None,
             },
@@ -47,12 +43,11 @@ impl CancelOrderRequest<'_> {
         }
     }
 
-    pub fn order_userref(order_userref: i32, token: &str) -> CancelOrderRequest {
+    pub fn order_userref(order_userref: i32) -> Self {
         let order_userref = vec![order_userref];
-        CancelOrderRequest {
+        Self {
             method: CANCEL_ORDER_METHOD.to_owned(),
             params: CancelOrderParams {
-                token,
                 order_id: None,
                 order_userref: Some(order_userref),
             },
@@ -60,11 +55,10 @@ impl CancelOrderRequest<'_> {
         }
     }
 
-    pub fn order_userrefs(order_userref: Vec<i32>, token: &str) -> CancelOrderRequest {
-        CancelOrderRequest {
+    pub fn order_userrefs(order_userref: Vec<i32>) -> Self {
+        Self {
             method: CANCEL_ORDER_METHOD.to_owned(),
             params: CancelOrderParams {
-                token,
                 order_id: None,
                 order_userref: Some(order_userref),
             },
