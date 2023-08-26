@@ -1,5 +1,8 @@
+use crate::{
+    client::Request,
+    types::{Amount, Channel, OrderSide, OrderStatus, OrderType},
+};
 use serde::{Deserialize, Serialize};
-use crate::{client::{Request}, types::{OrderType, OrderStatus, Amount, OrderSide, Channel}};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeExecutionsParams<'a> {
@@ -37,7 +40,7 @@ impl SubscribeExecutionsRequest<'_> {
                 snapshot_trades: None,
                 order_status: None,
                 ratecounter: None,
-                token
+                token,
             },
             req_id: None,
         }
