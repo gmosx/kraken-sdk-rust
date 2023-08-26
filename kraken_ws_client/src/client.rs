@@ -11,6 +11,8 @@ use crate::util::{gen_next_id, Result};
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
 pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
 
+// #todo create PrivateRequest, with token?
+
 #[derive(Debug, Serialize)]
 pub struct Request<P> {
     pub method: String,
