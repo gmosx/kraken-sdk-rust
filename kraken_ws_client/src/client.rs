@@ -151,8 +151,24 @@ impl Client {
         Self::connect(DEFAULT_WS_URL, None).await
     }
 
-    pub async fn connect_auth(token: String) -> Result<Self> {
+    pub async fn connect_private(token: String) -> Result<Self> {
         Self::connect(DEFFAULT_WS_AUTH_URL, Some(token)).await
+    }
+
+    /// Sends a public message to the WebSocket.
+    async fn send<R>(&mut self, req: R) -> Result<()>
+    where
+        R: Serialize,
+    {
+        let msg = serde_json::to_string(&req).unwrap();
+
+        tracing::debug!("{msg}");
+
+        self.websocket_sender
+            .send(Message::Text(msg.to_string()))
+            .await?;
+
+        Ok(())
     }
 
     /// Sends a public message to the WebSocket.
@@ -166,15 +182,7 @@ impl Client {
             req.req_id = Some(gen_next_id());
         }
 
-        let msg = serde_json::to_string(&req).unwrap();
-
-        tracing::debug!("{msg}");
-
-        self.websocket_sender
-            .send(Message::Text(msg.to_string()))
-            .await?;
-
-        Ok(())
+        self.send(req).await
     }
 
     /// Sends a private message to the WebSocket.
@@ -190,14 +198,6 @@ impl Client {
             req.req_id = Some(gen_next_id());
         }
 
-        let msg = serde_json::to_string(&req).unwrap();
-
-        tracing::debug!("{msg}");
-
-        self.websocket_sender
-            .send(Message::Text(msg.to_string()))
-            .await?;
-
-        Ok(())
+        self.send(req).await
     }
 }
