@@ -1,10 +1,8 @@
-use crate::client::{PublicRequest, Response};
+use crate::client::{PrivateParams, PrivateRequest, Response};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize)]
-pub struct CancelAllOrdersAfterParams<'a> {
-    /// Session token.
-    pub token: &'a str,
+pub struct CancelAllOrdersAfterParams {
     /// Duration (in seconds) to set/extend the timer by. Note: should be less than 86400 seconds.
     pub timeout: i32,
 }
@@ -19,13 +17,13 @@ pub struct CancelAllOrdersAfterParams<'a> {
 /// disabled until the client provides a new (non-zero) timeout.
 ///
 /// <https://docs.kraken.com/websockets-v2/#cancel-all-orders-after>
-pub type CancelAllOrdersAfterRequest<'a> = PublicRequest<CancelAllOrdersAfterParams<'a>>;
+pub type CancelAllOrdersAfterRequest = PrivateRequest<CancelAllOrdersAfterParams>;
 
-impl CancelAllOrdersAfterRequest<'_> {
-    pub fn new(timeout: i32, token: &str) -> CancelAllOrdersAfterRequest {
+impl CancelAllOrdersAfterRequest {
+    pub fn new(timeout: i32) -> CancelAllOrdersAfterRequest {
         CancelAllOrdersAfterRequest {
             method: "cancel_all_orders_after".to_owned(),
-            params: CancelAllOrdersAfterParams { token, timeout },
+            params: PrivateParams::new(CancelAllOrdersAfterParams { timeout }),
             req_id: None,
         }
     }

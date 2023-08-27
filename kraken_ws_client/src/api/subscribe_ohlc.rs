@@ -14,25 +14,32 @@ pub struct SubscribeOhlcParams {
     pub snapshot: Option<bool>,
 }
 
-impl SubscribeOhlcParams {
-    pub fn new<'a>(symbol: impl Into<Vec<String>>) -> SubscribeOhlcParams {
-        SubscribeOhlcParams {
-            channel: Channel::OHLC,
-            symbol: symbol.into(),
-            snapshot: None,
+/// - <https://docs.kraken.com/websockets-v2/#open-high-low-and-close-ohlc>
+pub type SubscribeOhlcRequest = PublicRequest<SubscribeOhlcParams>;
+
+impl SubscribeOhlcRequest {
+    pub fn new(symbol: impl Into<Vec<String>>) -> Self {
+        Self {
+            method: "subscribe".into(),
+            params: SubscribeOhlcParams {
+                channel: Channel::OHLC,
+                symbol: symbol.into(),
+                snapshot: None,
+            },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeOhlcParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
         }
     }
 }
-
-/// - <https://docs.kraken.com/websockets-v2/#open-high-low-and-close-ohlc>
-pub type SubscribeOhlcRequest = PublicRequest<SubscribeOhlcParams>;
 
 #[derive(Debug, Deserialize)]
 pub struct OhlcData {

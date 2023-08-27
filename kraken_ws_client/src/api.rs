@@ -33,6 +33,3 @@ pub use subscribe_trade::*;
 
 pub mod subscribe_ohlc;
 pub use subscribe_ohlc::*;
-
-pub const CANCEL_ORDER_METHOD: &str = "cancel_order";
-pub const SUBSCRIBE_METHOD: &str = "subscribe";
