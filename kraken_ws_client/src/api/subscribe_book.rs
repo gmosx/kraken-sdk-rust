@@ -4,8 +4,7 @@ use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
     client::{Event, PublicRequest},
-    types::{BookDepth, Channel},
-    util::gen_next_id,
+    types::{Channel, Depth},
     Client,
 };
 
@@ -20,45 +19,49 @@ pub struct SubscribeBookParams {
     pub symbol: Vec<String>,
     /// Book depth for subscription.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub depth: Option<BookDepth>,
+    pub depth: Option<Depth>,
     /// Request a snapshot after subscribing, default=true.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub snapshot: Option<bool>,
 }
 
-impl SubscribeBookParams {
-    pub fn new<'a>(symbol: impl Into<Vec<String>>) -> Self {
+pub type SubscribeBookRequest = PublicRequest<SubscribeBookParams>;
+
+impl SubscribeBookRequest {
+    pub fn new(symbol: impl Into<Vec<String>>) -> Self {
         Self {
-            channel: Channel::Book,
-            depth: None,
-            symbol: symbol.into(),
-            snapshot: None,
+            method: SUBSCRIBE_METHOD.into(),
+            params: SubscribeBookParams {
+                channel: Channel::Book,
+                depth: None,
+                symbol: symbol.into(),
+                snapshot: None,
+            },
+            req_id: None,
         }
     }
 
-    pub fn depth(self, depth: BookDepth) -> Self {
+    pub fn symbol(symbol: impl Into<String>) -> Self {
+        Self::new(vec![symbol.into()])
+    }
+
+    pub fn depth(self, depth: Depth) -> Self {
         Self {
-            depth: Some(depth),
+            params: SubscribeBookParams {
+                depth: Some(depth),
+                ..self.params
+            },
             ..self
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeBookParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
-        }
-    }
-}
-
-pub type SubscribeBookRequest = PublicRequest<SubscribeBookParams>;
-
-impl SubscribeBookRequest {
-    pub fn new(params: SubscribeBookParams) -> Self {
-        Self {
-            method: SUBSCRIBE_METHOD.into(),
-            params,
-            req_id: Some(gen_next_id()),
         }
     }
 }
@@ -80,22 +83,6 @@ pub struct BookData {
 pub type BookEvent = Event<Vec<BookData>>;
 
 impl Client {
-    // <https://docs.kraken.com/websockets-v2/#book>
-    pub async fn subscribe_book(&mut self, symbol: impl Into<String>, depth: BookDepth) {
-        let symbol = vec![symbol.into()];
-        self.subscribe_books(symbol, depth).await
-    }
-
-    // <https://docs.kraken.com/websockets-v2/#book>
-    pub async fn subscribe_books(&mut self, symbol: impl Into<Vec<String>>, depth: BookDepth) {
-        self.call_public(
-            SUBSCRIBE_METHOD,
-            SubscribeBookParams::new(symbol).depth(depth),
-        )
-        .await
-        .expect("cannot send request");
-    }
-
     // #todo add support to filter for symbol.
     pub fn book_delta_events(&mut self) -> impl Stream<Item = BookEvent> {
         let messages_stream = BroadcastStream::new(self.messages.subscribe());
