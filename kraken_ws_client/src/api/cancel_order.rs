@@ -21,7 +21,7 @@ pub struct CancelOrderParams {
 /// ### Example
 /// ```rs
 /// let req = CancelOrderRequest::order_id("...");
-/// client.send(req).await?;
+/// client.send_private(req).await?;
 /// ```
 pub type CancelOrderRequest = PrivateRequest<CancelOrderParams>;
 
@@ -53,15 +53,5 @@ impl CancelOrderRequest {
 
     pub fn order_userrefs(order_userref: Vec<i32>) -> Self {
         Self::new(None, Some(order_userref))
-    }
-
-    pub fn token(self, token: impl Into<String>) -> Self {
-        Self {
-            params: PrivateParams {
-                token: Some(token.into()),
-                ..self.params
-            },
-            ..self
-        }
     }
 }

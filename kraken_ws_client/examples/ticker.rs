@@ -8,7 +8,7 @@ async fn main() {
         .expect("cannot connect");
 
     client
-        .send(SubscribeTickerRequest::symbol("BTC/USD"))
+        .send_public(SubscribeTickerRequest::symbol("BTC/USD"))
         .await
         .expect("cannot send request");
 

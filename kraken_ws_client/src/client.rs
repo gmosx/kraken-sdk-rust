@@ -12,24 +12,6 @@ pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
 pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
 
 #[derive(Debug, Serialize)]
-pub enum Request<P: Serialize> {
-    Public(PublicRequest<P>),
-    Private(PrivateRequest<P>),
-}
-
-impl<P: Serialize> From<PublicRequest<P>> for Request<P> {
-    fn from(req: PublicRequest<P>) -> Self {
-        Self::Public(req)
-    }
-}
-
-impl<P: Serialize> From<PrivateRequest<P>> for Request<P> {
-    fn from(req: PrivateRequest<P>) -> Self {
-        Self::Private(req)
-    }
-}
-
-#[derive(Debug, Serialize)]
 pub struct PublicRequest<P: Serialize> {
     pub method: String,
     pub params: P,
@@ -72,6 +54,15 @@ pub struct PrivateRequest<P: Serialize> {
 }
 
 impl<P: Serialize> PrivateRequest<P> {
+    pub fn token(self, token: impl Into<String>) -> Self {
+        Self {
+            params: PrivateParams {
+                token: Some(token.into()),
+                ..self.params
+            },
+            ..self
+        }
+    }
     pub fn req_id(self, req_id: u64) -> Self {
         Self {
             req_id: Some(req_id),
@@ -164,28 +155,18 @@ impl Client {
         Self::connect(DEFFAULT_WS_AUTH_URL, Some(token)).await
     }
 
-    /// Sends a message to the WebSocket.
-    pub async fn send<P>(&mut self, req: impl Into<Request<P>>) -> Result<()>
+    /// Sends a public message to the WebSocket.
+    pub async fn send_public<P>(&mut self, req: PublicRequest<P>) -> Result<()>
     where
         P: Serialize,
     {
-        let req = req.into();
+        let mut req = req;
 
-        let msg = match req {
-            Request::Public(mut req) => {
-                if req.req_id.is_none() {
-                    req.req_id = Some(gen_next_id());
-                }
-                serde_json::to_string(&req).unwrap()
-            }
-            Request::Private(mut req) => {
-                req.params.token = self.token.clone();
-                if req.req_id.is_none() {
-                    req.req_id = Some(gen_next_id());
-                }
-                serde_json::to_string(&req).unwrap()
-            }
-        };
+        if req.req_id.is_none() {
+            req.req_id = Some(gen_next_id());
+        }
+
+        let msg = serde_json::to_string(&req).unwrap();
 
         tracing::debug!("{msg}");
 
@@ -196,31 +177,27 @@ impl Client {
         Ok(())
     }
 
-    /// Performs a public remote procedure call.
-    pub async fn call_public<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
+    /// Sends a private message to the WebSocket.
+    pub async fn send_private<P>(&mut self, req: PrivateRequest<P>) -> Result<()>
     where
         P: Serialize,
     {
-        let req = PublicRequest {
-            method: method.into(),
-            params,
-            req_id: None,
-        };
+        let mut req = req;
 
-        self.send(req).await
-    }
+        req.params.token = self.token.clone();
 
-    /// Performs a private remote procedure call.
-    pub async fn call_private<P>(&mut self, method: impl Into<String>, params: P) -> Result<()>
-    where
-        P: Serialize,
-    {
-        let req = PrivateRequest {
-            method: method.into(),
-            params: PrivateParams::new(params),
-            req_id: None,
-        };
+        if req.req_id.is_none() {
+            req.req_id = Some(gen_next_id());
+        }
 
-        self.send(req).await
+        let msg = serde_json::to_string(&req).unwrap();
+
+        tracing::debug!("{msg}");
+
+        self.websocket_sender
+            .send(Message::Text(msg.to_string()))
+            .await?;
+
+        Ok(())
     }
 }

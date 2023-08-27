@@ -8,7 +8,7 @@ async fn main() {
         .expect("cannot connect");
 
     client
-        .send(SubscribeBookRequest::symbol("BTC/USD").depth(Depth::D10))
+        .send_public(SubscribeBookRequest::symbol("BTC/USD").depth(Depth::D10))
         .await
         .expect("cannot send request");
 
