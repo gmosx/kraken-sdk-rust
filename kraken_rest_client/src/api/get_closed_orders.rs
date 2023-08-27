@@ -14,11 +14,10 @@ pub struct GetClosedOrdersRequest {
     userref: Option<i32>,
     start: Option<i64>,
     end: Option<i64>,
-    offset: Option<usize>,
+    ofs: Option<usize>,
     // TODO:
     // start = starting unix timestamp or order tx id of results (optional.  exclusive)
     // end = ending unix timestamp or order tx id of results (optional.  inclusive)
-    // ofs = result offset
     // closetime = which time to use (optional)
     //     open
     //     close
@@ -56,9 +55,9 @@ impl GetClosedOrdersRequest {
         }
     }
 
-    pub fn offset(self, offset: usize) -> Self {
+    pub fn ofs(self, ofs: usize) -> Self {
         Self {
-            offset: Some(offset),
+            ofs: Some(ofs),
             ..self
         }
     }
@@ -82,8 +81,8 @@ impl GetClosedOrdersRequest {
             query.push(format!("end={}", end));
         }
 
-        if let Some(offset) = self.offset {
-            query.push(format!("ofs={}", offset));
+        if let Some(ofs) = self.ofs {
+            query.push(format!("ofs={}", ofs));
         }
 
         let query = if query.is_empty() {
@@ -135,7 +134,7 @@ impl Client {
             userref: None,
             start: None,
             end: None,
-            offset: None,
+            ofs: None,
         }
     }
 }
