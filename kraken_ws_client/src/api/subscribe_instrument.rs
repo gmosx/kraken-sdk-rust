@@ -14,36 +14,23 @@ pub struct SubscribeInstrumentParams {
     pub snapshot: Option<bool>,
 }
 
-impl Default for SubscribeInstrumentParams {
+/// - <https://docs.kraken.com/websockets-v2/#instrument>
+pub type SubscribeInstrumentRequest = PublicRequest<SubscribeInstrumentParams>;
+
+impl Default for SubscribeInstrumentRequest {
     fn default() -> Self {
         Self::new()
     }
 }
 
-impl SubscribeInstrumentParams {
+impl SubscribeInstrumentRequest {
     pub fn new() -> Self {
         Self {
-            channel: Channel::Instrument,
-            snapshot: None,
-        }
-    }
-
-    pub fn snapshot(self, snapshot: bool) -> Self {
-        Self {
-            snapshot: Some(snapshot),
-            ..self
-        }
-    }
-}
-
-/// - <https://docs.kraken.com/websockets-v2/#instrument>
-pub type SubscribeInstrumentRequest = PublicRequest<SubscribeInstrumentParams>;
-
-impl SubscribeInstrumentRequest {
-    pub fn new(params: SubscribeInstrumentParams) -> Self {
-        Self {
             method: "subscribe".into(),
-            params,
+            params: SubscribeInstrumentParams {
+                channel: Channel::Ticker,
+                snapshot: None,
+            },
             req_id: Some(gen_next_id()),
         }
     }
