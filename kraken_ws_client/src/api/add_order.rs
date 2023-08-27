@@ -1,15 +1,14 @@
 use crate::{
-    client::PublicRequest,
+    client::{PrivateParams, PrivateRequest},
     types::{OrderSide, OrderType, TimeInForce},
 };
 use serde::Serialize;
 
 #[derive(Debug, Serialize)]
-pub struct AddOrderParams<'a> {
-    pub token: &'a str,
+pub struct AddOrderParams {
     pub side: OrderSide,
     pub order_type: OrderType,
-    pub symbol: &'a str,
+    pub symbol: String,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub time_in_force: Option<TimeInForce>,
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -36,86 +35,71 @@ pub struct AddOrderParams<'a> {
 }
 
 /// - <https://docs.kraken.com/websockets-v2/#add-order>
-pub type AddOrderRequest<'a> = PublicRequest<AddOrderParams<'a>>;
+pub type AddOrderRequest = PrivateRequest<AddOrderParams>;
 
-impl AddOrderRequest<'_> {
-    pub fn market<'a>(
-        side: OrderSide,
-        order_qty: f64,
-        symbol: &'a str,
-        token: &'a str,
-    ) -> AddOrderRequest<'a> {
+impl AddOrderRequest {
+    pub fn market(side: OrderSide, order_qty: f64, symbol: impl Into<String>) -> Self {
         AddOrderRequest {
             method: "add_order".to_owned(),
-            params: AddOrderParams {
+            params: PrivateParams::new(AddOrderParams {
                 side,
                 limit_price: None,
                 order_qty: Some(order_qty),
                 display_qty: None,
                 order_type: OrderType::Limit,
-                symbol,
+                symbol: symbol.into(),
                 time_in_force: None,
                 order_userref: None,
                 no_mpp: None,
                 post_only: None,
                 reduce_only: None,
                 validate: None,
-                token,
-            },
+            }),
             req_id: None,
         }
     }
 
-    pub fn limit<'a>(
+    pub fn limit(
         side: OrderSide,
         order_qty: f64,
-        symbol: &'a str,
+        symbol: impl Into<String>,
         limit_price: f64,
-        token: &'a str,
-    ) -> AddOrderRequest<'a> {
-        AddOrderRequest {
+    ) -> Self {
+        Self {
             method: "add_order".to_owned(),
-            params: AddOrderParams {
+            params: PrivateParams::new(AddOrderParams {
                 side,
                 limit_price: Some(limit_price),
                 order_qty: Some(order_qty),
                 display_qty: None,
                 order_type: OrderType::Limit,
-                symbol,
+                symbol: symbol.into(),
                 time_in_force: None,
                 order_userref: None,
                 no_mpp: None,
                 post_only: None,
                 reduce_only: None,
                 validate: None,
-                token,
-            },
+            }),
             req_id: None,
         }
     }
 
-    pub fn buy_limit<'a>(
-        order_qty: f64,
-        symbol: &'a str,
-        limit_price: f64,
-        token: &'a str,
-    ) -> AddOrderRequest<'a> {
-        AddOrderRequest::limit(OrderSide::Buy, order_qty, symbol, limit_price, token)
+    pub fn buy_limit(order_qty: f64, symbol: impl Into<String>, limit_price: f64) -> Self {
+        AddOrderRequest::limit(OrderSide::Buy, order_qty, symbol, limit_price)
     }
 
-    pub fn sell_limit<'a>(
-        order_qty: f64,
-        symbol: &'a str,
-        limit_price: f64,
-        token: &'a str,
-    ) -> AddOrderRequest<'a> {
-        AddOrderRequest::limit(OrderSide::Sell, order_qty, symbol, limit_price, token)
+    pub fn sell_limit<'a>(order_qty: f64, symbol: impl Into<String>, limit_price: f64) -> Self {
+        AddOrderRequest::limit(OrderSide::Sell, order_qty, symbol, limit_price)
     }
 
     pub fn display_qty(self, display_qty: f64) -> Self {
         Self {
-            params: AddOrderParams {
-                display_qty: Some(display_qty),
+            params: PrivateParams {
+                params: AddOrderParams {
+                    display_qty: Some(display_qty),
+                    ..self.params.params
+                },
                 ..self.params
             },
             ..self
@@ -124,8 +108,11 @@ impl AddOrderRequest<'_> {
 
     pub fn no_mpp(self, no_mpp: bool) -> Self {
         Self {
-            params: AddOrderParams {
-                no_mpp: Some(no_mpp),
+            params: PrivateParams {
+                params: AddOrderParams {
+                    no_mpp: Some(no_mpp),
+                    ..self.params.params
+                },
                 ..self.params
             },
             ..self
@@ -134,8 +121,11 @@ impl AddOrderRequest<'_> {
 
     pub fn post_only(self, post_only: bool) -> Self {
         Self {
-            params: AddOrderParams {
-                post_only: Some(post_only),
+            params: PrivateParams {
+                params: AddOrderParams {
+                    post_only: Some(post_only),
+                    ..self.params.params
+                },
                 ..self.params
             },
             ..self
@@ -144,29 +134,24 @@ impl AddOrderRequest<'_> {
 
     pub fn reduce_only(self, reduce_only: bool) -> Self {
         Self {
-            params: AddOrderParams {
-                reduce_only: Some(reduce_only),
+            params: PrivateParams {
+                params: AddOrderParams {
+                    reduce_only: Some(reduce_only),
+                    ..self.params.params
+                },
                 ..self.params
             },
             ..self
         }
     }
 
-    pub fn validate(self, validate: bool) -> Self {
+    pub fn validate_only(self, validate: bool) -> Self {
         Self {
-            params: AddOrderParams {
-                validate: Some(validate),
-                ..self.params
-            },
-            ..self
-        }
-    }
-
-    // #todo find a better name.
-    pub fn validate_only(self) -> Self {
-        Self {
-            params: AddOrderParams {
-                validate: Some(true),
+            params: PrivateParams {
+                params: AddOrderParams {
+                    validate: Some(validate),
+                    ..self.params.params
+                },
                 ..self.params
             },
             ..self

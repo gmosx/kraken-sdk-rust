@@ -59,4 +59,4 @@ pub struct CancelOrderResult {
     pub order_id: String,
 }
 
-pub type BatchCancelResponse = Response<CancelOrderResult>;
+pub type CancelOrderResponse = Response<CancelOrderResult>;
