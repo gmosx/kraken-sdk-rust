@@ -21,6 +21,12 @@ pub struct AddOrderParams {
     /// with limit order type.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub display_qty: Option<f64>,
+    /// RFC3339 timestamp (e.g. 2021-04-01T00:18:45Z) of scheduled start time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub effective_time: Option<String>,
+    /// RFC3339 timestamp (e.g. 2021-04-01T00:18:45Z) of expiration time.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub expire_time: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub order_userref: Option<i32>,
     /// Disable market price protection for market orders.
@@ -46,6 +52,8 @@ impl AddOrderRequest {
                 limit_price: None,
                 order_qty: Some(order_qty),
                 display_qty: None,
+                effective_time: None,
+                expire_time: None,
                 order_type: OrderType::Limit,
                 symbol: symbol.into(),
                 time_in_force: None,
@@ -72,6 +80,8 @@ impl AddOrderRequest {
                 limit_price: Some(limit_price),
                 order_qty: Some(order_qty),
                 display_qty: None,
+                effective_time: None,
+                expire_time: None,
                 order_type: OrderType::Limit,
                 symbol: symbol.into(),
                 time_in_force: None,
@@ -98,6 +108,32 @@ impl AddOrderRequest {
             params: PrivateParams {
                 params: AddOrderParams {
                     display_qty: Some(display_qty),
+                    ..self.params.params
+                },
+                ..self.params
+            },
+            ..self
+        }
+    }
+
+    pub fn effective_time(self, effective_time: String) -> Self {
+        Self {
+            params: PrivateParams {
+                params: AddOrderParams {
+                    effective_time: Some(effective_time),
+                    ..self.params.params
+                },
+                ..self.params
+            },
+            ..self
+        }
+    }
+
+    pub fn expire_time(self, expire_time: String) -> Self {
+        Self {
+            params: PrivateParams {
+                params: AddOrderParams {
+                    expire_time: Some(expire_time),
                     ..self.params.params
                 },
                 ..self.params
