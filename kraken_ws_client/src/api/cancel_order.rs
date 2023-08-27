@@ -1,10 +1,8 @@
 //! <https://docs.kraken.com/websockets-v2/#cancel-order>
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
-use crate::client::{PrivateParams, PrivateRequest};
-
-use super::CANCEL_ORDER_METHOD;
+use crate::client::{PrivateParams, PrivateRequest, Response};
 
 /// Even though order_id and order_userref are individually optional, at least
 /// one of them must be filled.
@@ -20,7 +18,7 @@ pub struct CancelOrderParams {
 
 /// ### Example
 /// ```rs
-/// let req = CancelOrderRequest::order_id("...");
+/// let req = CancelOrderRequest::order_id("ORDERX-IDXXX-XXXXX1");
 /// client.send_private(req).await?;
 /// ```
 pub type CancelOrderRequest = PrivateRequest<CancelOrderParams>;
@@ -28,7 +26,7 @@ pub type CancelOrderRequest = PrivateRequest<CancelOrderParams>;
 impl CancelOrderRequest {
     pub fn new(order_id: Option<Vec<String>>, order_userref: Option<Vec<i32>>) -> Self {
         Self {
-            method: CANCEL_ORDER_METHOD.into(),
+            method: "cancel_order".into(),
             params: PrivateParams::new(CancelOrderParams {
                 order_id,
                 order_userref,
@@ -55,3 +53,10 @@ impl CancelOrderRequest {
         Self::new(None, Some(order_userref))
     }
 }
+
+#[derive(Debug, Deserialize)]
+pub struct CancelOrderResult {
+    pub order_id: String,
+}
+
+pub type BatchCancelResponse = Response<CancelOrderResult>;
