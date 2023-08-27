@@ -21,39 +21,36 @@ pub struct SubscribeTickerParams {
     pub snapshot: Option<bool>,
 }
 
-impl SubscribeTickerParams {
+pub type SubscribeTickerRequest = PublicRequest<SubscribeTickerParams>;
+
+impl SubscribeTickerRequest {
     pub fn new(symbol: impl Into<Vec<String>>) -> Self {
         Self {
-            channel: Channel::Ticker,
-            symbol: symbol.into(),
-            snapshot: None,
+            method: SUBSCRIBE_METHOD.into(),
+            params: SubscribeTickerParams {
+                channel: Channel::Ticker,
+                symbol: symbol.into(),
+                snapshot: None,
+            },
+            req_id: Some(gen_next_id()),
         }
     }
 
+    pub fn symbol(symbol: impl Into<String>) -> Self {
+        Self::new(vec![symbol.into()])
+    }
+
     pub fn all() -> Self {
-        Self {
-            channel: Channel::Ticker,
-            symbol: vec!["*".into()],
-            snapshot: None,
-        }
+        Self::symbol("*")
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeTickerParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
-        }
-    }
-}
-
-pub type SubscribeTickerRequest = PublicRequest<SubscribeTickerParams>;
-
-impl SubscribeTickerRequest {
-    pub fn new(params: SubscribeTickerParams) -> Self {
-        Self {
-            method: SUBSCRIBE_METHOD.into(),
-            params,
-            req_id: Some(gen_next_id()),
         }
     }
 }
@@ -77,19 +74,6 @@ pub struct TickerData {
 pub type TickerEvent = Event<Vec<TickerData>>;
 
 impl Client {
-    // <https://docs.kraken.com/websockets-v2/#ticker>
-    pub async fn subscribe_ticker(&mut self, symbol: impl Into<String>) {
-        let symbol = vec![symbol.into()];
-        self.subscribe_tickers(symbol).await
-    }
-
-    // <https://docs.kraken.com/websockets-v2/#ticker>
-    pub async fn subscribe_tickers(&mut self, symbol: impl Into<Vec<String>>) {
-        self.call_public(SUBSCRIBE_METHOD, SubscribeTickerParams::new(symbol))
-            .await
-            .expect("cannot send request");
-    }
-
     // #todo add support to filter for symbol.
     pub fn ticker_events(&mut self) -> impl Stream<Item = TickerEvent> {
         let messages_stream = BroadcastStream::new(self.messages.subscribe());
