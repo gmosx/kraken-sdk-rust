@@ -82,7 +82,7 @@ pub struct ConditionalParams {
 
 #[derive(Debug, Serialize_repr, Deserialize_repr)]
 #[repr(u32)]
-pub enum BookDepth {
+pub enum Depth {
     D10 = 10,
     D25 = 25,
     D100 = 100,

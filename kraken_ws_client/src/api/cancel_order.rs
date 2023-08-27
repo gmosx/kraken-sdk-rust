@@ -54,4 +54,14 @@ impl CancelOrderRequest {
     pub fn order_userrefs(order_userref: Vec<i32>) -> Self {
         Self::new(None, Some(order_userref))
     }
+
+    pub fn token(self, token: impl Into<String>) -> Self {
+        Self {
+            params: PrivateParams {
+                token: Some(token.into()),
+                ..self.params
+            },
+            ..self
+        }
+    }
 }

@@ -6,7 +6,6 @@ use tokio_stream::wrappers::BroadcastStream;
 use crate::{
     client::{Event, PublicRequest},
     types::Channel,
-    util::gen_next_id,
     Client,
 };
 
@@ -32,7 +31,7 @@ impl SubscribeTickerRequest {
                 symbol: symbol.into(),
                 snapshot: None,
             },
-            req_id: Some(gen_next_id()),
+            req_id: None,
         }
     }
 

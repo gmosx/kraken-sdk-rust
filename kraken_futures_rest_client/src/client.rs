@@ -122,8 +122,6 @@ impl Client {
     {
         let url = format!("{}{}", self.base_url, url);
 
-        println!("=== {url}");
-
         let resp = self
             .http_client
             .get(&url)
