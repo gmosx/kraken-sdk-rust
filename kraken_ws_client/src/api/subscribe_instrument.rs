@@ -6,8 +6,6 @@ use crate::{
     util::gen_next_id,
 };
 
-use super::SUBSCRIBE_METHOD;
-
 #[derive(Debug, Serialize)]
 pub struct SubscribeInstrumentParams {
     pub channel: Channel,
@@ -44,7 +42,7 @@ pub type SubscribeInstrumentRequest = PublicRequest<SubscribeInstrumentParams>;
 impl SubscribeInstrumentRequest {
     pub fn new(params: SubscribeInstrumentParams) -> Self {
         Self {
-            method: SUBSCRIBE_METHOD.into(),
+            method: "subscribe".into(),
             params,
             req_id: Some(gen_next_id()),
         }

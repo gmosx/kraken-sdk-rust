@@ -9,8 +9,6 @@ use crate::{
     Client,
 };
 
-use super::SUBSCRIBE_METHOD;
-
 #[derive(Debug, Serialize)]
 pub struct SubscribeTickerParams {
     pub channel: Channel,
@@ -25,7 +23,7 @@ pub type SubscribeTickerRequest = PublicRequest<SubscribeTickerParams>;
 impl SubscribeTickerRequest {
     pub fn new(symbol: impl Into<Vec<String>>) -> Self {
         Self {
-            method: SUBSCRIBE_METHOD.into(),
+            method: "subscribe".into(),
             params: SubscribeTickerParams {
                 channel: Channel::Ticker,
                 symbol: symbol.into(),

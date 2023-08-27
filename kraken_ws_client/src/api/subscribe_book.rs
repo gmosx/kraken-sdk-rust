@@ -8,8 +8,6 @@ use crate::{
     Client,
 };
 
-use super::SUBSCRIBE_METHOD;
-
 // #todo synthesize the book
 // #todo verify the checksum
 
@@ -30,7 +28,7 @@ pub type SubscribeBookRequest = PublicRequest<SubscribeBookParams>;
 impl SubscribeBookRequest {
     pub fn new(symbol: impl Into<Vec<String>>) -> Self {
         Self {
-            method: SUBSCRIBE_METHOD.into(),
+            method: "subscribe".into(),
             params: SubscribeBookParams {
                 channel: Channel::Book,
                 depth: None,

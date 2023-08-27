@@ -3,10 +3,7 @@ use serde::{Deserialize, Serialize};
 use crate::{
     client::{Event, PublicRequest},
     types::{Channel, OrderSide, OrderType},
-    util::gen_next_id,
 };
-
-use super::SUBSCRIBE_METHOD;
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeTradeParams {
@@ -17,31 +14,28 @@ pub struct SubscribeTradeParams {
     pub snapshot: Option<bool>,
 }
 
-impl SubscribeTradeParams {
-    pub fn new<'a>(symbol: impl Into<Vec<String>>) -> Self {
+pub type SubscribeTradeRequest = PublicRequest<SubscribeTradeParams>;
+
+impl SubscribeTradeRequest {
+    pub fn new(symbol: impl Into<Vec<String>>) -> Self {
         Self {
-            channel: Channel::Trade,
-            symbol: symbol.into(),
-            snapshot: None,
+            method: "subscribe".into(),
+            params: SubscribeTradeParams {
+                channel: Channel::Trade,
+                symbol: symbol.into(),
+                snapshot: None,
+            },
+            req_id: None,
         }
     }
 
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
-            snapshot: Some(snapshot),
+            params: SubscribeTradeParams {
+                snapshot: Some(snapshot),
+                ..self.params
+            },
             ..self
-        }
-    }
-}
-
-pub type SubscribeTradeRequest = PublicRequest<SubscribeTradeParams>;
-
-impl SubscribeTradeRequest {
-    pub fn new(params: SubscribeTradeParams) -> Self {
-        Self {
-            method: SUBSCRIBE_METHOD.into(),
-            params,
-            req_id: Some(gen_next_id()),
         }
     }
 }
