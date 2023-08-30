@@ -1,9 +1,12 @@
+use futures_util::{Stream, StreamExt};
 use serde::{Deserialize, Serialize};
+use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
     client::{Event, PublicRequest},
     types::Channel,
     util::gen_next_id,
+    Client,
 };
 
 #[derive(Debug, Serialize)]
@@ -28,7 +31,7 @@ impl SubscribeInstrumentRequest {
         Self {
             method: "subscribe".into(),
             params: SubscribeInstrumentParams {
-                channel: Channel::Ticker,
+                channel: Channel::Instrument,
                 snapshot: None,
             },
             req_id: Some(gen_next_id()),
@@ -73,6 +76,7 @@ pub enum PairStatus {
 
 #[derive(Debug, Deserialize)]
 pub struct Pair {
+    pub symbol: String,
     pub base: String,
     pub quote: String,
     pub cost_precision: i32,
@@ -96,3 +100,19 @@ pub struct InstrumentData {
 }
 
 pub type InstrumentEvent = Event<InstrumentData>;
+
+impl Client {
+    pub fn instrument_events(&mut self) -> impl Stream<Item = InstrumentEvent> {
+        let messages_stream = BroadcastStream::new(self.messages.subscribe());
+
+        let events_stream = messages_stream.filter_map(|msg| {
+            std::future::ready(if let Ok(msg) = msg {
+                serde_json::from_str::<InstrumentEvent>(&msg).ok()
+            } else {
+                None
+            })
+        });
+
+        events_stream
+    }
+}

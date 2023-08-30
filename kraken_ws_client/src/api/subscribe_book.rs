@@ -89,6 +89,7 @@ impl Client {
             std::future::ready(if let Ok(msg) = msg {
                 serde_json::from_str::<BookEvent>(&msg).ok()
             } else {
+                tracing::debug!("skipped {:?}", msg);
                 None
             })
         });

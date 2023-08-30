@@ -127,11 +127,23 @@ impl Client {
                     if let Message::Text(string) = msg {
                         tracing::debug!("{string}");
                         if let Err(err) = broadcast_sender.send(string) {
+                            // A send operation can only fail if there are no
+                            // active receivers, implying that the message could
+                            // never be received.
+
+                            // #todo we skip the message but should probably buffer it?
+
                             tracing::trace!("{err:?}");
+                            // #insight
+                            // We don't do that any more:
                             // Break the while loop so that the receiver handle is dropped
                             // and the task unsubscribes from the summary stream.
-                            break;
+
+                            // #todo intentionally don't break from the loop.
+                            // break;
                         }
+                    } else {
+                        tracing::debug!("unexpected message '{msg}'");
                     }
                 } else {
                     tracing::error!("{:?}", result);
