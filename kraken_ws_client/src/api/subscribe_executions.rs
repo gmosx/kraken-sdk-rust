@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    client::{PrivateParams, PrivateRequest},
+    client::{Event, PrivateParams, PrivateRequest},
     types::{Amount, Channel, OrderSide, OrderStatus, OrderType},
 };
 
@@ -24,6 +24,8 @@ pub struct SubscribeExecutionsParams {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub ratecounter: Option<bool>,
 }
+
+// #todo consider renaming this to ExecutionsSubscription?
 
 /// - <https://docs.kraken.com/websockets-v2/#executions>
 /// - <https://docs.kraken.com/websockets/#message-ownTrades>
@@ -74,28 +76,25 @@ impl SubscribeExecutionsRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct ExecutionData {
-    pub cost: i64,
-    pub exec_id: String,
+    pub cost: Option<f64>,
+    pub exec_id: Option<String>,
     pub exec_type: String,
-    pub fees: Vec<Amount>,
-    pub liquidity_ind: String,
-    pub order_type: OrderType,
+    pub fees: Option<Vec<Amount>>,
+    pub liquidity_ind: Option<String>,
+    pub order_type: Option<OrderType>,
     pub order_id: String,
     pub order_status: OrderStatus,
-    pub order_userref: String,
-    pub price: f64,
-    pub order_qty: f64,
-    pub side: OrderSide,
-    pub symbol: String,
+    pub order_userref: Option<u32>,
+    pub avg_price: Option<f64>,
+    pub last_price: Option<f64>,
+    pub limit_price: Option<f64>,
+    pub stop_price: Option<f64>,
+    pub triggered_price: Option<f64>,
+    pub order_qty: Option<f64>,
+    pub side: Option<OrderSide>,
+    pub symbol: Option<String>,
     pub timestamp: String,
-    pub trade_id: i64,
+    pub trade_id: Option<i64>,
 }
 
-#[derive(Debug, Deserialize)]
-pub struct ExecutionsEvent {
-    pub channel: String,
-    pub data: Vec<ExecutionData>,
-    pub sequence: i32,
-    #[serde(rename = "type")]
-    pub event_type: String,
-}
+pub type ExecutionsEvent = Event<Vec<ExecutionData>>;

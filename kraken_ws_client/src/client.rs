@@ -9,7 +9,7 @@ use tokio_tungstenite::{
 use crate::util::{gen_next_id, Result};
 
 pub const DEFAULT_WS_URL: &str = "wss://ws.kraken.com/v2";
-pub const DEFFAULT_WS_AUTH_URL: &str = "wss://ws-auth.kraken.com/v2";
+pub const DEFFAULT_WS_PRIVATE_URL: &str = "wss://ws-auth.kraken.com/v2";
 
 #[derive(Debug, Serialize)]
 pub struct PublicRequest<P: Serialize> {
@@ -163,8 +163,8 @@ impl Client {
         Self::connect(DEFAULT_WS_URL, None).await
     }
 
-    pub async fn connect_private(token: String) -> Result<Self> {
-        Self::connect(DEFFAULT_WS_AUTH_URL, Some(token)).await
+    pub async fn connect_private(token: impl Into<String>) -> Result<Self> {
+        Self::connect(DEFFAULT_WS_PRIVATE_URL, Some(token.into())).await
     }
 
     /// Sends a public message to the WebSocket.

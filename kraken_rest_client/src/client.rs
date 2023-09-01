@@ -42,19 +42,19 @@ impl ClientBuilder {
         self
     }
 
-    pub fn api_key(mut self, api_key: &str) -> Self {
-        self.api_key = Some(api_key.to_string());
+    pub fn api_key(mut self, api_key: impl Into<String>) -> Self {
+        self.api_key = Some(api_key.into());
         self
     }
 
-    pub fn api_secret(mut self, api_secret: &str) -> Self {
-        self.api_secret = Some(api_secret.to_string());
+    pub fn api_secret(mut self, api_secret: impl Into<String>) -> Self {
+        self.api_secret = Some(api_secret.into());
         self
     }
 
-    pub fn auth(mut self, api_key: &str, api_secret: &str) -> Self {
-        self.api_key = Some(api_key.to_string());
-        self.api_secret = Some(api_secret.to_string());
+    pub fn auth(mut self, api_key: impl Into<String>, api_secret: impl Into<String>) -> Self {
+        self.api_key = Some(api_key.into());
+        self.api_secret = Some(api_secret.into());
         self
     }
 
@@ -107,7 +107,7 @@ impl Default for Client {
 }
 
 impl Client {
-    pub fn new(api_key: &str, api_secret: &str) -> Self {
+    pub fn new(api_key: impl Into<String>, api_secret: impl Into<String>) -> Self {
         Self::builder()
             .api_key(api_key)
             .api_secret(api_secret)
