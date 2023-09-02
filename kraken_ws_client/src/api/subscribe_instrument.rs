@@ -3,10 +3,9 @@ use serde::{Deserialize, Serialize};
 use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
-    client::{Event, PublicRequest},
+    client::{Event, PublicClient, PublicRequest},
     types::Channel,
     util::gen_next_id,
-    Client,
 };
 
 #[derive(Debug, Serialize)]
@@ -101,9 +100,9 @@ pub struct InstrumentData {
 
 pub type InstrumentEvent = Event<InstrumentData>;
 
-impl Client {
+impl PublicClient {
     pub fn instrument_events(&mut self) -> impl Stream<Item = InstrumentEvent> {
-        let messages_stream = BroadcastStream::new(self.messages.subscribe());
+        let messages_stream = BroadcastStream::new(self.messages());
 
         let events_stream = messages_stream.filter_map(|msg| {
             std::future::ready(if let Ok(msg) = msg {

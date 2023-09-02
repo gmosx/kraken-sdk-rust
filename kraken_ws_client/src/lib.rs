@@ -11,5 +11,14 @@ mod util;
 // #[cfg(test)]
 // mod client_tests;
 
-pub use client::Client;
+pub use client::Transport;
+use client::{PrivateClient, PublicClient};
 pub use util::Result;
+
+pub async fn connect_public() -> Result<PublicClient> {
+    PublicClient::connect().await
+}
+
+pub async fn connect_private(token: impl Into<String>) -> Result<PrivateClient> {
+    PrivateClient::connect(token).await
+}

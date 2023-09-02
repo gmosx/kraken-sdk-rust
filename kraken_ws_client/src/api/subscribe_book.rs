@@ -3,9 +3,8 @@ use serde::{Deserialize, Serialize};
 use tokio_stream::wrappers::BroadcastStream;
 
 use crate::{
-    client::{Event, PublicRequest},
+    client::{Event, PublicClient, PublicRequest},
     types::{Channel, Depth},
-    Client,
 };
 
 // #todo synthesize the book
@@ -80,10 +79,10 @@ pub struct BookData {
 
 pub type BookEvent = Event<Vec<BookData>>;
 
-impl Client {
+impl PublicClient {
     // #todo add support to filter for symbol.
     pub fn book_delta_events(&mut self) -> impl Stream<Item = BookEvent> {
-        let messages_stream = BroadcastStream::new(self.messages.subscribe());
+        let messages_stream = BroadcastStream::new(self.messages());
 
         let events_stream = messages_stream.filter_map(|msg| {
             std::future::ready(if let Ok(msg) = msg {

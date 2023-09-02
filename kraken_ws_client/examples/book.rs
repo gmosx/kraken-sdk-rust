@@ -1,14 +1,14 @@
 use futures::StreamExt;
-use kraken_ws_client::{api::SubscribeBookRequest, client::DEFAULT_WS_URL, types::Depth, Client};
+use kraken_ws_client::{api::SubscribeBookRequest, types::Depth};
 
 #[tokio::main]
 async fn main() {
-    let mut client = Client::connect(DEFAULT_WS_URL, None)
+    let mut client = kraken_ws_client::connect_public()
         .await
         .expect("cannot connect");
 
     client
-        .send_public(SubscribeBookRequest::symbol("BTC/USD").depth(Depth::D10))
+        .send(SubscribeBookRequest::symbol("BTC/USD").depth(Depth::D10))
         .await
         .expect("cannot send request");
 

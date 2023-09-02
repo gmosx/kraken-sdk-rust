@@ -1,7 +1,7 @@
 use futures::{stream::SplitSink, StreamExt};
 use futures_util::SinkExt;
 use serde::{Deserialize, Serialize};
-use tokio::net::TcpStream;
+use tokio::{net::TcpStream, sync::broadcast::Receiver};
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
 };
@@ -94,13 +94,11 @@ pub struct Event<D> {
 // RPC messages (response) have the `method` field.
 // Error messages have the `error` field.
 
-/// A WebSocket client for Kraken.
+/// A WebSocket transport for Kraken.
 ///
-/// The client can connect to a `public` endpoint or an `auth` endpoint.
+/// Can connect to a `public` endpoint or an `auth` endpoint.
 /// The `auth` endpoint only supports auth messages.
-pub struct Client {
-    #[allow(dead_code)]
-    token: Option<String>,
+pub struct Transport {
     websocket_sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
     // The thread_handle will be dropped when the Client drops.
     #[allow(dead_code)]
@@ -111,8 +109,8 @@ pub struct Client {
 // #todo extract socket like in the previous impl?
 // #todo separate handling of Response, Event, Error.
 
-impl Client {
-    pub async fn connect(url: &str, token: Option<String>) -> Result<Self> {
+impl Transport {
+    pub async fn connect(url: &str) -> Result<Self> {
         let (websocket_stream, _) = connect_async(url).await?;
         let (websocket_sender, websocket_receiver) = websocket_stream.split();
         let (broadcast_sender, _) = tokio::sync::broadcast::channel::<String>(32);
@@ -152,19 +150,10 @@ impl Client {
         });
 
         Ok(Self {
-            token,
             websocket_sender,
             thread_handle,
             messages: broadcast_sender_clone,
         })
-    }
-
-    pub async fn connect_public() -> Result<Self> {
-        Self::connect(DEFAULT_WS_URL, None).await
-    }
-
-    pub async fn connect_private(token: impl Into<String>) -> Result<Self> {
-        Self::connect(DEFFAULT_WS_PRIVATE_URL, Some(token.into())).await
     }
 
     /// Sends a public message to the WebSocket.
@@ -182,34 +171,66 @@ impl Client {
 
         Ok(())
     }
+}
 
-    /// Sends a public message to the WebSocket.
-    pub async fn send_public<P>(&mut self, req: PublicRequest<P>) -> Result<()>
-    where
-        P: Serialize,
-    {
-        let mut req = req;
+pub struct PublicClient {
+    transport: Transport,
+}
 
-        if req.req_id.is_none() {
-            req.req_id = Some(gen_next_id());
-        }
-
-        self.send(req).await
+impl PublicClient {
+    pub async fn connect() -> Result<Self> {
+        Ok(Self {
+            transport: Transport::connect(DEFAULT_WS_URL).await?,
+        })
     }
 
-    /// Sends a private message to the WebSocket.
-    pub async fn send_private<P>(&mut self, req: PrivateRequest<P>) -> Result<()>
+    pub async fn send<P>(&mut self, req: PublicRequest<P>) -> Result<()>
     where
         P: Serialize,
     {
         let mut req = req;
 
-        req.params.token = self.token.clone();
+        if req.req_id.is_none() {
+            req.req_id = Some(gen_next_id());
+        }
+
+        self.transport.send(req).await
+    }
+
+    pub fn messages(&mut self) -> Receiver<String> {
+        self.transport.messages.subscribe()
+    }
+}
+
+pub struct PrivateClient {
+    transport: Transport,
+    token: String,
+}
+
+impl PrivateClient {
+    pub async fn connect(token: impl Into<String>) -> Result<Self> {
+        Ok(Self {
+            transport: Transport::connect(DEFFAULT_WS_PRIVATE_URL).await?,
+            token: token.into(),
+        })
+    }
+
+    pub async fn send<P>(&mut self, req: PrivateRequest<P>) -> Result<()>
+    where
+        P: Serialize,
+    {
+        let mut req = req;
+
+        req.params.token = Some(self.token.clone());
 
         if req.req_id.is_none() {
             req.req_id = Some(gen_next_id());
         }
 
-        self.send(req).await
+        self.transport.send(req).await
+    }
+
+    pub fn messages(&mut self) -> Receiver<String> {
+        self.transport.messages.subscribe()
     }
 }
