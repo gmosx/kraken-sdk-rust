@@ -29,6 +29,10 @@ impl SubscribeTradeRequest {
         }
     }
 
+    pub fn symbol(symbol: impl Into<String>) -> Self {
+        Self::new(vec![symbol.into()])
+    }
+
     pub fn snapshot(self, snapshot: bool) -> Self {
         Self {
             params: SubscribeTradeParams {
