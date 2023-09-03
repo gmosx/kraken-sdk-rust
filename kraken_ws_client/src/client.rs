@@ -2,6 +2,8 @@ use futures::{stream::SplitSink, StreamExt};
 use futures_util::SinkExt;
 use serde::{Deserialize, Serialize};
 use tokio::{net::TcpStream, sync::broadcast::Receiver};
+use tokio_tungstenite::tungstenite::protocol::Message as TMessage;
+use tokio_tungstenite::tungstenite::Error as TError;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
 };
@@ -118,35 +120,36 @@ impl Transport {
         let broadcast_sender_clone = broadcast_sender.clone();
 
         let thread_handle = tokio::spawn(async move {
-            let mut receiver = websocket_receiver;
+            websocket_receiver
+                .for_each(|result| async {
+                    // while let Some(result) = receiver.next().await {
+                    if let Ok(msg) = result {
+                        if let Message::Text(string) = msg {
+                            tracing::debug!("{string}");
+                            if let Err(err) = broadcast_sender.send(string) {
+                                // A send operation can only fail if there are no
+                                // active receivers, implying that the message could
+                                // never be received.
 
-            while let Some(result) = receiver.next().await {
-                if let Ok(msg) = result {
-                    if let Message::Text(string) = msg {
-                        tracing::debug!("{string}");
-                        if let Err(err) = broadcast_sender.send(string) {
-                            // A send operation can only fail if there are no
-                            // active receivers, implying that the message could
-                            // never be received.
+                                // #todo we skip the message but should probably buffer it?
 
-                            // #todo we skip the message but should probably buffer it?
+                                tracing::trace!("{err:?}");
+                                // #insight
+                                // We don't do that any more:
+                                // Break the while loop so that the receiver handle is dropped
+                                // and the task unsubscribes from the summary stream.
 
-                            tracing::trace!("{err:?}");
-                            // #insight
-                            // We don't do that any more:
-                            // Break the while loop so that the receiver handle is dropped
-                            // and the task unsubscribes from the summary stream.
-
-                            // #todo intentionally don't break from the loop.
-                            // break;
+                                // #todo intentionally don't break from the loop.
+                                // break;
+                            }
+                        } else {
+                            tracing::debug!("unexpected message '{msg}'");
                         }
                     } else {
-                        tracing::debug!("unexpected message '{msg}'");
+                        tracing::error!("{:?}", result);
                     }
-                } else {
-                    tracing::error!("{:?}", result);
-                }
-            }
+                })
+                .await;
         });
 
         Ok(Self {

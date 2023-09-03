@@ -34,6 +34,30 @@ async fn main() {
 }
 ```
 
+```rs
+use kraken_rest_client::Client as RestClient;
+
+let api_key = std::env::var("KRAKEN_API_KEY").expect("api key not defined");
+let api_secret = std::env::var("KRAKEN_API_SECRET").expect("api secret not defined");
+
+let rest_client = RestClient::new(api_key, api_secret);
+let resp = rest_client.get_web_sockets_token().send().await?;
+let token = resp.token;
+
+let mut ws_private_client = kraken_ws_client::connect_private(token)
+    .await
+    .expect("cannot connect");
+
+ws_private_client
+    .send(SubscribeExecutionsRequest::new())
+    .await
+    .expect("cannot send request");
+
+while let Ok(msg) = ws_private_client.messages().recv().await {
+    dbg!(msg);
+}
+```
+
 or run the example:
 
 ```rs
