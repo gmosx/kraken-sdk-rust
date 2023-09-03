@@ -94,6 +94,9 @@ pub struct Event<D> {
 // RPC messages (response) have the `method` field.
 // Error messages have the `error` field.
 
+// #todo find a better name: Backend, Driver.
+// #todo separate connect and spawn.
+
 /// A WebSocket transport for Kraken.
 ///
 /// Can connect to a `public` endpoint or an `auth` endpoint.
