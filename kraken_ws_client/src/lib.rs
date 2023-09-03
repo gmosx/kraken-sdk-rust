@@ -8,11 +8,7 @@ pub mod types;
 
 mod util;
 
-// #[cfg(test)]
-// mod client_tests;
-
-pub use client::Transport;
-use client::{PrivateClient, PublicClient};
+pub use client::{PrivateClient, PublicClient};
 pub use util::Result;
 
 pub async fn connect_public() -> Result<PublicClient> {

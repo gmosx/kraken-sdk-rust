@@ -90,6 +90,15 @@ pub struct Event<D> {
     pub event_type: String,
 }
 
+#[derive(Debug, Deserialize)]
+pub struct RawEvent<'a> {
+    pub channel: String,
+    #[serde(borrow)]
+    pub data: &'a serde_json::value::RawValue,
+    #[serde(rename = "type")]
+    pub event_type: String,
+}
+
 // Subscription messages (event) have the `channel` field.
 // RPC messages (response) have the `method` field.
 // Error messages have the `error` field.

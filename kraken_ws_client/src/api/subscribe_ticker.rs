@@ -52,7 +52,7 @@ impl SubscribeTickerRequest {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct TickerData {
+pub struct Ticker {
     pub ask: Decimal,
     pub ask_qty: Decimal,
     pub bid: Decimal,
@@ -67,7 +67,9 @@ pub struct TickerData {
     pub vwap: Decimal,
 }
 
-pub type TickerEvent = Event<Vec<TickerData>>;
+pub type TickerData = Vec<Ticker>;
+
+pub type TickerEvent = Event<TickerData>;
 
 impl PublicClient {
     // #todo add support to filter for symbol.
