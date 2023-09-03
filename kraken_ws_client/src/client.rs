@@ -1,4 +1,7 @@
-use futures::{stream::SplitSink, StreamExt};
+use futures::{
+    stream::{Fuse, SplitSink},
+    StreamExt,
+};
 use futures_util::SinkExt;
 use serde::{Deserialize, Serialize};
 use tokio::{net::TcpStream, sync::broadcast::Receiver};
@@ -111,7 +114,7 @@ pub struct RawEvent<'a> {
 /// Can connect to a `public` endpoint or an `auth` endpoint.
 /// The `auth` endpoint only supports auth messages.
 pub struct Transport {
-    websocket_sender: SplitSink<WebSocketStream<MaybeTlsStream<TcpStream>>, Message>,
+    websocket_sender: SplitSink<Fuse<WebSocketStream<MaybeTlsStream<TcpStream>>>, Message>,
     // The thread_handle will be dropped when the Client drops.
     #[allow(dead_code)]
     thread_handle: tokio::task::JoinHandle<()>,
@@ -123,7 +126,7 @@ pub struct Transport {
 
 impl Transport {
     pub async fn connect(url: &str) -> Result<Self> {
-        let (websocket_stream, _) = connect_async(url).await?;
+        let websocket_stream = connect_async(url).await?.0.fuse();
         let (websocket_sender, websocket_receiver) = websocket_stream.split();
         let (broadcast_sender, _) = tokio::sync::broadcast::channel::<String>(32);
 
@@ -168,6 +171,10 @@ impl Transport {
             messages: broadcast_sender_clone,
         })
     }
+
+    // pub async fn connect_with_config(url: &str, config: WebSocketConfig) -> Result<Self> {
+    //     todo!()
+    // }
 
     /// Sends a public message to the WebSocket.
     async fn send<R>(&mut self, req: R) -> Result<()>
