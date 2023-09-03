@@ -2,8 +2,6 @@ use futures::{stream::SplitSink, StreamExt};
 use futures_util::SinkExt;
 use serde::{Deserialize, Serialize};
 use tokio::{net::TcpStream, sync::broadcast::Receiver};
-use tokio_tungstenite::tungstenite::protocol::Message as TMessage;
-use tokio_tungstenite::tungstenite::Error as TError;
 use tokio_tungstenite::{
     connect_async, tungstenite::protocol::Message, MaybeTlsStream, WebSocketStream,
 };
