@@ -16,10 +16,12 @@ pub struct BatchCancelParams {
 pub type BatchCancelRequest = PrivateRequest<BatchCancelParams>;
 
 impl BatchCancelRequest {
-    pub fn new(orders: Vec<String>) -> Self {
+    pub fn new(orders: impl Into<Vec<String>>) -> Self {
         Self {
             method: "batch_cancel".to_owned(),
-            params: PrivateParams::new(BatchCancelParams { orders }),
+            params: PrivateParams::new(BatchCancelParams {
+                orders: orders.into(),
+            }),
             req_id: None,
         }
     }
