@@ -45,7 +45,7 @@ impl SubscribeTradeRequest {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct TradeData {
+pub struct Trade {
     pub ord_type: OrderType,
     pub price: f64,
     pub qty: f64,
@@ -54,5 +54,7 @@ pub struct TradeData {
     pub timestamp: String,
     pub trade_id: i64,
 }
+
+pub type TradeData = Vec<Trade>;
 
 pub type TradeEvent = Event<Vec<TradeData>>;

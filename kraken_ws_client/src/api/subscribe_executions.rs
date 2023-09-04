@@ -75,7 +75,7 @@ impl SubscribeExecutionsRequest {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct ExecutionData {
+pub struct Execution {
     pub cost: Option<f64>,
     pub exec_id: Option<String>,
     pub exec_type: String,
@@ -96,5 +96,7 @@ pub struct ExecutionData {
     pub timestamp: String,
     pub trade_id: Option<i64>,
 }
+
+pub type ExecutionData = Vec<Execution>;
 
 pub type ExecutionsEvent = Event<Vec<ExecutionData>>;

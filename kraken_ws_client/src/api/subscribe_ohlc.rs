@@ -42,7 +42,7 @@ impl SubscribeOhlcRequest {
 }
 
 #[derive(Debug, Deserialize)]
-pub struct OhlcData {
+pub struct Ohlc {
     pub close: f64,
     pub high: f64,
     pub low: f64,
@@ -53,5 +53,7 @@ pub struct OhlcData {
     pub volume: f64,
     pub vwap: f64,
 }
+
+pub type OhlcData = Vec<Ohlc>;
 
 pub type OhlcEvent = Event<Vec<OhlcData>>;
