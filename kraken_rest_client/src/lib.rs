@@ -6,6 +6,7 @@ pub mod types;
 
 pub use api::get_ohlc_data::Interval;
 pub use client::{Client, Result};
+pub use error::Error;
 pub use types::*;
 
 pub const MAX_OPEN_ORDERS_COUNT_STARTER: usize = 60;

@@ -113,6 +113,7 @@ pub struct RawEvent<'a> {
 ///
 /// Can connect to a `public` endpoint or an `auth` endpoint.
 /// The `auth` endpoint only supports auth messages.
+#[derive(Debug)]
 pub struct Transport {
     websocket_sender: SplitSink<Fuse<WebSocketStream<MaybeTlsStream<TcpStream>>>, Message>,
     // The thread_handle will be dropped when the Client drops.
@@ -193,6 +194,7 @@ impl Transport {
     }
 }
 
+#[derive(Debug)]
 pub struct PublicClient {
     transport: Transport,
 }
@@ -222,6 +224,7 @@ impl PublicClient {
     }
 }
 
+#[derive(Debug)]
 pub struct PrivateClient {
     transport: Transport,
     token: String,

@@ -9,6 +9,7 @@ pub mod types;
 mod util;
 
 pub use client::{PrivateClient, PublicClient};
+pub use error::Error;
 pub use util::Result;
 
 pub async fn connect_public() -> Result<PublicClient> {
