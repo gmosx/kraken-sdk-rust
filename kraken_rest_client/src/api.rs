@@ -21,6 +21,9 @@ pub use get_ohlc_data::*;
 pub mod get_order_book;
 pub use get_order_book::*;
 
+pub mod get_recent_trades;
+pub use get_recent_trades::*;
+
 // endregion: public
 
 // region: private
