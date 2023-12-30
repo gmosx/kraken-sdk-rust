@@ -84,15 +84,13 @@ impl PublicClient {
     pub fn book_delta_events(&mut self) -> impl Stream<Item = BookEvent> {
         let messages_stream = BroadcastStream::new(self.messages());
 
-        let events_stream = messages_stream.filter_map(|msg| {
+        messages_stream.filter_map(|msg| {
             std::future::ready(if let Ok(msg) = msg {
                 serde_json::from_str::<BookEvent>(&msg).ok()
             } else {
                 tracing::debug!("skipped {:?}", msg);
                 None
             })
-        });
-
-        events_stream
+        })
     }
 }

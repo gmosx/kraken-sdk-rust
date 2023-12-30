@@ -104,14 +104,12 @@ impl PublicClient {
     pub fn instrument_events(&mut self) -> impl Stream<Item = InstrumentEvent> {
         let messages_stream = BroadcastStream::new(self.messages());
 
-        let events_stream = messages_stream.filter_map(|msg| {
+        messages_stream.filter_map(|msg| {
             std::future::ready(if let Ok(msg) = msg {
                 serde_json::from_str::<InstrumentEvent>(&msg).ok()
             } else {
                 None
             })
-        });
-
-        events_stream
+        })
     }
 }

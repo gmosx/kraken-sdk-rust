@@ -99,7 +99,7 @@ impl AddOrderRequest {
         AddOrderRequest::limit(OrderSide::Buy, order_qty, symbol, limit_price)
     }
 
-    pub fn sell_limit<'a>(order_qty: f64, symbol: impl Into<String>, limit_price: f64) -> Self {
+    pub fn sell_limit(order_qty: f64, symbol: impl Into<String>, limit_price: f64) -> Self {
         AddOrderRequest::limit(OrderSide::Sell, order_qty, symbol, limit_price)
     }
 

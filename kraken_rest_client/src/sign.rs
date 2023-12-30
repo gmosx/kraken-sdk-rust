@@ -46,7 +46,7 @@ pub fn compute_signature(
     let secret = base64_engine.decode(api_secret).map_err(Error::internal)?;
     let sha512_res = sha512(to_hash, &secret)?;
 
-    Ok(base64_engine.encode(&sha512_res))
+    Ok(base64_engine.encode(sha512_res))
 }
 
 #[cfg(test)]

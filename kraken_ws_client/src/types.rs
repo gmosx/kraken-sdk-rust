@@ -1,3 +1,5 @@
+use std::default::Default;
+
 use serde::{Deserialize, Serialize};
 use serde_repr::{Deserialize_repr, Serialize_repr};
 
@@ -7,21 +9,16 @@ pub struct Amount {
     pub qty: f64,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Default)]
 pub enum TimeInForce {
     /// Good-'til-cancelled is the default if the parameter is omitted.
+    #[default]
     GTC,
     /// Good-'til-date. If specified, must coincide with a desired expire_time.
     GTD,
     /// Immediate-or-cancel will immediately execute the amount possible and
     /// cancel any remaining balance rather than resting in the book.
     IOC,
-}
-
-impl Default for TimeInForce {
-    fn default() -> Self {
-        TimeInForce::GTC
-    }
 }
 
 #[derive(Debug, Serialize, Deserialize)]
