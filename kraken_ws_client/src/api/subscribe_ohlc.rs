@@ -1,9 +1,8 @@
+use futures_util::{Stream, StreamExt};
 use serde::{Deserialize, Serialize};
+use tokio_stream::wrappers::BroadcastStream;
 
-use crate::{
-    client::{Event, PublicRequest},
-    types::Channel,
-};
+use crate::{client::{Event, PublicRequest}, PublicClient, types::Channel};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeOhlcParams {
@@ -56,4 +55,19 @@ pub struct Ohlc {
 
 pub type OhlcData = Vec<Ohlc>;
 
-pub type OhlcEvent = Event<Vec<OhlcData>>;
+pub type OhlcEvent = Event<OhlcData>;
+
+impl PublicClient {
+    // #todo add support to filter for symbol.
+    pub fn ohlc_events(&mut self) -> impl Stream<Item = OhlcEvent> {
+        let messages_stream = BroadcastStream::new(self.messages());
+
+        messages_stream.filter_map(|msg| {
+            std::future::ready(if let Ok(msg) = msg {
+                serde_json::from_str::<OhlcEvent>(&msg).ok()
+            } else {
+                None
+            })
+        })
+    }
+}
