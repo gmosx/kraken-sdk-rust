@@ -1,9 +1,8 @@
+use futures_util::{Stream, StreamExt};
 use serde::{Deserialize, Serialize};
+use tokio_stream::wrappers::BroadcastStream;
 
-use crate::{
-    client::{Event, PublicRequest},
-    types::{Channel, OrderSide, OrderType},
-};
+use crate::{client::{Event, PublicRequest}, PublicClient, types::{Channel, OrderSide, OrderType}};
 
 #[derive(Debug, Serialize)]
 pub struct SubscribeTradeParams {
@@ -57,4 +56,19 @@ pub struct Trade {
 
 pub type TradeData = Vec<Trade>;
 
-pub type TradeEvent = Event<Vec<TradeData>>;
+pub type TradeEvent = Event<TradeData>;
+
+impl PublicClient {
+    // #todo add support to filter for symbol.
+    pub fn trade_events(&mut self) -> impl Stream<Item = TradeEvent> {
+        let messages_stream = BroadcastStream::new(self.messages());
+
+        messages_stream.filter_map(|msg| {
+            std::future::ready(if let Ok(msg) = msg {
+                serde_json::from_str::<TradeEvent>(&msg).ok()
+            } else {
+                None
+            })
+        })
+    }
+}
