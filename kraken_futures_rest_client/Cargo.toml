@@ -1,7 +1,7 @@
 [package]
 name = "kraken_futures_rest_client"
 description = "A strongly-typed client for the Kraken Futures REST API"
-version = "0.24.0"
+version = "0.25.0"
 license = "Apache-2.0"
 repository = "https://github.com/gmosx/kraken-sdk-rust/tree/main/kraken_sdk_futures_rest"
 keywords = ["kraken", "api", "client", "rest", "futures"]
