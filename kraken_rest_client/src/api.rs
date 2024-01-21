@@ -64,6 +64,9 @@ pub use query_orders_info::*;
 pub mod get_open_positions;
 pub use get_open_positions::*;
 
+pub mod withdraw;
+pub use withdraw::*;
+
 // User Trading
 
 pub mod add_order;
