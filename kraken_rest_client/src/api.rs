@@ -31,6 +31,9 @@ pub use get_recent_trades::*;
 pub mod get_deposit_addresses;
 pub use get_deposit_addresses::*;
 
+pub mod get_withdrawal_addresses;
+pub use get_withdrawal_addresses::*;
+
 pub mod get_deposit_methods;
 pub use get_deposit_methods::*;
 
