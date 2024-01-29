@@ -6,21 +6,63 @@ use serde::{de::DeserializeOwned, Deserialize};
 #[must_use = "Does nothing until you send or execute it"]
 pub struct GetWithdrawalAddressesRequest {
     client: Client,
-    /// Asset being withdrawn
-    asset: String,
-    /// Name of the withdrawal method
-    method: String,
+    /// Filter addresses for specific asset
+    asset: Option<String>,
+    /// Filter addresses for specific asset class
+    aclass: Option<String>,
+    /// Filter addresses for specific method
+    method: Option<String>,
 }
 
 impl GetWithdrawalAddressesRequest {
+    pub fn asset(self, asset: impl Into<String>) -> Self {
+        Self {
+            asset: Some(asset.into()),
+            ..self
+        }
+    }
+
+    pub fn aclass(self, aclass: impl Into<String>) -> Self {
+        Self {
+            aclass: Some(aclass.into()),
+            ..self
+        }
+    }
+
+    pub fn method(self, method: impl Into<String>) -> Self {
+        Self {
+            method: Some(method.into()),
+            ..self
+        }
+    }
+
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
-        let query = format!("asset={}&method={}", self.asset, self.method);
+        let mut query: Vec<String> = Vec::new();
+
+        if let Some(asset) = &self.asset {
+            query.push(format!("asset={}", asset));
+        }
+
+        if let Some(aclass) = &self.aclass {
+            query.push(format!("aclass={}", aclass));
+        }
+
+        if let Some(method) = &self.method {
+            query.push(format!("method={}", method));
+        }
+
+        let maybe_query = if query.is_empty() {
+            None
+        } else {
+            Some(query.join("&"))
+        };
+
         self.client
-            .send_private("/0/private/WithdrawAddresses", Some(query))
+            .send_private("/0/private/WithdrawAddresses", maybe_query)
             .await
     }
 
-    pub async fn send(self) -> Result<Vec<WithdrawalAddress>> {
+    pub async fn send(self) -> Result<GetWithdrawalAddressesResponse> {
         self.execute().await
     }
 }
@@ -34,16 +76,15 @@ pub struct WithdrawalAddress {
     pub verified: bool,
 }
 
+pub type GetWithdrawalAddressesResponse = Vec<WithdrawalAddress>;
+
 impl Client {
-    pub fn get_withdrawal_addresses(
-        &self,
-        asset: impl Into<String>,
-        method: impl Into<String>,
-    ) -> GetWithdrawalAddressesRequest {
+    pub fn get_withdrawal_addresses(&self) -> GetWithdrawalAddressesRequest {
         GetWithdrawalAddressesRequest {
             client: self.clone(),
-            asset: asset.into(),
-            method: method.into(),
+            asset: None,
+            aclass: None,
+            method: None,
         }
     }
 }
