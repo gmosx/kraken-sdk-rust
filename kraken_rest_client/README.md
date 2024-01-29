@@ -8,7 +8,7 @@ This crate is an *unofficial*, community-driven effort.
 
 ```toml
 [dependencies]
-kraken_rest_client = "0.20"
+kraken_rest_client = "0.26"
 ```
 
 ## Usage
