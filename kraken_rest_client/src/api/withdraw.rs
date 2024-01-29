@@ -33,7 +33,9 @@ impl WithdrawRequest {
             query.push_str(&format!("&max_fee={}", max_fee));
         }
 
-        self.client.send_private("/0/private/Withdraw", Some(query)).await
+        self.client
+            .send_private("/0/private/Withdraw", Some(query))
+            .await
     }
 
     pub async fn send(self) -> Result<WithdrawResponse> {
@@ -43,11 +45,6 @@ impl WithdrawRequest {
 
 #[derive(Debug, Deserialize)]
 pub struct WithdrawResponse {
-    pub result: WithdrawResult,
-}
-
-#[derive(Debug, Deserialize)]
-pub struct WithdrawResult {
     pub refid: String,
 }
 
