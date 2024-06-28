@@ -9,3 +9,6 @@ authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
 edition = "2021"
 
 [dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+kraken_rest_client = { path = "../kraken_rest_client", version = "0.26" }
