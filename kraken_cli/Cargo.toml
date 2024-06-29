@@ -8,9 +8,14 @@ repository = "https://github.com/gmosx/kraken-sdk-rust/tree/main/kraken_cli"
 keywords = ["kraken", "cli"]
 authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
 
+[[bin]]
+name = "kraken"
+path = "src/main.rs"
+
 [dependencies]
 anyhow = "1"
 clap = { version = "4", features = ["derive"] }
 tracing.workspace = true
 tracing-subscriber.workspace = true
+tokio = { workspace = true, features = ["full"] }
 kraken_rest_client = { path = "../kraken_rest_client", version = "0.26" }
