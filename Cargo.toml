@@ -9,3 +9,14 @@ members = [
     "kraken_futures_ws_client",
     "kraken_cli",
 ]
+
+[workspace.package]
+version = "0.26.0"
+edition = "2021"
+authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
+
+[workspace.dependencies]
+thiserror = "1"
+tokio = "1"
+tracing = "0.1"
+tracing-subscriber = "0.3"
