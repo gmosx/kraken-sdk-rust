@@ -15,8 +15,12 @@ cargo install --path .
 ```sh
 kraken --help
 
-kraken market ohlc BTC/USD
+kraken market ticker BTC/USD
+```
 
+Additional functionality that will be supported _in the future_:
+
+```sh
 kraken balances
 kraken balances --json --pretty
 kraken balances -jp
@@ -32,7 +36,7 @@ kraken orders create
 The `RUST_LOG` env variable is used to configure tracing, e.g.
 
 ```sh
-RUST_LOG=debug kraken orders list-open -jp
+RUST_LOG=debug kraken market ticker BTC/USD
 ```
 
 ## Status
