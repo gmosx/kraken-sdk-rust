@@ -16,21 +16,26 @@ cargo install --path .
 kraken --help
 
 kraken market ticker BTC/USD
+
+kraken account balance
 ```
 
 Additional functionality that will be supported _in the future_:
 
 ```sh
-kraken balances
-kraken balances --json --pretty
-kraken balances -jp
+kraken account balance --json --pretty
 
-kraken orders list-open
-kraken orders list-open --json --pretty
-kraken orders list-open -jp
+kraken account orders list --open
+kraken account orders remove ...
+kraken account orders create ...
+```
 
-kraken orders remove
-kraken orders create
+Calling private API endpoints requires credentials provided through env
+variables:
+
+```sh
+export KRAKEN_API_KEY="..."
+export KRAKEN_API_SECRET="..."
 ```
 
 The `RUST_LOG` env variable is used to configure tracing, e.g.
