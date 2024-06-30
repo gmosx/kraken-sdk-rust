@@ -6,5 +6,6 @@ pub async fn market_ohlc(
 ) -> anyhow::Result<()> {
     let pair: &String = matches.get_one("PAIR").unwrap();
     println!("**** OHLC *** {pair}");
+    // #todo Implement me!
     Ok(())
 }

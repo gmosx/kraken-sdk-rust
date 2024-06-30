@@ -1,6 +1,6 @@
 use clap::{Arg, Command};
 use kraken_cli::{
-    account::balance::account_balance,
+    account::{balance::account_balance, orders::list::account_orders_list},
     market::{ohlc::market_ohlc, ticker::market_ticker},
 };
 
@@ -37,7 +37,12 @@ async fn main() -> anyhow::Result<()> {
 
     let account_cmd = Command::new("account")
         .about("Account data")
-        .subcommand(Command::new("balance").about("List account balances"));
+        .subcommand(Command::new("balance").about("List account balances"))
+        .subcommand(
+            Command::new("orders")
+                .about("Account orders")
+                .subcommand(Command::new("list").about("List account orders")),
+        );
 
     // The program command.
 
@@ -62,6 +67,8 @@ async fn main() -> anyhow::Result<()> {
     } else if let Some(account_matches) = matches.subcommand_matches("account") {
         if let Some(matches) = account_matches.subcommand_matches("balance") {
             account_balance(matches).await?;
+        } else if let Some(matches) = account_matches.subcommand_matches("orders") {
+            account_orders_list(matches).await?;
         } else {
             // The default subcommans is `list`.
             account_balance(account_matches).await?;
