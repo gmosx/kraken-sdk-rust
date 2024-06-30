@@ -18,6 +18,10 @@ kraken --help
 kraken market ticker BTC/USD
 
 kraken account balance
+
+kraken account orders list
+kraken account orders list --json --pretty
+kraken account orders list -jp
 ```
 
 Additional functionality that will be supported _in the future_:
@@ -25,7 +29,6 @@ Additional functionality that will be supported _in the future_:
 ```sh
 kraken account balance --json --pretty
 
-kraken account orders list --open
 kraken account orders remove ...
 kraken account orders create ...
 ```

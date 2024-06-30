@@ -2,6 +2,7 @@ use clap::{Arg, Command};
 use kraken_cli::{
     account::{balance::account_balance, orders::list::account_orders_list},
     market::{ohlc::market_ohlc, ticker::market_ticker},
+    util::add_json_args,
 };
 
 const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -41,7 +42,9 @@ async fn main() -> anyhow::Result<()> {
         .subcommand(
             Command::new("orders")
                 .about("Account orders")
-                .subcommand(Command::new("list").about("List account orders")),
+                .subcommand(add_json_args(
+                    Command::new("list").about("List account orders"),
+                )),
         );
 
     // The program command.
@@ -54,9 +57,9 @@ async fn main() -> anyhow::Result<()> {
         .subcommand(market_cmd)
         .subcommand(account_cmd);
 
-    let matches = kraken_cmd.get_matches_mut();
+    let kraken_matches = kraken_cmd.get_matches_mut();
 
-    if let Some(market_matches) = matches.subcommand_matches("market") {
+    if let Some(market_matches) = kraken_matches.subcommand_matches("market") {
         if let Some(matches) = market_matches.subcommand_matches("ohlc") {
             market_ohlc(matches).await?;
         } else if let Some(matches) = market_matches.subcommand_matches("ticker") {
@@ -64,11 +67,15 @@ async fn main() -> anyhow::Result<()> {
         }
         // #todo Have a default sub-command?
         // #todo Else?
-    } else if let Some(account_matches) = matches.subcommand_matches("account") {
+    } else if let Some(account_matches) = kraken_matches.subcommand_matches("account") {
         if let Some(matches) = account_matches.subcommand_matches("balance") {
             account_balance(matches).await?;
-        } else if let Some(matches) = account_matches.subcommand_matches("orders") {
-            account_orders_list(matches).await?;
+        } else if let Some(orders_matches) = account_matches.subcommand_matches("orders") {
+            if let Some(orders_list_matches) = orders_matches.subcommand_matches("list") {
+                account_orders_list(orders_list_matches).await?;
+            } else {
+                account_orders_list(orders_matches).await?;
+            }
         } else {
             // The default subcommans is `list`.
             account_balance(account_matches).await?;
