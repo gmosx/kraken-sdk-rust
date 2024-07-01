@@ -1,6 +1,9 @@
 use clap::{Arg, Command};
 use kraken_cli::{
-    account::{balance::account_balance, orders::list::account_orders_list},
+    account::{
+        balance::account_balance,
+        orders::{cancel::account_orders_cancel, list::account_orders_list},
+    },
     market::{ohlc::market_ohlc, ticker::market_ticker},
     util::add_json_args,
 };
@@ -44,6 +47,16 @@ async fn main() -> anyhow::Result<()> {
                 .about("Account orders")
                 .subcommand(add_json_args(
                     Command::new("list").about("List account orders"),
+                ))
+                .subcommand(add_json_args(
+                    Command::new("cancel").about("Cancel order").arg(
+                        // #todo Consider making non-positional argument.
+                        // Positional arg.
+                        Arg::new("ORDER_TXID")
+                            .help("The order transaction id (txid) or user reference (userref)")
+                            .required(true)
+                            .index(1),
+                    ),
                 )),
         );
 
@@ -73,6 +86,9 @@ async fn main() -> anyhow::Result<()> {
         } else if let Some(orders_matches) = account_matches.subcommand_matches("orders") {
             if let Some(orders_list_matches) = orders_matches.subcommand_matches("list") {
                 account_orders_list(orders_list_matches).await?;
+            } else if let Some(orders_cancel_matches) = orders_matches.subcommand_matches("cancel")
+            {
+                account_orders_cancel(orders_cancel_matches).await?;
             } else {
                 account_orders_list(orders_matches).await?;
             }

@@ -1,6 +1,7 @@
-use std::fmt::Debug;
+use std::{env, fmt::Debug};
 
 use clap::{Arg, ArgAction, ArgMatches, Command};
+use kraken_rest_client::Client;
 use serde::Serialize;
 // #todo What is a good name?
 pub fn add_json_args(command: Command) -> Command {
@@ -35,4 +36,12 @@ where
     } else {
         format!("{:?}", resp)
     }
+}
+
+// #todo find a better name.
+pub fn make_private_client() -> Client {
+    let api_key = env::var("KRAKEN_API_KEY").expect("KRAKEN_API_KEY must be set");
+    let api_secret = env::var("KRAKEN_API_SECRET").expect("KRAKEN_API_SECRET must be set");
+
+    Client::new(api_key, api_secret)
 }
