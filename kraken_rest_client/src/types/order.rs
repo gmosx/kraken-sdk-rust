@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Ord, PartialOrd, Hash)]
 pub enum OrderSide {
     Buy,
