@@ -1,8 +1,10 @@
-use clap::{Arg, Command};
+use clap::{Arg, ArgAction, Command};
 use kraken_cli::{
     account::{
         balance::account_balance,
-        orders::{cancel::account_orders_cancel, list::account_orders_list},
+        orders::{
+            cancel::account_orders_cancel, create::account_orders_create, list::account_orders_list,
+        },
     },
     market::{ohlc::market_ohlc, ticker::market_ticker},
     util::add_json_args,
@@ -49,6 +51,48 @@ async fn main() -> anyhow::Result<()> {
                     Command::new("list").about("List account orders"),
                 ))
                 .subcommand(add_json_args(
+                    Command::new("create")
+                        .about("Create order")
+                        .arg(
+                            Arg::new("ORDER_TYPE")
+                                // .short('p')
+                                .long("type")
+                                .help("The order type")
+                                .required(true)
+                                .action(ArgAction::Set),
+                        )
+                        .arg(
+                            Arg::new("PAIR")
+                                // .short('p')
+                                .long("pair")
+                                .help("The market pair")
+                                .required(true)
+                                .action(ArgAction::Set),
+                        )
+                        .arg(
+                            Arg::new("SIDE")
+                                // .short('s')
+                                .long("side")
+                                .help("The order side")
+                                .required(true)
+                                .action(ArgAction::Set),
+                        )
+                        .arg(
+                            Arg::new("PRICE")
+                                .long("price")
+                                .help("The order price")
+                                .required(true)
+                                .action(ArgAction::Set),
+                        )
+                        .arg(
+                            Arg::new("VOLUME")
+                                .long("volume")
+                                .help("The order volume")
+                                .required(true)
+                                .action(ArgAction::Set),
+                        ),
+                ))
+                .subcommand(add_json_args(
                     Command::new("cancel").about("Cancel order").arg(
                         // #todo Consider making non-positional argument.
                         // Positional arg.
@@ -89,6 +133,9 @@ async fn main() -> anyhow::Result<()> {
             } else if let Some(orders_cancel_matches) = orders_matches.subcommand_matches("cancel")
             {
                 account_orders_cancel(orders_cancel_matches).await?;
+            } else if let Some(orders_create_matches) = orders_matches.subcommand_matches("create")
+            {
+                account_orders_create(orders_create_matches).await?;
             } else {
                 account_orders_list(orders_matches).await?;
             }

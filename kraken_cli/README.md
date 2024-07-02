@@ -22,6 +22,10 @@ kraken account balance
 kraken account orders list
 kraken account orders list --json --pretty
 kraken account orders list -jp
+
+kraken account orders cancel OLJ-XXXX-YYYY
+
+kraken account orders create --type limit --side BUY --pair BTC/USD --volume 0.1 --price 1000.0
 ```
 
 Additional functionality that will be supported _in the future_:
