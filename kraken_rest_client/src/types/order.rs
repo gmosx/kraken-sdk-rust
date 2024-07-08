@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::fmt;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize, Ord, PartialOrd, Hash)]
 pub enum OrderSide {
     Buy,
@@ -44,7 +45,7 @@ impl fmt::Display for OrderType {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct OrderDescription {
     // pub ordertxid: Option<String>,
     // pub postxid: Option<String>,

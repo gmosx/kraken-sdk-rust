@@ -1,5 +1,5 @@
 use crate::{Client, OrderDescription, Result};
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 
 /// - <https://www.kraken.com/features/api#get-open-orders>
@@ -55,7 +55,7 @@ impl GetOpenOrdersRequest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct OpenOrderInfo {
     pub status: String,
     pub cost: String,
@@ -68,7 +68,7 @@ pub struct OpenOrderInfo {
     pub userref: Option<i32>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct GetOpenOrdersResponse {
     pub open: HashMap<String, OpenOrderInfo>,
 }

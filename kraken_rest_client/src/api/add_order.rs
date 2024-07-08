@@ -2,7 +2,7 @@ use crate::{
     types::{OrderSide, OrderType},
     Client, Result,
 };
-use serde::{de::DeserializeOwned, Deserialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 
 /// - <https://www.kraken.com/features/api#add-standard-order>
 /// - <https://api.kraken.com/0/private/AddOrder>
@@ -237,7 +237,7 @@ impl AddOrderRequest {
     }
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct OrderDescription {
     /// Order description
     pub order: String,
