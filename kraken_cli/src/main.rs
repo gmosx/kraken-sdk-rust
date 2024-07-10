@@ -144,6 +144,7 @@ async fn main() -> anyhow::Result<()> {
             account_balance(account_matches).await?;
         }
     } else {
+        // #todo Move this before function exit, use `return handler` above.
         kraken_cmd.print_long_help().unwrap();
     }
 

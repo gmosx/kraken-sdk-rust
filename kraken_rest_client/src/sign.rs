@@ -3,6 +3,8 @@ use hmac::{Hmac, Mac};
 use sha2::{Digest, Sha256, Sha512};
 use std::time::{SystemTime, UNIX_EPOCH};
 
+// #todo Consider extracting as a standalone crate, probably not worth it.
+
 use crate::client::Result;
 use crate::error::Error;
 
