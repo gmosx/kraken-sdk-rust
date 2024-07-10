@@ -22,6 +22,7 @@ pub struct GetOhlcDataRequest {
     client: Client,
     pair: String,
     interval: Option<Interval>,
+    since: Option<i64>,
 }
 
 impl GetOhlcDataRequest {
@@ -32,11 +33,22 @@ impl GetOhlcDataRequest {
         }
     }
 
+    pub fn since(self, since: i64) -> Self {
+        Self {
+            since: Some(since),
+            ..self
+        }
+    }
+
     pub async fn execute<T: DeserializeOwned>(self) -> Result<T> {
         let mut url = format!("/0/public/OHLC?pair={}", self.pair);
 
         if let Some(interval) = self.interval {
             url.push_str(&format!("&interval={}", interval as u32))
+        }
+
+        if let Some(since) = self.since {
+            url.push_str(&format!("&since={}", since as u64))
         }
 
         self.client.send_public(&url).await
@@ -124,6 +136,7 @@ impl Client {
             client: self.clone(),
             pair: pair.into(),
             interval: None,
+            since: None,
         }
     }
 }
@@ -140,6 +153,24 @@ mod tests {
         let ohlc_bars = client
             .get_ohlc_data(&pair)
             .interval(Interval::Day1)
+            .send()
+            .await;
+
+        // dbg!(&ohlc_bars);
+
+        if let Ok(ohlc_bars) = ohlc_bars {
+            assert!(!ohlc_bars.is_empty());
+        }
+    }
+
+    #[tokio::test]
+    async fn get_ohlc_data_with_since_param() {
+        let client = Client::default();
+
+        let pair = PairName::from("XBT", "USD");
+        let ohlc_bars = client
+            .get_ohlc_data(&pair)
+            .since(1548111600) //Kraken Example: since=154811160
             .send()
             .await;
 
