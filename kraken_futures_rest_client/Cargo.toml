@@ -1,12 +1,12 @@
 [package]
 name = "kraken_futures_rest_client"
 description = "A strongly-typed client for the Kraken Futures REST API"
-version = "0.26.0"
-license = "Apache-2.0"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 repository = "https://github.com/gmosx/kraken-sdk-rust/tree/main/kraken_sdk_futures_rest"
 keywords = ["kraken", "api", "client", "rest", "futures"]
 authors = ["George Moschovitis <gmosx@reizu.com>"]
-edition = "2021"
 
 [dependencies]
 thiserror.workspace = true

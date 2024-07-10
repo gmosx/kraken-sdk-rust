@@ -1,12 +1,12 @@
 [package]
 name = "kraken_ws_client"
 description = "A strongly-typed client for the Kraken WebSocket API"
-version = "0.26.0"
-license = "Apache-2.0"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
 repository = "https://github.com/gmosx/kraken-sdk-rust/tree/main/kraken_client_ws"
 keywords = ["kraken", "api", "client", "websocket", "trading"]
 authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
-edition = "2021"
 
 [dependencies]
 thiserror.workspace = true

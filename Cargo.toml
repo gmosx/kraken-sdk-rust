@@ -14,6 +14,7 @@ members = [
 version = "0.26.0"
 edition = "2021"
 authors = ["Georgios Moschovitis <george.moschovitis@gmail.com>"]
+license = "Apache-2.0"
 
 [workspace.dependencies]
 thiserror = "1"
