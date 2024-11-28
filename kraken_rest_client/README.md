@@ -1,14 +1,15 @@
 # Kraken REST API Client
 
-A strongly-typed Rust SDK for the [Kraken REST API](https://docs.kraken.com/rest/).
+A strongly-typed Rust SDK for the
+[Kraken REST API](https://docs.kraken.com/rest/).
 
-This crate is an *unofficial*, community-driven effort.
+This crate is an _unofficial_, community-driven effort.
 
 ## Installation
 
 ```toml
 [dependencies]
-kraken_rest_client = "0.26"
+kraken_rest_client = "0.27"
 ```
 
 ## Usage
@@ -51,7 +52,11 @@ println!("{}", resp.count);
 
 ### Why provide both execute and send methods for API endpoint handlers?
 
-Providing the lower-level `execute` method allows for more flexibility. Since `execute` is generic you can pass any type of object to deserialize the response to, e.g. you could deserialize to a `HashMap` instead of the 'default' response for each API call. Or you could use a custom struct with only the fields you are interested in.
+Providing the lower-level `execute` method allows for more flexibility. Since
+`execute` is generic you can pass any type of object to deserialize the response
+to, e.g. you could deserialize to a `HashMap` instead of the 'default' response
+for each API call. Or you could use a custom struct with only the fields you are
+interested in.
 
 ## Status
 
@@ -59,11 +64,14 @@ The software is under active development and the API is expected to change.
 
 ## Contributing
 
-Pull requests, issues and comments are welcome! Make sure to add tests for new features and bug fixes.
+Pull requests, issues and comments are welcome! Make sure to add tests for new
+features and bug fixes.
 
 ## License
 
-This work is licensed under the Apache-2.0 License. See [LICENSE.txt](LICENSE.txt) or <https://spdx.org/licenses/Apache-2.0.html> for details.
+This work is licensed under the Apache-2.0 License. See
+[LICENSE.txt](LICENSE.txt) or <https://spdx.org/licenses/Apache-2.0.html> for
+details.
 
 ## Copyright
 
