@@ -27,6 +27,9 @@ pub enum OrderType {
     StopLossLimit,
     TakeProfitLimit,
     SettlePosition,
+    TrailingStop,
+    TrailingStopLimit
+
 }
 
 impl fmt::Display for OrderType {
@@ -39,6 +42,8 @@ impl fmt::Display for OrderType {
             Self::StopLossLimit => "stop-loss-limit",
             Self::TakeProfitLimit => "take-profit-limit",
             Self::SettlePosition => "settle-position",
+            Self::TrailingStop => "trailing-stop",
+            Self::TrailingStopLimit => "trailing-stop-limit"
         };
 
         write!(f, "{}", order_type)

@@ -71,6 +71,7 @@ pub struct OrderInfo {
     pub cost: String,
     pub fee: String,
     pub misc: String,
+    pub price: String,
     pub limitprice: String,
     pub refid: Option<String>,
     pub reason: Option<String>,
