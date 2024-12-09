@@ -57,8 +57,8 @@ pub struct OrderDescription {
     pub pair: String,
     // pub time: f64,
     #[serde(rename = "type")]
-    pub orderside: String,
-    pub ordertype: String,
+    pub orderside: OrderSide,
+    pub ordertype: OrderType,
     pub price: String,
     pub price2: String,
     pub leverage: String,
