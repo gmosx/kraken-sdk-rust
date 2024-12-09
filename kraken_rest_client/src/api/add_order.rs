@@ -18,6 +18,8 @@ pub struct AddOrderRequest {
     price2: Option<String>,
     /// Order volume in lots.
     volume: String,
+    /// When placing an iceberg order, the amount to display for the order book no less than 1/15 the order total
+    displayvol: Option<String>,
     // Amount of leverage desired.
     leverage: Option<String>,
     /// Comma delimited list of order flags:
@@ -53,6 +55,13 @@ impl AddOrderRequest {
     pub fn price2(self, price: &str) -> Self {
         Self {
             price2: Some(price.into()),
+            ..self
+        }
+    }
+
+    pub fn displayvol(self, displayvol: &str) -> Self {
+        Self {
+            displayvol: Some(displayvol.into()),
             ..self
         }
     }
@@ -194,6 +203,10 @@ impl AddOrderRequest {
             query.push_str(&format!("&price2={}", price2));
         }
 
+        if let Some(displayvol) = &self.displayvol {
+            query.push_str(&format!("&displayvol={}", displayvol));
+        }
+
         if let Some(leverage) = &self.leverage {
             query.push_str(&format!("&leverage={}", leverage));
         }
@@ -266,6 +279,7 @@ impl Client {
             order_type,
             price: None,
             price2: None,
+            displayvol: None,
             volume: volume.to_string(),
             leverage: None,
             oflags: None,
@@ -293,6 +307,7 @@ impl Client {
             order_type: OrderType::Market,
             price: None,
             price2: None,
+            displayvol: None,
             volume: volume.to_string(),
             leverage: None,
             oflags: None,
@@ -321,6 +336,37 @@ impl Client {
             order_type: OrderType::Limit,
             price: Some(price.to_string()),
             price2: None,
+            displayvol: None,
+            volume: volume.to_string(),
+            leverage: None,
+            oflags: None,
+            timeinforce: None,
+            starttm: None,
+            expiretm: None,
+            userref: None,
+            validate: None,
+            close_order_type: None,
+            close_price: None,
+            close_price2: None,
+        }
+    }
+
+    pub fn add_iceberg_order(
+        &self,
+        pair: &str,
+        order_side: OrderSide,
+        displayvol: &str,
+        volume: &str,
+        price: &str,
+    ) -> AddOrderRequest {
+        AddOrderRequest {
+            client: self.clone(),
+            pair: pair.to_string(),
+            order_side,
+            order_type: OrderType::Limit,
+            price: Some(price.to_string()),
+            price2: None,
+            displayvol: Some(displayvol.to_string()),
             volume: volume.to_string(),
             leverage: None,
             oflags: None,

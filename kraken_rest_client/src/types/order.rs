@@ -22,6 +22,7 @@ impl fmt::Display for OrderSide {
 pub enum OrderType {
     Market,
     Limit,
+    Iceberg,
     StopLoss,
     TakeProfit,
     StopLossLimit,
@@ -37,6 +38,7 @@ impl fmt::Display for OrderType {
         let order_type = match self {
             Self::Market => "market",
             Self::Limit => "limit",
+            Self::Iceberg => "iceberg",
             Self::StopLoss => "stop-loss",
             Self::TakeProfit => "take-profit",
             Self::StopLossLimit => "stop-loss-limit",
