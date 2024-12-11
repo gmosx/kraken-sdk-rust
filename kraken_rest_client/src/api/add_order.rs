@@ -1,5 +1,5 @@
 use crate::{
-    types::{OrderDescription, OrderSide, OrderType},
+    types::{OrderSide, OrderType},
     Client, Result,
 };
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
@@ -255,6 +255,14 @@ impl AddOrderRequest {
     pub async fn send(self) -> Result<AddOrderResponse> {
         self.execute().await
     }
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct OrderDescription {
+    /// Order description
+    pub order: String,
+    /// Conditional close order description (if conditional close set)
+    pub close: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
